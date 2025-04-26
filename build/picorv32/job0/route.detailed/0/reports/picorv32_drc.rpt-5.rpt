@@ -1,0 +1,72 @@
+violation type: Metal Spacing
+	srcs: net:_1367_
+	bbox = (261.5800, 28.9500) - (261.5950, 29.0000) on Layer met1
+violation type: Metal Spacing
+	srcs: net:_1367_
+	bbox = (261.5950, 28.9500) - (261.8700, 29.0000) on Layer met1
+violation type: Metal Spacing
+	srcs: net:count_cycle\[22\] net:instr_rdinstrh
+	bbox = (386.6050, 284.4000) - (386.7250, 284.4700) on Layer met1
+violation type: Metal Spacing
+	srcs: net:count_cycle\[22\] net:instr_rdinstrh
+	bbox = (386.7000, 284.4450) - (386.7250, 284.4700) on Layer met1
+violation type: Metal Spacing
+	srcs: net:count_cycle\[22\] net:instr_rdinstrh
+	bbox = (386.7250, 284.4700) - (387.0100, 284.5100) on Layer met1
+violation type: Metal Spacing
+	srcs: net:count_cycle\[22\] net:instr_rdinstrh
+	bbox = (386.8700, 284.4700) - (387.0100, 284.5100) on Layer met1
+violation type: Metal Spacing
+	srcs: net:count_cycle\[54\] net:instr_rdcycleh
+	bbox = (384.0300, 284.2950) - (384.1250, 284.5250) on Layer met1
+violation type: Metal Spacing
+	srcs: net:instr_rdinstrh
+	bbox = (387.0150, 284.1400) - (387.0200, 284.2400) on Layer met1
+violation type: Metal Spacing
+	srcs: net:instr_rdinstrh
+	bbox = (386.8700, 284.1400) - (387.0150, 284.2400) on Layer met1
+violation type: Short
+	srcs: net:count_cycle\[23\] net:instr_rdinstr
+	bbox = (376.4750, 289.7350) - (376.5800, 289.9650) on Layer met1
+violation type: Short
+	srcs: net:count_instr\[23\] net:instr_rdinstr
+	bbox = (375.9050, 289.7800) - (376.1950, 289.9200) on Layer met1
+violation type: Short
+	srcs: net:count_instr\[23\] net:instr_rdinstr
+	bbox = (375.8900, 289.7800) - (376.2100, 289.9200) on Layer met1
+violation type: Short
+	srcs: net:count_cycle\[23\] net:instr_rdinstr
+	bbox = (376.4400, 289.7800) - (376.5800, 289.9200) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3650) - (384.8600, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3400) - (384.8600, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8550, 284.2950) - (384.8600, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3650) - (384.9700, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3400) - (384.9700, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8550, 284.2950) - (384.9700, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3650) - (385.1450, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8300, 284.3400) - (385.1450, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:instr_rdcycleh net:net712
+	bbox = (384.8550, 284.2950) - (385.1450, 284.4300) on Layer met1
+violation type: Short
+	srcs: net:count_cycle\[54\] net:instr_rdcycleh
+	bbox = (384.2150, 284.3650) - (384.3550, 284.5050) on Layer met1
+violation type: Short
+	srcs: net:count_cycle\[54\] net:instr_rdcycleh
+	bbox = (384.1250, 284.3650) - (384.4150, 284.5050) on Layer met1

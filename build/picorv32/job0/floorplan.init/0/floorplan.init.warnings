@@ -1,0 +1,9 @@
+ 172: [WARNING FLW-0001] Defaulting back to default SDC
+ 180: Warning: There are 102 input ports missing set_input_delay.
+ 283: Warning: There are 201 output ports missing set_output_delay.
+ 485: Warning: There are 1597 unclocked register/latch pins.
+2083: Warning: There are 3184 unconstrained endpoints.
+5268: [WARNING FLW-0001] No clocks defined.
+5316: [WARNING IFP-0028] Core area lower left (1.000, 1.000) snapped to (1.380, 2.720).
+5532: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+5535: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!

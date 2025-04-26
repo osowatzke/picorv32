@@ -1,0 +1,3 @@
+168: [WARNING FLW-0001] No clocks defined.
+646: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+650: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!

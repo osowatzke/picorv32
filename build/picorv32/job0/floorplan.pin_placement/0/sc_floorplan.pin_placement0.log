@@ -1,0 +1,523 @@
+| INFO     | job0 | floorplan.pin_pla... | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | floorplan.pin_pla... | 0 | Running in /nfs/sc_compute/builds/03ceb3a4f0e94730a95a08d439e9c2e9/picorv32/job0/floorplan.pin_placement/0
+| INFO     | job0 | floorplan.pin_pla... | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_pin_placement.tcl
+| INFO     | job0 | floorplan.pin_pla... | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | floorplan.pin_pla... | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | floorplan.pin_pla... | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | floorplan.pin_pla... | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | floorplan.pin_pla... | 0 | ##############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Schema Adapter
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | floorplan.pin_pla... | 0 | ##############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Setup debugging
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Setup debugging if requested
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | floorplan.pin_pla... | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Suppress messages if requested
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | floorplan.pin_pla... | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } else {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | floorplan.pin_pla... | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | floorplan.pin_pla... | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Setup helper functions
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Design information
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Design
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_design [sc_top]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | floorplan.pin_pla... | 0 | # APR Parameters
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Hard macro libraries
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Threads
+| INFO     | job0 | floorplan.pin_pla... | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Read Files
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Read Liberty
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | floorplan.pin_pla... | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | floorplan.pin_pla... | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     #Liberty
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | floorplan.pin_pla... | 0 |                 }
+| INFO     | job0 | floorplan.pin_pla... | 0 |                 break
+| INFO     | job0 | floorplan.pin_pla... | 0 |             }
+| INFO     | job0 | floorplan.pin_pla... | 0 |         }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | floorplan.pin_pla... | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | floorplan.pin_pla... | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | floorplan.pin_pla... | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Read design files
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         read_db $odb_file
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | } else {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # Read techlef
+| INFO     | job0 | floorplan.pin_pla... | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     read_lef $sc_techlef
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # Read Lefs
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |             read_lef $lef_file
+| INFO     | job0 | floorplan.pin_pla... | 0 |         }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         # Read DEF
+| INFO     | job0 | floorplan.pin_pla... | 0 |         # get from previous step
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         # Read DEF
+| INFO     | job0 | floorplan.pin_pla... | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         read_def $sc_def
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         # Read Verilog
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         link_design $sc_design
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         # Read Verilog
+| INFO     | job0 | floorplan.pin_pla... | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |             read_verilog $netlist
+| INFO     | job0 | floorplan.pin_pla... | 0 |         }
+| INFO     | job0 | floorplan.pin_pla... | 0 |         link_design $sc_design
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } else {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # Handle global connect setup
+| INFO     | job0 | floorplan.pin_pla... | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |             source $global_connect
+| INFO     | job0 | floorplan.pin_pla... | 0 |         }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | Reading ODB: inputs/picorv32.odb
+| INFO     | job0 | floorplan.pin_pla... | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Read timing constraints
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         read_sdc $sdc
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | } else {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | floorplan.pin_pla... | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | Reading SDC: inputs/picorv32.sdc
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Common Setup
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | sc_setup_sta
+| INFO     | job0 | floorplan.pin_pla... | 0 | [WARNING FLW-0001] No clocks defined.
+| INFO     | job0 | floorplan.pin_pla... | 0 | sc_setup_parasitics
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | floorplan.pin_pla... | 0 | sc_set_dont_use
+| INFO     | job0 | floorplan.pin_pla... | 0 | sc_setup_global_routing
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | floorplan.pin_pla... | 0 | set sc_starting_markers []
+| INFO     | job0 | floorplan.pin_pla... | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Source Step Script
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | report_units_metric
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | set openroad_dont_touch {}
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # set don't touch list
+| INFO     | job0 | floorplan.pin_pla... | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | floorplan.pin_pla... | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | floorplan.pin_pla... | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | floorplan.pin_pla... | 0 | Global connection rules: 2
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Performing global placement without considering IO
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0002] DBU: 1000
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0004] CoreBBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0006] Number of instances:              8659
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0007] Movable instances:                5987
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0008] Fixed instances:                  2672
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0009] Dummy instances:                     0
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0010] Number of nets:                   6293
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0011] Number of pins:                  24637
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0012] Die BBox:  (  0.000  0.000 ) ( 454.070 454.070 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0013] Core BBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0016] Core area:                  202525.488 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0017] Fixed instances area:         3343.206 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0018] Movable instances area:      80347.059 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0019] Utilization:                    40.338 %
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0020] Standard cells area:         80347.059 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0021] Large instances area:            0.000 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0023] Placement target density:       1.0000
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0024] Movable insts average area:     13.420 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0025] Ideal bin area:                 13.420 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0026] Ideal bin count:                 15091
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0027] Total bin area:             202525.488 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0028] Bin count (X, Y):          64 ,     64
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0029] Bin size (W * H):       7.051 *  7.013 um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0030] Number of bins:                   4096
+| INFO     | job0 | floorplan.pin_pla... | 0 | global_placement siliconcompiler arguments: -routability_driven -timing_driven -skip_io
+| INFO     | job0 | floorplan.pin_pla... | 0 | [WARNING GPL-0150] -skip_io will disable timing driven mode.
+| INFO     | job0 | floorplan.pin_pla... | 0 | [WARNING GPL-0151] -skip_io will disable routability driven mode.
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0002] DBU: 1000
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0004] CoreBBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0006] Number of instances:              8659
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0007] Movable instances:                5987
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0008] Fixed instances:                  2672
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0009] Dummy instances:                     0
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0010] Number of nets:                   6293
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0011] Number of pins:                  24228
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0012] Die BBox:  (  0.000  0.000 ) ( 454.070 454.070 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0013] Core BBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0016] Core area:                  202525.488 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0017] Fixed instances area:         3343.206 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0018] Movable instances area:      80347.059 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0019] Utilization:                    40.338 %
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0020] Standard cells area:         80347.059 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0021] Large instances area:            0.000 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0023] Placement target density:       0.6000
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0024] Movable insts average area:     13.420 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0025] Ideal bin area:                 22.367 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0026] Ideal bin count:                  9054
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0027] Total bin area:             202525.488 um^2
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0028] Bin count (X, Y):          64 ,     64
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0029] Bin size (W * H):       7.051 *  7.013 um
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0030] Number of bins:                   4096
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-0031] HPWL: Half-Perimeter Wirelength
+| INFO     | job0 | floorplan.pin_pla... | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | floorplan.pin_pla... | 0 | ---------------------------------------------------------------
+| INFO     | job0 | floorplan.pin_pla... | 0 |         1 |   0.9983 |  1.914841e+07 |   +0.00% |  1.72e-15 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        10 |   0.9968 |  9.341224e+06 |  -51.22% |  2.67e-15 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        20 |   0.9966 |  9.087858e+06 |   -2.71% |  4.35e-15 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        30 |   0.9960 |  9.003659e+06 |   -0.93% |  7.09e-15 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        40 |   0.9956 |  8.964698e+06 |   -0.43% |  1.15e-14 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        50 |   0.9954 |  8.947032e+06 |   -0.20% |  1.88e-14 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        60 |   0.9954 |  8.940275e+06 |   -0.08% |  3.06e-14 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        70 |   0.9954 |  8.946317e+06 |   +0.07% |  4.99e-14 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        80 |   0.9954 |  8.975517e+06 |   +0.33% |  8.13e-14 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |        90 |   0.9954 |  9.045883e+06 |   +0.78% |  1.32e-13 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       100 |   0.9954 |  9.213899e+06 |   +1.86% |  2.16e-13 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       110 |   0.9953 |  9.636125e+06 |   +4.58% |  3.51e-13 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       120 |   0.9944 |  1.058151e+07 |   +9.81% |  5.72e-13 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       130 |   0.9916 |  1.212696e+07 |  +14.61% |  9.32e-13 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       140 |   0.9906 |  1.442497e+07 |  +18.95% |  1.52e-12 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       150 |   0.9855 |  1.790407e+07 |  +24.12% |  2.47e-12 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       160 |   0.9745 |  2.406723e+07 |  +34.42% |  4.02e-12 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       170 |   0.9584 |  3.141983e+07 |  +30.55% |  6.55e-12 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       180 |   0.9471 |  3.852468e+07 |  +22.61% |  1.07e-11 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       190 |   0.9312 |  4.533096e+07 |  +17.67% |  1.73e-11 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       200 |   0.9041 |  5.265194e+07 |  +16.15% |  2.82e-11 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       210 |   0.8779 |  6.119200e+07 |  +16.22% |  4.59e-11 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       220 |   0.8471 |  7.090049e+07 |  +15.87% |  7.48e-11 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       230 |   0.8079 |  7.970958e+07 |  +12.42% |  1.22e-10 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       240 |   0.7727 |  8.856158e+07 |  +11.11% |  1.98e-10 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       250 |   0.7263 |  9.757063e+07 |  +10.17% |  3.22e-10 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       260 |   0.6835 |  1.060459e+08 |   +8.69% |  5.24e-10 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       270 |   0.6353 |  1.153088e+08 |   +8.73% |  8.53e-10 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       280 |   0.5811 |  1.231056e+08 |   +6.76% |  1.39e-09 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       290 |   0.5306 |  1.288733e+08 |   +4.69% |  2.26e-09 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       300 |   0.4784 |  1.331304e+08 |   +3.30% |  3.68e-09 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       310 |   0.4295 |  1.367981e+08 |   +2.75% |  5.99e-09 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       320 |   0.3787 |  1.396476e+08 |   +2.08% |  9.76e-09 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       330 |   0.3333 |  1.414373e+08 |   +1.28% |  1.56e-08 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       340 |   0.3020 |  1.418991e+08 |   +0.33% |  2.29e-08 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       350 |   0.2655 |  1.424305e+08 |   +0.37% |  3.38e-08 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       360 |   0.2386 |  1.429289e+08 |   +0.35% |  4.98e-08 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       370 |   0.2145 |  1.433646e+08 |   +0.30% |  7.33e-08 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       380 |   0.1908 |  1.437854e+08 |   +0.29% |  1.08e-07 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       390 |   0.1685 |  1.442831e+08 |   +0.35% |  1.59e-07 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       400 |   0.1473 |  1.445215e+08 |   +0.17% |  2.34e-07 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       410 |   0.1285 |  1.450112e+08 |   +0.34% |  3.45e-07 |
+| INFO     | job0 | floorplan.pin_pla... | 0 |       420 |   0.1099 |  1.454639e+08 |   +0.31% |  5.09e-07 |
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1001] Finished with Overflow: 0.099889
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1002] Placed Cell Area            80347.0592
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1003] Available Free Area         199182.2816
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1004] Minimum Feasible Density        0.4100 (cell_area / free_area)
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1006]   Suggested Target Densities:
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1007]     - For 90% usage of free space: 0.4482
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO GPL-1008]     - For 80% usage of free space: 0.5042
+| INFO     | job0 | floorplan.pin_pla... | 0 | Found 0 macro blocks.
+| INFO     | job0 | floorplan.pin_pla... | 0 | Using 2 tracks default min distance between IO pins.
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0001] Number of available slots 1644
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0002] Number of I/O             409
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0003] Number of I/O w/sink      342
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0004] Number of I/O w/o sink    67
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0005] Slots per section         200
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0008] Successfully assigned pins to sections.
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO PPL-0012] I/O nets HPWL: 53405.25 um.
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     # unset for next step
+| INFO     | job0 | floorplan.pin_pla... | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | floorplan.pin_pla... | 0 |         source -echo $sc_post_script
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Write Design Data
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Reporting
+| INFO     | job0 | floorplan.pin_pla... | 0 | ###############################
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | floorplan.pin_pla... | 0 | No paths found.
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: setupslack
+| INFO     | job0 | floorplan.pin_pla... | 0 | worst slack INF
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: tns
+| INFO     | job0 | floorplan.pin_pla... | 0 | tns 0.00
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | floorplan.pin_pla... | 0 | Startpoint: _9357_ (rising edge-triggered flip-flop)
+| INFO     | job0 | floorplan.pin_pla... | 0 | Endpoint: pcpi_rs1[26]$_DFFE_PP_ (rising edge-triggered flip-flop)
+| INFO     | job0 | floorplan.pin_pla... | 0 | Path Group: unconstrained
+| INFO     | job0 | floorplan.pin_pla... | 0 | Path Type: max
+| INFO     | job0 | floorplan.pin_pla... | 0 | Corner: slow
+| INFO     | job0 | floorplan.pin_pla... | 0 | 
+| INFO     | job0 | floorplan.pin_pla... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | floorplan.pin_pla... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.pin_pla... | 0 |                 177.58    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |    262    1.85   67.92  108.68  108.68 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _0014_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                  67.92    0.05  108.72 ^ _7099_/S0 (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.00    0.74   25.55  134.28 ^ _7099_/X (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2569_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   0.74    0.00  134.28 ^ _7100_/B (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.00    1.37    0.43  134.70 v _7100_/Y (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2570_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   1.37    0.00  134.70 v _7101_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.00    0.83    1.36  136.06 ^ _7101_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2571_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   0.83    0.00  136.06 ^ _7102_/B1 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.01    2.13    0.48  136.54 v _7102_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2572_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   2.13    0.00  136.54 v _7109_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.04    4.44    4.79  141.33 ^ _7109_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2579_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   4.44    0.00  141.34 ^ _7110_/B1 (sky130_fd_sc_hd__a22oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.01    1.89    1.78  143.12 v _7110_/Y (sky130_fd_sc_hd__a22oi_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2580_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   1.89    0.00  143.12 v _7111_/B1 (sky130_fd_sc_hd__o32ai_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.00    0.93    1.54  144.67 ^ _7111_/Y (sky130_fd_sc_hd__o32ai_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _2581_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   0.93    0.00  144.67 ^ _7112_/C1 (sky130_fd_sc_hd__a211o_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |      1    0.00    0.15    0.68  145.34 ^ _7112_/X (sky130_fd_sc_hd__a211o_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                          _4696_ (net)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                   0.15    0.00  145.34 ^ pcpi_rs1[26]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | floorplan.pin_pla... | 0 |                                 145.34   data arrival time
+| INFO     | job0 | floorplan.pin_pla... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.pin_pla... | 0 | (Path is unconstrained)
+| INFO     | job0 | floorplan.pin_pla... | 0 | 
+| INFO     | job0 | floorplan.pin_pla... | 0 | 
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: floating nets
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | floorplan.pin_pla... | 0 | SC_METRIC: cellarea
+| INFO     | job0 | floorplan.pin_pla... | 0 | Design area 80347 u^2 40% utilization.
+| INFO     | job0 | floorplan.pin_pla... | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Tap cell                               2672    3343.21
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Buffer                                  113     848.31
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Inverter                                224     840.81
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Sequential cell                        1597   44782.95
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Multi-Input combinational cell         4053   33874.99
+| INFO     | job0 | floorplan.pin_pla... | 0 |   Total                                  8659   83690.27
+| INFO     | job0 | floorplan.pin_pla... | 0 | 
+| INFO     | job0 | floorplan.pin_pla... | 0 | Cell instance report:
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a2111oi_0                3      26.28
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a211o_1                 16     140.13
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a211oi_1                31     232.72
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a211oi_2                 1      12.51
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a21boi_0                14     105.10
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a21o_1                  67     502.98
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a21oi_1                368    1841.77
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a21oi_2                  2      17.52
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a221o_1                  2      20.02
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a221oi_1                46     402.89
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a222oi_1                39     390.37
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a22o_1                  16     140.13
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a22oi_1                 73     548.03
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a311oi_1                 2      17.52
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a31o_1                   5      43.79
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a31oi_1                 71     444.18
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a32o_1                   6      60.06
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a32oi_1                 14     122.62
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a41o_1                   1      10.01
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__a41oi_1                  5      43.79
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and2_0                  10      62.56
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and2_1                  21     131.38
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and3_1                  63     394.13
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and3b_1                  1       8.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and4_1                  27     236.48
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__and4b_1                  2      20.02
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__buf_4                  113     848.31
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__clkinv_1                10      37.54
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__conb_1                   1       3.75
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__dfxtp_1                317    6346.09
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__ha_1                   199    2489.89
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__inv_1                  212     795.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__inv_2                    2       7.51
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__mux2_2                  60     675.65
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__mux2i_1                 87     870.84
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__mux4_2                 545   12274.27
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand2_1                516    1936.86
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand3_1                 79     395.38
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand3b_1                 3      22.52
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand4_1                 29     181.42
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor2_1                 486    1824.25
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor2b_1                 23     143.89
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor3_1                 128     640.61
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor3b_1                 14     105.10
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor4_1                  27     168.91
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor4_2                   1      12.51
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o211ai_1                25     187.68
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o211ai_2                 1      12.51
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o21a_1                  75     563.04
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o21ai_0                480    2402.30
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o21ai_1                 13      65.06
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o21bai_1                38     285.27
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o221a_2                  5      56.30
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o221ai_1                40     350.34
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o22ai_1                 26     162.66
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o311ai_0                16     140.13
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o311ai_1                 1       8.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o31a_1                   3      26.28
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o31ai_1                 22     165.16
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o32ai_1                 17     148.89
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__o41ai_1                  1       8.76
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__or2_1                   12      75.07
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__or3_1                   17     106.35
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__or4_1                    4      30.03
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__or4b_2                   4      40.04
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__xnor2_1                 92     805.77
+| INFO     | job0 | floorplan.pin_pla... | 0 |   sky130_fd_sc_hd__xor2_1                  22     192.68
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.pin_pla... | 0 | # Images
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | floorplan.pin_pla... | 0 | if {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     [sc_has_gui] &&
+| INFO     | job0 | floorplan.pin_pla... | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | floorplan.pin_pla... | 0 | } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | floorplan.pin_pla... | 0 |     } else {
+| INFO     | job0 | floorplan.pin_pla... | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | floorplan.pin_pla... | 0 |     }
+| INFO     | job0 | floorplan.pin_pla... | 0 | }
+| INFO     | job0 | floorplan.pin_pla... | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | floorplan.pin_pla... | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | floorplan.pin_pla... | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | floorplan.pin_pla... | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | floorplan.pin_pla... | 0 | 168: [WARNING FLW-0001] No clocks defined.
+| WARNING  | job0 | floorplan.pin_pla... | 0 | 239: [WARNING GPL-0150] -skip_io will disable timing driven mode.
+| WARNING  | job0 | floorplan.pin_pla... | 0 | 240: [WARNING GPL-0151] -skip_io will disable routability driven mode.
+| WARNING  | job0 | floorplan.pin_pla... | 0 | 504: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| WARNING  | job0 | floorplan.pin_pla... | 0 | 508: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | floorplan.pin_pla... | 0 | Number of errors: 0
+| INFO     | job0 | floorplan.pin_pla... | 0 | Number of warnings: 5
+| INFO     | job0 | floorplan.pin_pla... | 0 | Finished task in 11.43s
+| INFO     | job0 | floorplan.pin_pla... | 0 | Archiving floorplan.pin_placement0...

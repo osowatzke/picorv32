@@ -1,0 +1,802 @@
+| INFO     | job0 | write.views          | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | write.views          | 0 | Running in /nfs/sc_compute/builds/03ceb3a4f0e94730a95a08d439e9c2e9/picorv32/job0/write.views/0
+| INFO     | job0 | write.views          | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_write_data.tcl
+| INFO     | job0 | write.views          | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | write.views          | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | write.views          | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | write.views          | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | write.views          | 0 | ##############################
+| INFO     | job0 | write.views          | 0 | # Schema Adapter
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | write.views          | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | write.views          | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | write.views          | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | write.views          | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | write.views          | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | write.views          | 0 | ##############################
+| INFO     | job0 | write.views          | 0 | # Setup debugging
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Setup debugging if requested
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | write.views          | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | write.views          | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | write.views          | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | write.views          | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Suppress messages if requested
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | write.views          | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | write.views          | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | write.views          | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | write.views          | 0 |     } else {
+| INFO     | job0 | write.views          | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | write.views          | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | write.views          | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | write.views          | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Setup helper functions
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Design information
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Design
+| INFO     | job0 | write.views          | 0 | set sc_design [sc_top]
+| INFO     | job0 | write.views          | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | write.views          | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | write.views          | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | write.views          | 0 | # APR Parameters
+| INFO     | job0 | write.views          | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | write.views          | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | write.views          | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | write.views          | 0 | # Hard macro libraries
+| INFO     | job0 | write.views          | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | write.views          | 0 | # Threads
+| INFO     | job0 | write.views          | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | write.views          | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Read Files
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | write.views          | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | write.views          | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | write.views          | 0 | # Read Liberty
+| INFO     | job0 | write.views          | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | write.views          | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | write.views          | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | write.views          | 0 |     #Liberty
+| INFO     | job0 | write.views          | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | write.views          | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | write.views          | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | write.views          | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | write.views          | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | write.views          | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | write.views          | 0 |                 }
+| INFO     | job0 | write.views          | 0 |                 break
+| INFO     | job0 | write.views          | 0 |             }
+| INFO     | job0 | write.views          | 0 |         }
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | write.views          | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | write.views          | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | write.views          | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Read design files
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | write.views          | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | write.views          | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | write.views          | 0 |         read_db $odb_file
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | } else {
+| INFO     | job0 | write.views          | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | write.views          | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | write.views          | 0 |     # Read techlef
+| INFO     | job0 | write.views          | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | write.views          | 0 |     read_lef $sc_techlef
+| INFO     | job0 | write.views          | 0 |     # Read Lefs
+| INFO     | job0 | write.views          | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | write.views          | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | write.views          | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | write.views          | 0 |             read_lef $lef_file
+| INFO     | job0 | write.views          | 0 |         }
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | write.views          | 0 |         # Read DEF
+| INFO     | job0 | write.views          | 0 |         # get from previous step
+| INFO     | job0 | write.views          | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | write.views          | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | write.views          | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | write.views          | 0 |         # Read DEF
+| INFO     | job0 | write.views          | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | write.views          | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | write.views          | 0 |         read_def $sc_def
+| INFO     | job0 | write.views          | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | write.views          | 0 |         # Read Verilog
+| INFO     | job0 | write.views          | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | write.views          | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | write.views          | 0 |         link_design $sc_design
+| INFO     | job0 | write.views          | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | write.views          | 0 |         # Read Verilog
+| INFO     | job0 | write.views          | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | write.views          | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | write.views          | 0 |             read_verilog $netlist
+| INFO     | job0 | write.views          | 0 |         }
+| INFO     | job0 | write.views          | 0 |         link_design $sc_design
+| INFO     | job0 | write.views          | 0 |     } else {
+| INFO     | job0 | write.views          | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 |     # Handle global connect setup
+| INFO     | job0 | write.views          | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | write.views          | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | write.views          | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | write.views          | 0 |             source $global_connect
+| INFO     | job0 | write.views          | 0 |         }
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | Reading ODB: inputs/picorv32.odb
+| INFO     | job0 | write.views          | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Read timing constraints
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | write.views          | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | write.views          | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | write.views          | 0 |         read_sdc $sdc
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | } else {
+| INFO     | job0 | write.views          | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | write.views          | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | write.views          | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | write.views          | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | write.views          | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | Reading SDC: inputs/picorv32.sdc
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Common Setup
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | sc_setup_sta
+| INFO     | job0 | write.views          | 0 | [WARNING FLW-0001] No clocks defined.
+| INFO     | job0 | write.views          | 0 | sc_setup_parasitics
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | write.views          | 0 | sc_set_dont_use
+| INFO     | job0 | write.views          | 0 | sc_setup_global_routing
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | write.views          | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | write.views          | 0 | set sc_starting_markers []
+| INFO     | job0 | write.views          | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | write.views          | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Source Step Script
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | report_units_metric
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | write.views          | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | write.views          | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | write.views          | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | write.views          | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | write.views          | 0 | set openroad_dont_touch {}
+| INFO     | job0 | write.views          | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | write.views          | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | write.views          | 0 |     # set don't touch list
+| INFO     | job0 | write.views          | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | write.views          | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | write.views          | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | write.views          | 0 | Global connection rules: 2
+| INFO     | job0 | write.views          | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | write.views          | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0431] Defined process_corner X with ext_model_index 0
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0029] Defined extraction corner X
+| INFO     | job0 | write.views          | 0 | Writing SPEF for minimum
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0435] Reading extraction model file /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/base/pex/openroad/minimum.rules ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0436] RC segment generation picorv32 (max_merge_res 50.0) ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0040] Final 59468 rc segments
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0439] Coupling Cap extraction picorv32 ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0440] Coupling threshhold is 0.1000 fF, coupling capacitance less than 0.1000 fF will be grounded.
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0442] 55% of 70763 wires extracted
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0442] 100% of 70763 wires extracted
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0045] Extract 7529 nets, 66860 rsegs, 66860 caps, 60259 ccs
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0443] 7529 nets finished
+| INFO     | job0 | write.views          | 0 | Writing SPEF for maximum
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0435] Reading extraction model file /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/base/pex/openroad/maximum.rules ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0436] RC segment generation picorv32 (max_merge_res 50.0) ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0040] Final 60720 rc segments
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0439] Coupling Cap extraction picorv32 ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0440] Coupling threshhold is 0.1000 fF, coupling capacitance less than 0.1000 fF will be grounded.
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0045] Extract 7529 nets, 68112 rsegs, 68112 caps, 60516 ccs
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0443] 7529 nets finished
+| INFO     | job0 | write.views          | 0 | Writing SPEF for typical
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0435] Reading extraction model file /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/base/pex/openroad/typical.rules ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0436] RC segment generation picorv32 (max_merge_res 50.0) ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0040] Final 60096 rc segments
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0439] Coupling Cap extraction picorv32 ...
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0440] Coupling threshhold is 0.1000 fF, coupling capacitance less than 0.1000 fF will be grounded.
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0045] Extract 7529 nets, 67488 rsegs, 67488 caps, 60362 ccs
+| INFO     | job0 | write.views          | 0 | [INFO RCX-0443] 7529 nets finished
+| INFO     | job0 | write.views          | 0 | Reading SPEF for maximum into slow
+| INFO     | job0 | write.views          | 0 | Reading SPEF for minimum into fast
+| INFO     | job0 | write.views          | 0 | Reading SPEF for typical into typical
+| INFO     | job0 | write.views          | 0 | Writing timing model for slow
+| INFO     | job0 | write.views          | 0 | Writing SDF for slow
+| INFO     | job0 | write.views          | 0 | Writing timing model for fast
+| INFO     | job0 | write.views          | 0 | Writing SDF for fast
+| INFO     | job0 | write.views          | 0 | Writing timing model for typical
+| INFO     | job0 | write.views          | 0 | Writing SDF for typical
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VDD on slow
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : slow
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 8.96e-04 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 3.68e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.26 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VDD on fast
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : fast
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.39e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 2.08e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 8.31e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.59 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VDD on typical
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : typical
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.39e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.61e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 6.79e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.49 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VSS on slow
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : slow
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 4.05e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 8.44e-04 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 8.44e-04 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 4.05e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.29 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VSS on fast
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : fast
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 9.18e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.96e-03 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.96e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 9.18e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.66 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | Analyzing supply net: VSS on typical
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : typical
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 7.58e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.52e-03 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.52e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 7.58e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.54 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | write.views          | 0 |     # unset for next step
+| INFO     | job0 | write.views          | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | write.views          | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | write.views          | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | write.views          | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | write.views          | 0 |         source -echo $sc_post_script
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Write Design Data
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | write.views          | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | # Reporting
+| INFO     | job0 | write.views          | 0 | ###############################
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | write.views          | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | write.views          | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | write.views          | 0 | No paths found.
+| INFO     | job0 | write.views          | 0 | SC_METRIC: setupslack
+| INFO     | job0 | write.views          | 0 | worst slack INF
+| INFO     | job0 | write.views          | 0 | SC_METRIC: tns
+| INFO     | job0 | write.views          | 0 | tns 0.00
+| INFO     | job0 | write.views          | 0 | SC_METRIC: report_checks -path_delay min
+| INFO     | job0 | write.views          | 0 | No paths found.
+| INFO     | job0 | write.views          | 0 | SC_METRIC: holdslack
+| INFO     | job0 | write.views          | 0 | worst slack INF
+| INFO     | job0 | write.views          | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | write.views          | 0 | Startpoint: latched_stalu$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+| INFO     | job0 | write.views          | 0 | Endpoint: reg_next_pc[31]$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+| INFO     | job0 | write.views          | 0 | Path Group: unconstrained
+| INFO     | job0 | write.views          | 0 | Path Type: max
+| INFO     | job0 | write.views          | 0 | Corner: slow
+| INFO     | job0 | write.views          | 0 | 
+| INFO     | job0 | write.views          | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | write.views          | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 |                   0.82    0.00    0.00 ^ latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | write.views          | 0 |     33    0.21    3.82    4.30    4.30 ^ latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | write.views          | 0 |                                          latched_stalu (net)
+| INFO     | job0 | write.views          | 0 |                   3.82    0.02    4.32 ^ _5682_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.21    2.68    7.00 ^ _5682_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | write.views          | 0 |                                          _1275_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.21    0.00    7.00 ^ _5684_/A2 (sky130_fd_sc_hd__o21a_1)
+| INFO     | job0 | write.views          | 0 |      4    0.02    0.74    1.26    8.26 ^ _5684_/X (sky130_fd_sc_hd__o21a_1)
+| INFO     | job0 | write.views          | 0 |                                          _1277_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.74    0.00    8.26 ^ _5685_/A (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.15    0.44    8.70 v _5685_/Y (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | write.views          | 0 |                                          _4144_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.15    0.00    8.70 v _9165_/B (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | write.views          | 0 |      3    0.01    0.22    1.47   10.18 v _9165_/SUM (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | write.views          | 0 |                                          _4200_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.22    0.00   10.18 v _7858_/B_N (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | write.views          | 0 |      1    0.00    0.08    0.55   10.72 v _7858_/Y (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | write.views          | 0 |                                          _3121_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.08    0.00   10.72 v _7859_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.03    0.97   11.69 ^ _7859_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3122_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.03    0.00   11.70 ^ _7862_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.14    0.56   12.26 v _7862_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |                                          _3125_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.14    0.00   12.26 v _7880_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.03    1.00   13.26 ^ _7880_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3141_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.03    0.00   13.26 ^ _7883_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.18    0.63   13.89 v _7883_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |                                          _3144_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.18    0.00   13.89 v _7899_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.85    0.89   14.78 ^ _7899_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3158_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.85    0.00   14.78 ^ _7900_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.21    0.61   15.40 v _7900_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |                                          _3159_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.21    0.00   15.40 v _7923_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.09    1.09   16.49 ^ _7923_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3180_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.09    0.00   16.49 ^ _7924_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.14    0.59   17.08 v _7924_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |                                          _3181_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.14    0.00   17.08 v _7947_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.02    1.00   18.08 ^ _7947_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3202_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.02    0.00   18.08 ^ _7948_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.22    0.70   18.78 v _7948_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |                                          _3203_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.22    0.00   18.78 v _7975_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.07    1.09   19.87 ^ _7975_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3228_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.07    0.00   19.87 ^ _7976_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.13    0.57   20.44 v _7976_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | write.views          | 0 |                                          _3229_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.13    0.00   20.44 v _7999_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.75    0.79   21.22 ^ _7999_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3250_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.75    0.00   21.22 ^ _8000_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.20    0.56   21.79 v _8000_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |                                          _3251_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.20    0.00   21.79 v _8021_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.95    0.98   22.77 ^ _8021_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3270_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.95    0.00   22.77 ^ _8022_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.16    0.59   23.36 v _8022_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |                                          _3271_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.16    0.00   23.36 v _8042_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.89    0.91   24.27 ^ _8042_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3289_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.89    0.00   24.27 ^ _8044_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.16    0.56   24.83 v _8044_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | write.views          | 0 |                                          _3291_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.16    0.00   24.83 v _8065_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    1.27    1.21   26.04 ^ _8065_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3310_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.27    0.00   26.04 ^ _8066_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.19    0.72   26.77 v _8066_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | write.views          | 0 |                                          _3311_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.19    0.00   26.77 v _8081_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      2    0.01    0.91    0.93   27.70 ^ _8081_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3324_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.91    0.00   27.70 ^ _8084_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.21    0.65   28.35 v _8084_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | write.views          | 0 |                                          _3327_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.21    0.00   28.35 v _8102_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      3    0.01    1.23    1.20   29.55 ^ _8102_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3343_ (net)
+| INFO     | job0 | write.views          | 0 |                   1.23    0.00   29.55 ^ _8150_/A2 (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | write.views          | 0 |      2    0.00    0.26    0.82   30.37 v _8150_/Y (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | write.views          | 0 |                                          _3387_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.26    0.00   30.37 v _8155_/A1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |      1    0.00    0.47    0.66   31.03 ^ _8155_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | write.views          | 0 |                                          _3392_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.47    0.00   31.03 ^ _8156_/B (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | write.views          | 0 |      1    0.00    0.09    0.30   31.34 v _8156_/Y (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | write.views          | 0 |                                          _3393_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.09    0.00   31.34 v _8159_/A2 (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | write.views          | 0 |      1    0.00    0.67    0.76   32.09 ^ _8159_/Y (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | write.views          | 0 |                                          _3396_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.67    0.00   32.09 ^ _8161_/B1 (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | write.views          | 0 |      1    0.00    0.12    0.63   32.72 ^ _8161_/X (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | write.views          | 0 |                                          _0270_ (net)
+| INFO     | job0 | write.views          | 0 |                   0.12    0.00   32.72 ^ reg_next_pc[31]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | write.views          | 0 |                                  32.72   data arrival time
+| INFO     | job0 | write.views          | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | (Path is unconstrained)
+| INFO     | job0 | write.views          | 0 | 
+| INFO     | job0 | write.views          | 0 | 
+| INFO     | job0 | write.views          | 0 | SC_METRIC: DRV violators
+| INFO     | job0 | write.views          | 0 | SC_METRIC: floating nets
+| INFO     | job0 | write.views          | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | write.views          | 0 | SC_METRIC: fmax
+| INFO     | job0 | write.views          | 0 | SC_METRIC: power
+| INFO     | job0 | write.views          | 0 | Power for corner: fast
+| INFO     | job0 | write.views          | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | write.views          | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Sequential             2.88e-02   1.66e-02   4.85e-05   4.54e-02  18.7%
+| INFO     | job0 | write.views          | 0 | Combinational          1.04e-01   9.31e-02   5.34e-05   1.98e-01  81.3%
+| INFO     | job0 | write.views          | 0 | Clock                 -2.20e-09   0.00e+00   2.13e-11  -2.18e-09  -0.0%
+| INFO     | job0 | write.views          | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Total                  1.33e-01   1.10e-01   1.02e-04   2.43e-01 100.0%
+| INFO     | job0 | write.views          | 0 |                           54.8%      45.1%       0.0%
+| INFO     | job0 | write.views          | 0 | Power for corner: slow
+| INFO     | job0 | write.views          | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | write.views          | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Sequential             1.21e-02   7.80e-03   6.26e-10   1.99e-02  19.0%
+| INFO     | job0 | write.views          | 0 | Combinational          4.25e-02   4.26e-02   1.34e-09   8.51e-02  81.0%
+| INFO     | job0 | write.views          | 0 | Clock                  5.25e-10   0.00e+00   3.86e-14   5.25e-10   0.0%
+| INFO     | job0 | write.views          | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Total                  5.46e-02   5.04e-02   1.97e-09   1.05e-01 100.0%
+| INFO     | job0 | write.views          | 0 |                           52.0%      48.0%       0.0%
+| INFO     | job0 | write.views          | 0 | Power for corner: typical
+| INFO     | job0 | write.views          | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | write.views          | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Sequential             2.23e-02   1.38e-02   1.41e-08   3.62e-02  19.2%
+| INFO     | job0 | write.views          | 0 | Combinational          7.52e-02   7.70e-02   1.89e-08   1.52e-01  80.8%
+| INFO     | job0 | write.views          | 0 | Clock                  8.62e-10   0.00e+00   8.08e-14   8.62e-10   0.0%
+| INFO     | job0 | write.views          | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | write.views          | 0 | ----------------------------------------------------------------
+| INFO     | job0 | write.views          | 0 | Total                  9.75e-02   9.08e-02   3.30e-08   1.88e-01 100.0%
+| INFO     | job0 | write.views          | 0 |                           51.8%      48.2%       0.0%
+| INFO     | job0 | write.views          | 0 | SC_METRIC: cellarea
+| INFO     | job0 | write.views          | 0 | Design area 93428 u^2 46% utilization.
+| INFO     | job0 | write.views          | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | write.views          | 0 |   Fill cell                             16623  105753.93
+| INFO     | job0 | write.views          | 0 |   Tap cell                               2672    3343.21
+| INFO     | job0 | write.views          | 0 |   Buffer                                  113     878.34
+| INFO     | job0 | write.views          | 0 |   Timing Repair Buffer                   1099    8883.52
+| INFO     | job0 | write.views          | 0 |   Inverter                                224    1111.07
+| INFO     | job0 | write.views          | 0 |   Sequential cell                        1597   45120.77
+| INFO     | job0 | write.views          | 0 |   Multi-Input combinational cell         4204   37434.65
+| INFO     | job0 | write.views          | 0 |   Total                                 26532  202525.49
+| INFO     | job0 | write.views          | 0 | 
+| INFO     | job0 | write.views          | 0 | Cell instance report:
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a2111oi_0                3      26.28
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a211o_1                 15     131.38
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a211o_4                  1      17.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a211oi_1                32     240.23
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21boi_0                 7      52.55
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21boi_1                 3      22.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21boi_2                 3      33.78
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21boi_4                 1      18.77
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21o_1                  62     465.45
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21o_4                   5      75.07
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21oi_1                306    1531.47
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a21oi_2                 64     560.54
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a221o_4                  2      42.54
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a221oi_1                46     402.89
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a222oi_1                39     390.37
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a22o_1                  16     140.13
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a22oi_1                 73     548.03
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a311oi_1                 2      17.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a31o_1                   3      26.28
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a31o_4                   2      35.03
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a31oi_1                 71     444.18
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a32o_1                   6      60.06
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a32oi_1                 14     122.62
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a41o_1                   1      10.01
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__a41oi_1                  5      43.79
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and2_0                  14      87.58
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and2_4                  17     148.89
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and3_1                  24     150.14
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and3_4                  39     439.17
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and3b_1                  1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and4_1                   2      17.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and4_4                  25     281.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__and4b_4                  2      27.53
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_1                  734    2755.14
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_12                  30     600.58
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_16                  80    2202.11
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_4                  108     810.78
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_6                  136    1531.47
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__buf_8                  124    1861.79
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__clkinv_1                43     161.40
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__clkinv_16                1      30.03
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__clkinv_2                 4      20.02
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__conb_1                 138     518.00
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__dfxtp_1                 49     980.94
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__dfxtp_2                267    5679.20
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__dfxtp_4                  1      23.77
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__diode_2                 14      35.03
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__fill_1                3200    4003.84
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__fill_2                3079    7704.89
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__fill_4                1897    9494.11
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__fill_8                8447   84551.09
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__ha_1                   185    2314.72
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__ha_2                    12     180.17
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__ha_4                     2      50.05
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_1                  136     510.49
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_12                  14     227.72
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_16                   1      20.02
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_2                   14      52.55
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_4                    4      25.02
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_6                    6      52.55
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__inv_8                    1      11.26
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__mux2_1                  54     608.08
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__mux2_4                   6      90.09
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__mux2i_1                 87     870.84
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__mux4_2                 545   12274.27
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand2_1                414    1553.99
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand2_4                102    1148.60
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand3_1                 79     395.38
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand3b_1                 3      22.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand4_1                 29     181.42
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2_1                 376    1411.35
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2_2                  44     275.26
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2_4                  34     382.87
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2_8                  32     640.61
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2b_1                 17     106.35
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2b_2                  2      17.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor2b_4                  4      55.05
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor3_1                 108     540.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor3_2                  15     150.14
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor3_4                   5      81.33
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor3b_1                 11      82.58
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor3b_2                  3      37.54
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor4_1                  14      87.58
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor4_2                  14     175.17
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor4b_1                  1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__nor4b_2                  2      30.03
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o211ai_1                26     195.19
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21a_1                  75     563.04
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21ai_0                487    2437.34
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21ai_1                  1       5.00
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21ai_4                  5      81.33
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21bai_1                31     232.72
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21bai_2                 5      56.30
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o21bai_4                 2      37.54
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o221a_1                  5      56.30
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o221ai_1                26     227.72
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o221ai_2                10     150.14
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o221ai_4                 4     105.10
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o22ai_1                 21     131.38
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o22ai_2                  5      62.56
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o311ai_0                16     140.13
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o311ai_1                 1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o31a_1                   3      26.28
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o31ai_1                 22     165.16
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o32ai_1                 17     148.89
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__o41ai_1                  1       8.76
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or2_0                    1       6.26
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or2_4                   11      96.34
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or3_1                    6      37.54
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or3_4                   11     123.87
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or4_1                    2      15.01
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or4_4                    2      22.52
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or4b_1                   2      20.02
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__or4b_4                   2      27.53
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__xnor2_1                 92     805.77
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__xor2_1                  21     183.93
+| INFO     | job0 | write.views          | 0 |   sky130_fd_sc_hd__xor2_2                   1      16.27
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| INFO     | job0 | write.views          | 0 | # Images
+| INFO     | job0 | write.views          | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | write.views          | 0 | if {
+| INFO     | job0 | write.views          | 0 |     [sc_has_gui] &&
+| INFO     | job0 | write.views          | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | write.views          | 0 | } {
+| INFO     | job0 | write.views          | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | write.views          | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | write.views          | 0 |     } else {
+| INFO     | job0 | write.views          | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | write.views          | 0 |     }
+| INFO     | job0 | write.views          | 0 | }
+| INFO     | job0 | write.views          | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "routing" to reports/images/picorv32.routing.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | write.views          | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving hold timing histogram to reports/images/timing/hold.histogram.png
+| INFO     | job0 | write.views          | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "routing congestion heatmap" to reports/images/heatmap/routing_congestion.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : slow
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 8.96e-04 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 3.68e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.26 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on li1 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met1 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met2 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met3 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met4 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met5 for slow heatmap" to reports/images/heatmap/irdrop/VDD.slow.met5.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : fast
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.39e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 2.08e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 8.31e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.59 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on li1 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met1 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met2 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met3 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met4 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met5 for fast heatmap" to reports/images/heatmap/irdrop/VDD.fast.met5.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VDD are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VDD
+| INFO     | job0 | write.views          | 0 | Corner           : typical
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 1.39e+00 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.40e+00 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.61e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 6.79e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.49 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on li1 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met1 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met2 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met3 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met4 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VDD on met5 for typical heatmap" to reports/images/heatmap/irdrop/VDD.typical.met5.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : slow
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 4.05e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 8.44e-04 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 8.44e-04 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 4.05e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.29 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on li1 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met1 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met2 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met3 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met4 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met5 for slow heatmap" to reports/images/heatmap/irdrop/VSS.slow.met5.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : fast
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 9.18e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.96e-03 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.96e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 9.18e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.66 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on li1 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met1 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met2 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met3 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met4 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met5 for fast heatmap" to reports/images/heatmap/irdrop/VSS.fast.met5.png
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0040] All shapes on net VSS are connected.
+| INFO     | job0 | write.views          | 0 | [INFO PSM-0011] Reusing previous solution
+| INFO     | job0 | write.views          | 0 | ########## IR report #################
+| INFO     | job0 | write.views          | 0 | Net              : VSS
+| INFO     | job0 | write.views          | 0 | Corner           : typical
+| INFO     | job0 | write.views          | 0 | Supply voltage   : 0.00e+00 V
+| INFO     | job0 | write.views          | 0 | Worstcase voltage: 7.58e-03 V
+| INFO     | job0 | write.views          | 0 | Average voltage  : 1.52e-03 V
+| INFO     | job0 | write.views          | 0 | Average IR drop  : 1.52e-03 V
+| INFO     | job0 | write.views          | 0 | Worstcase IR drop: 7.58e-03 V
+| INFO     | job0 | write.views          | 0 | Percentage drop  : 0.54 %
+| INFO     | job0 | write.views          | 0 | ######################################
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on li1 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.li1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met1 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.met1.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met2 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.met2.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met3 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.met3.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met4 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.met4.png
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "IR drop for VSS on met5 for typical heatmap" to reports/images/heatmap/irdrop/VSS.typical.met5.png
+| INFO     | job0 | write.views          | 0 | [WARNING STA-0351] clock '*' not found.
+| INFO     | job0 | write.views          | 0 | [INFO FLW-0001] Saving "optimizer" to reports/images/picorv32.optimizer.png
+| INFO     | job0 | write.views          | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | write.views          | 0 | 168: [WARNING FLW-0001] No clocks defined.
+| WARNING  | job0 | write.views          | 0 | 666: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| WARNING  | job0 | write.views          | 0 | 671: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| WARNING  | job0 | write.views          | 0 | 673: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| WARNING  | job0 | write.views          | 0 | 788: [WARNING STA-0351] clock '*' not found.
+| INFO     | job0 | write.views          | 0 | Number of errors: 0
+| INFO     | job0 | write.views          | 0 | Number of warnings: 5
+| INFO     | job0 | write.views          | 0 | Finished task in 105.6s
+| INFO     | job0 | write.views          | 0 | Archiving write.views0...

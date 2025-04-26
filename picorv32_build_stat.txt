@@ -1,0 +1,181 @@
+crosswind46@fedora:~/college_work/graduate/ece507_vlsi/proj/owen_clone/picorv32$ sc picorv32.v -remote 
+
+ ____  _ _ _                    ____                      _ _
+/ ___|(_) (_) ___ ___  _ __    / ___|___  _ __ ___  _ __ (_) | ___ _ __
+\___ \| | | |/ __/ _ \| '_ \  | |   / _ \| '_ ` _ \| '_ \| | |/ _ \ '__|
+ ___) | | | | (_| (_) | | | | | |__| (_) | | | | | | |_) | | |  __/ |
+|____/|_|_|_|\___\___/|_| |_|  \____\___/|_| |_| |_| .__/|_|_|\___|_|
+                                                   |_|
+
+Authors: Andreas Olofsson, William Ransohoff, Noah Moroze, Zachary Yedidia, Massimiliano Giacometti, Kimia Talaei, Peter Gadfort, Aulihan Teng, Peter Grossmann, Gabriel Aguirre, Martin Troiber, Ciprian Antoci
+Version: 0.32.3 
+
+--------------------------------------------------------------------------------
+| INFO     | picorv32.v inferred as rtl/verilog
+| INFO     | Command line argument entered: ['option', 'remote'] Value: true
+| WARNING  | job0 | -----                | - | Could not find remote server configuration: defaulting to https://server.siliconcompiler.com
+Status    Node                                        Time   Warnings   Errors   Log                                     
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32/job0/import.verilog/0              1.1s        101        0   build/picorv32/job0/import.verilog/0/im…
+SUCCESS   picorv32/job0/syn/0                        13.6s          2        0   build/picorv32/job0/syn/0/syn.log       
+SUCCESS   picorv32/job0/floorplan.init/0             14.0s          9        0   build/picorv32/job0/floorplan.init/0/fl…
+SUCCESS   picorv32/job0/floorplan.tapcell/0           5.3s          2        0   build/picorv32/job0/floorplan.tapcell/0…
+SUCCESS   picorv32/job0/floorplan.power_grid/0        5.9s          2        0   build/picorv32/job0/floorplan.power_gri…
+SUCCESS   picorv32/job0/floorplan.pin_placement…     11.4s          5        0   build/picorv32/job0/floorplan.pin_place…
+SUCCESS   picorv32/job0/place.global/0               45.5s          4        0   build/picorv32/job0/place.global/0/plac…
+SUCCESS   picorv32/job0/place.repair_design/0        32.0s          3        0   build/picorv32/job0/place.repair_design…
+SUCCESS   picorv32/job0/place.detailed/0             27.9s          3        0   build/picorv32/job0/place.detailed/0/pl…
+SUCCESS   picorv32/job0/cts.clock_tree_synthesi…     23.2s          5        0   build/picorv32/job0/cts.clock_tree_synt…
+SUCCESS   picorv32/job0/cts.repair_timing/0          43.3s          5        0   build/picorv32/job0/cts.repair_timing/0…
+SUCCESS   picorv32/job0/cts.fillcell/0               25.1s          4        0   build/picorv32/job0/cts.fillcell/0/cts.…
+SUCCESS   picorv32/job0/route.global/0               36.2s          5        0   build/picorv32/job0/route.global/0/rout…
+SUCCESS   picorv32/job0/route.antenna_repair/0       71.3s          5        0   build/picorv32/job0/route.antenna_repai…
+SUCCESS   picorv32/job0/route.detailed/0           1892.4s       1133        0   build/picorv32/job0/route.detailed/0/ro…
+SUCCESS   picorv32/job0/write.gds/0                  10.1s          0        0   build/picorv32/job0/write.gds/0/write.g…
+SUCCESS   picorv32/job0/write.views/0               105.6s          5        0   build/picorv32/job0/write.views/0/write…
+                                                                                                                         
+Results 2354.74s                                                                                                         
+     25 passed                                                                                                           
+     0 failed                                                                                                            
+                                                                                                                         
+------------------------------------------------------------------------------------------------------------------
+SUMMARY:
+
+design : picorv32
+params : None
+jobdir : /home/crosswind46/college_work/graduate/ece507_vlsi/proj/owen_clone/picorv32/build/picorv32/job0
+foundry : skywater
+process : skywater130
+targetlibs : sky130hd 
+
+                      import.verilog0         syn0        floorplan.init0   floorplan.t...0   floorplan.p...0  \
+errors                       0                 0                 0                 0                 0          
+warnings                    101                2                 9                 2                 2          
+drvs                        ---               ---                0                 0                 0          
+drcs                        ---               ---               ---               ---               ---         
+unconstrained               ---               ---               3184              3184              3184        
+cellarea       um^2         ---            81747.152         80347.100         83690.300         83690.300      
+totalarea      um^2         ---               ---            206180.000        206180.000        206180.000     
+macroarea      um^2         ---               ---              0.000             0.000             0.000        
+padcellarea    um^2         ---               ---              0.000             0.000             0.000        
+stdcellarea    um^2         ---               ---            80347.100         83690.300         83690.300      
+utilization       %         ---               ---              39.673            41.323            41.323       
+logicdepth                  ---               ---                0                 0                 0          
+peakpower        mw         ---               ---              71.817             ---               ---         
+leakagepower     mw         ---               ---              0.000              ---               ---         
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                   ---               ---               ---               ---               ---         
+setuppaths                  ---               ---               ---               ---               ---         
+macros                      ---               ---                0                 0                 0          
+cells                       ---               6358              5987              8659              8659        
+registers                   ---               1597              1597              1597              1597        
+buffers                     ---               ---               113               113               113         
+inverters                   ---               ---               224               224               224         
+pins                        ---               409               409               409               411         
+nets                        ---               6664              6295              6295              6295        
+vias                        ---               ---               ---               ---               ---         
+wirelength       um         ---               ---               ---               ---               ---         
+memory            B       199.938M          137.008M          243.270M          228.871M          240.254M      
+exetime           s        00.470            10.960            12.500            03.730            04.269       
+tasktime          s        01.131            13.647            14.000            05.258            05.860       
+totaltime         s        01.131            14.778            28.778            34.907            40.767       
+
+                      floorplan.p...0    place.global0    place.repai...0   place.detailed0   cts.clock_t...0  \
+errors                       0                 0                 0                 0                 0          
+warnings                     5                 4                 3                 3                 5          
+drvs                         0                 0                 7                 10                10         
+drcs                        ---               ---               ---               ---               ---         
+unconstrained               3184              3184              3184              3184              3184        
+cellarea       um^2      83690.300         83690.300         92691.400         92691.400         92691.400      
+totalarea      um^2      206180.000        206180.000        206180.000        206180.000        206180.000     
+macroarea      um^2        0.000             0.000             0.000             0.000             0.000        
+padcellarea    um^2        0.000             0.000             0.000             0.000             0.000        
+stdcellarea    um^2      83690.300         83690.300         92691.400         92691.400         92691.400      
+utilization       %        41.323            41.323            45.768            45.768            45.768       
+logicdepth                   0                 0                 0                 0                 0          
+peakpower        mw         ---              66.502           177.799           174.849           174.849       
+leakagepower     mw         ---              0.000             0.000             0.000             0.000        
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                   ---               ---                0                 0                 0          
+setuppaths                  ---               ---                0                 0                 0          
+macros                       0                 0                 0                 0                 0          
+cells                       8659              8659              9887              9887              9887        
+registers                   1597              1597              1597              1597              1597        
+buffers                     113               113               1204              1204              1204        
+inverters                   224               224               224               224               224         
+pins                        411               411               411               411               411         
+nets                        6295              6295              7523              7523              7523        
+vias                        ---               ---               ---               ---               ---         
+wirelength       um         ---               ---               ---               ---               ---         
+memory            B       337.699M           1.335G            1.338G           415.449M          346.590M      
+exetime           s        09.779            43.719            30.100            25.960            22.030       
+tasktime          s        11.433            45.500            32.029            27.943            23.161       
+totaltime         s        52.201          01:37.701         02:09.731         02:37.674         03:00.836      
+
+                      cts.repair_...0    cts.fillcell0     route.global0    route.anten...0   route.detailed0  \
+errors                       0                 0                 0                 0                 0          
+warnings                     5                 4                 5                 5                1133        
+drvs                         8                 8                333               333                0          
+drcs                        ---               ---               ---               ---                0          
+unconstrained               3184              3184              3184              3184              3184        
+cellarea       um^2      96736.500         96736.500         96736.500         96771.600         96771.600      
+totalarea      um^2      206180.000        206180.000        206180.000        206180.000        206180.000     
+macroarea      um^2        0.000             0.000             0.000             0.000             0.000        
+padcellarea    um^2        0.000             0.000             0.000             0.000             0.000        
+stdcellarea    um^2      96736.500         96736.500         96736.500         96771.600         96771.600      
+utilization       %        47.765            47.765            47.765            47.782            47.782       
+logicdepth                   0                 0                 0                 0                 0          
+peakpower        mw       195.463           195.463           191.309           191.301           177.893       
+leakagepower     mw        0.000             0.000             0.000             0.000             0.000        
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                    0                 0                 0                 0                 0          
+setuppaths                   0                 0                 0                 0                 0          
+macros                       0                 0                 0                 0                 0          
+cells                       9895              9895              9895              9909              9909        
+registers                   1597              1597              1597              1597              1597        
+buffers                     1212              1212              1212              1212              1212        
+inverters                   224               224               224               224               224         
+pins                        411               411               411               411               411         
+nets                        7531              7531              7531              7531              7531        
+vias                        ---               ---              68209              374              61672        
+wirelength       um         ---               ---            470373.000           ---            326932.000     
+memory            B        1.425G           407.445M          430.941M          446.777M          947.441M      
+exetime           s        41.310            23.710            34.740          01:09.680         31:30.539      
+tasktime          s        43.305            25.085            36.226          01:11.316         31:32.368      
+totaltime         s      03:44.141         04:09.226         04:45.453         05:56.769         37:29.138      
+
+                         write.gds0       write.views0   
+errors                       0                 0         
+warnings                     0                 5         
+drvs                        ---                0         
+drcs                        ---               ---        
+unconstrained               ---               3184       
+cellarea       um^2         ---            96771.600     
+totalarea      um^2      206179.565        206180.000    
+macroarea      um^2         ---              0.000       
+padcellarea    um^2         ---              0.000       
+stdcellarea    um^2         ---            96771.600     
+utilization       %         ---              47.782      
+logicdepth                  ---                0         
+peakpower        mw         ---             188.344      
+leakagepower     mw         ---              0.000       
+irdrop           mv         ---              9.184       
+holdpaths                   ---                0         
+setuppaths                  ---                0         
+macros                      ---                0         
+cells                       ---               9909       
+registers                   ---               1597       
+buffers                     ---               1212       
+inverters                   ---               224        
+pins                        ---               411        
+nets                        ---               7531       
+vias                        ---               ---        
+wirelength       um         ---               ---        
+memory            B       660.602M          589.020M     
+exetime           s        07.700          01:43.620     
+tasktime          s        10.137          01:45.600     
+totaltime         s      37:39.275         39:14.739     
+------------------------------------------------------------------------------------------------------------------
+| INFO     | job0 | -----                | - | Dashboard at "sc-dashboard -cfg /home/crosswind46/college_work/graduate/ece507_vlsi/proj/owen_clone/picorv32/build/picorv32/job0/picorv32.pkg.json"
+| INFO     | job0 | -----                | - | Generated summary image at /home/crosswind46/college_work/graduate/ece507_vlsi/proj/owen_clone/picorv32/build/picorv32/job0/picorv32.png
+

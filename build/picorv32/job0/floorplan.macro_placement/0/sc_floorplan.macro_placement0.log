@@ -1,0 +1,3 @@
+| WARNING  | job0 | floorplan.macro_p... | 0 | floorplan.macro_placement0 will be skipped since are no macros to place.
+| INFO     | job0 | floorplan.macro_p... | 0 | Finished task in 0.87s
+| INFO     | job0 | floorplan.macro_p... | 0 | Archiving floorplan.macro_placement0...

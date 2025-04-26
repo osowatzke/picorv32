@@ -1,0 +1,5 @@
+168: [WARNING FLW-0001] No clocks defined.
+239: [WARNING GPL-0150] -skip_io will disable timing driven mode.
+240: [WARNING GPL-0151] -skip_io will disable routability driven mode.
+504: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+508: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!

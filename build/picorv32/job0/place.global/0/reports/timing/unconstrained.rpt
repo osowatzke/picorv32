@@ -1,0 +1,38 @@
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[26]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.92 ^ _7098_/A1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.01    5.36   23.05  129.97 v _7098_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2568_ (net)
+                  5.36    0.00  129.97 v _7101_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.66    3.43  133.40 ^ _7101_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2571_ (net)
+                  0.66    0.00  133.40 ^ _7102_/B1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.01    1.93    0.41  133.81 v _7102_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2572_ (net)
+                  1.93    0.00  133.82 v _7109_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.03    3.25    3.75  137.56 ^ _7109_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2579_ (net)
+                  3.25    0.00  137.56 ^ _7110_/B1 (sky130_fd_sc_hd__a22oi_1)
+     1    0.00    1.59    1.32  138.89 v _7110_/Y (sky130_fd_sc_hd__a22oi_1)
+                                         _2580_ (net)
+                  1.59    0.00  138.89 v _7111_/B1 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    1.02    1.41  140.30 ^ _7111_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _2581_ (net)
+                  1.02    0.00  140.30 ^ _7112_/C1 (sky130_fd_sc_hd__a211o_1)
+     1    0.00    0.12    0.68  140.98 ^ _7112_/X (sky130_fd_sc_hd__a211o_1)
+                                         _4696_ (net)
+                  0.12    0.00  140.98 ^ pcpi_rs1[26]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                140.98   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+

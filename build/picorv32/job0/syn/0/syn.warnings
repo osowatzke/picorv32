@@ -1,0 +1,2 @@
+5498: ABC: Warning: Detected 9 multi-output gates (for example, "sky130_fd_sc_hd__fa_1").
+5507: ABC: Warning: The network is combinational (run "fraig" or "fraig_sweep").

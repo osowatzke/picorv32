@@ -1,0 +1,35 @@
+Startpoint: _9362_ (rising edge-triggered flip-flop)
+Endpoint: reg_sh[2]$_DFF_P_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                105.62    0.00    0.00 ^ _9362_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   264    1.30   45.40   69.88   69.88 ^ _9362_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0009_ (net)
+                 45.40    0.00   69.88 ^ _5068_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.28   17.00   86.88 v _5068_/X (sky130_fd_sc_hd__mux4_2)
+                                         _0694_ (net)
+                  0.28    0.00   86.88 v _5072_/A0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.26    2.58   89.45 v _5072_/X (sky130_fd_sc_hd__mux4_2)
+                                         _0698_ (net)
+                  0.26    0.00   89.45 v _5087_/A2 (sky130_fd_sc_hd__o21a_1)
+     2    0.00    0.11    0.81   90.27 v _5087_/X (sky130_fd_sc_hd__o21a_1)
+                                         _0713_ (net)
+                  0.11    0.00   90.27 v _7354_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.33    0.48   90.74 ^ _7354_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2800_ (net)
+                  0.33    0.00   90.74 ^ _7355_/B1 (sky130_fd_sc_hd__a211oi_1)
+     1    0.00    0.43    0.22   90.96 v _7355_/Y (sky130_fd_sc_hd__a211oi_1)
+                                         _2801_ (net)
+                  0.43    0.00   90.96 v _7356_/B1 (sky130_fd_sc_hd__a31o_1)
+     1    0.00    0.08    0.93   91.89 v _7356_/X (sky130_fd_sc_hd__a31o_1)
+                                         _0006_ (net)
+                  0.08    0.00   91.89 v reg_sh[2]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                 91.89   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+

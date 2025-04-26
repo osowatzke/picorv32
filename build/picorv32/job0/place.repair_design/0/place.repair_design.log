@@ -1,0 +1,590 @@
+OpenROAD v2.0-20575-ge78e29127 
+Features included (+) or not (-): +GPU +GUI +Python
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+##############################
+# Schema Adapter
+###############################
+set sc_step [sc_cfg_get arg step]
+set sc_index [sc_cfg_get arg index]
+set sc_flow [sc_cfg_get option flow]
+set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+set sc_refdir [sc_cfg_tool_task_get refdir]
+##############################
+# Setup debugging
+###############################
+source -echo "$sc_refdir/common/debugging.tcl"
+###############################
+# Setup debugging if requested
+###############################
+if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+    foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+        lassign [split $debug " "] debug_tool debug_category debug_level
+        utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+        set_debug_level $debug_tool $debug_category $debug_level
+    }
+}
+###############################
+# Suppress messages if requested
+###############################
+foreach msg [sc_cfg_tool_task_get warningoff] {
+    set or_msg [split $msg "-"]
+    if { [llength $or_msg] != 2 } {
+        utl::warn FLW 1 "$msg is not a valid message id"
+    } else {
+        set or_tool [lindex $or_msg 0]
+        set or_msg_id [expr { int([lindex $or_msg 1]) }]
+        utl::info FLW 1 "Suppressing $msg messages"
+        suppress_message $or_tool $or_msg_id
+    }
+}
+###############################
+# Setup helper functions
+###############################
+source "$sc_refdir/common/procs.tcl"
+###############################
+# Design information
+###############################
+# Design
+set sc_design [sc_top]
+set sc_optmode [sc_cfg_get option optmode]
+set sc_pdk [sc_cfg_get option pdk]
+set sc_stackup [sc_cfg_get option stackup]
+# APR Parameters
+set sc_targetlibs [sc_get_asic_libraries logic]
+set sc_mainlib [lindex $sc_targetlibs 0]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Hard macro libraries
+set sc_macrolibs [sc_get_asic_libraries macro]
+# Threads
+set_thread_count [sc_cfg_tool_task_get threads]
+[INFO ORD-0030] Using 2 thread(s).
+###############################
+# Read Files
+###############################
+source -echo "$sc_refdir/common/read_liberty.tcl"
+set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Read Liberty
+utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+[INFO FLW-0001] Defining timing corners: slow fast typical
+define_corners {*}$sc_scenarios
+foreach lib "$sc_targetlibs $sc_macrolibs" {
+    #Liberty
+    foreach corner $sc_scenarios {
+        foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+            if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+                foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+                    puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+                    read_liberty -corner $corner $lib_file
+                }
+                break
+            }
+        }
+    }
+}
+Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+source -echo "$sc_refdir/common/read_input_files.tcl"
+###############################
+# Read design files
+###############################
+if { [sc_has_input_files odb "input layout odb"] } {
+    foreach odb_file [sc_get_input_files odb "input layout odb"] {
+        puts "Reading ODB: ${odb_file}"
+        read_db $odb_file
+    }
+} else {
+    set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+    set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+    # Read techlef
+    puts "Reading techlef: ${sc_techlef}"
+    read_lef $sc_techlef
+    # Read Lefs
+    foreach lib "$sc_targetlibs $sc_macrolibs" {
+        foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+            puts "Reading lef: ${lef_file}"
+            read_lef $lef_file
+        }
+    }
+    if { [file exists "inputs/${sc_design}.def"] } {
+        # Read DEF
+        # get from previous step
+        puts "Reading DEF: inputs/${sc_design}.def"
+        read_def "inputs/${sc_design}.def"
+    } elseif { [sc_cfg_exists input layout def] } {
+        # Read DEF
+        set sc_def [lindex [sc_cfg_get input layout def] 0]
+        puts "Reading DEF: ${sc_def}"
+        read_def $sc_def
+    } elseif { [file exists "inputs/${sc_design}.vg"] } {
+        # Read Verilog
+        puts "Reading netlist verilog: inputs/${sc_design}.vg"
+        read_verilog "inputs/${sc_design}.vg"
+        link_design $sc_design
+    } elseif { [sc_cfg_exists input netlist verilog] } {
+        # Read Verilog
+        foreach netlist [sc_cfg_get input netlist verilog] {
+            puts "Reading netlist verilog: ${netlist}"
+            read_verilog $netlist
+        }
+        link_design $sc_design
+    } else {
+        utl::error FLW 1 "No input files available"
+    }
+    # Handle global connect setup
+    if { [sc_cfg_tool_task_exists {file} global_connect] } {
+        foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+            puts "Loading global connect configuration: ${global_connect}"
+            source $global_connect
+        }
+    }
+    tee -file reports/global_connections.rpt {report_global_connect}
+}
+Reading ODB: inputs/picorv32.odb
+source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+###############################
+# Read timing constraints
+###############################
+if { [sc_has_input_files sdc "input constraint sdc"] } {
+    foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+        puts "Reading SDC: ${sdc}"
+        read_sdc $sdc
+    }
+} else {
+    # fall back on default auto generated constraints file
+    set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+    puts "Reading SDC: ${sdc}"
+    utl::warn FLW 1 "Defaulting back to default SDC"
+    read_sdc "${sdc}"
+}
+Reading SDC: inputs/picorv32.sdc
+###############################
+# Common Setup
+###############################
+sc_setup_sta
+[WARNING FLW-0001] No clocks defined.
+sc_setup_parasitics
+[INFO FLW-0001] Using met5 for clock parasitics estimation
+[INFO FLW-0001] Using met2 for signal parasitics estimation
+sc_set_dont_use
+sc_setup_global_routing
+[INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+[INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+# Store incoming markers to avoid rewriting them
+set sc_starting_markers []
+foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+    lappend sc_starting_markers [$markerdb getName]
+}
+###############################
+# Source Step Script
+###############################
+report_units_metric
+utl::push_metrics_stage "sc__prestep__{}"
+if { [sc_cfg_tool_task_exists prescript] } {
+    foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+        puts "Sourcing pre script: ${sc_pre_script}"
+        source -echo $sc_pre_script
+    }
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__step__{}"
+set openroad_dont_touch {}
+if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+    set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+}
+if { [llength $openroad_dont_touch] > 0 } {
+    # set don't touch list
+    set_dont_touch $openroad_dont_touch
+}
+tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+tee -file reports/global_connections.start.rpt {report_global_connect}
+Global connection rules: 2
+  Instances: ".*" with pins "VPWR" connect to "VDD"
+  Instances: ".*" with pins "VGND" connect to "VSS"
+Dont use report: reports/dont_use.repair_drv.rpt
+repair_design siliconcompiler arguments: -cap_margin 0.0 -slew_margin 0.0
+[INFO RSZ-0058] Using max wire length 4718um.
+Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
+---------------------------------------------------------------------
+        0 |     +0.0% |       0 |       0 |             0 |      6294
+     1000 |     +1.6% |     192 |     220 |            17 |      5294
+     2000 |     +4.7% |     490 |     538 |            59 |      4294
+     3000 |     +6.1% |     825 |     644 |            83 |      3294
+     4000 |     +6.9% |    1025 |     685 |            90 |      2294
+     5000 |     +7.7% |    1437 |     741 |            98 |      1294
+     6000 |     +7.9% |    1529 |     741 |            98 |       294
+    final |    +10.6% |    1614 |    1091 |           109 |         0
+---------------------------------------------------------------------
+[INFO RSZ-0034] Found 107 slew violations.
+[INFO RSZ-0036] Found 93 capacitance violations.
+[INFO RSZ-0039] Resized 1614 instances.
+[INFO RSZ-0038] Inserted 1091 buffers in 109 nets.
+[INFO RSZ-0042] Inserted 138 tie sky130_fd_sc_hd__conb_1 instances.
+if { [llength $openroad_dont_touch] > 0 } {
+    # unset for next step
+    unset_dont_touch $openroad_dont_touch
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__poststep__{}"
+if { [sc_cfg_tool_task_exists postscript] } {
+    foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+        puts "Sourcing post script: ${sc_post_script}"
+        source -echo $sc_post_script
+    }
+}
+utl::pop_metrics_stage
+###############################
+# Write Design Data
+###############################
+utl::push_metrics_stage "sc__write__{}"
+source "$sc_refdir/common/write_data.tcl"
+utl::pop_metrics_stage
+###############################
+# Reporting
+###############################
+utl::push_metrics_stage "sc__metric__{}"
+source "$sc_refdir/common/reports.tcl"
+SC_METRIC: report_checks -path_delay max
+No paths found.
+SC_METRIC: setupslack
+worst slack INF
+SC_METRIC: tns
+tns 0.00
+SC_METRIC: unconstrained
+Startpoint: latched_stalu$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+Endpoint: reg_next_pc[31]$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.98    0.00    0.00 ^ latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+    33    0.25    4.57    4.98    4.98 ^ latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         latched_stalu (net)
+                  4.57    0.00    4.99 ^ _5682_/S (sky130_fd_sc_hd__mux2i_1)
+     2    0.02    1.70    3.25    8.24 ^ _5682_/Y (sky130_fd_sc_hd__mux2i_1)
+                                         _1275_ (net)
+                  1.70    0.00    8.24 ^ _5684_/A2 (sky130_fd_sc_hd__o21a_1)
+     4    0.02    0.75    1.45    9.69 ^ _5684_/X (sky130_fd_sc_hd__o21a_1)
+                                         _1277_ (net)
+                  0.75    0.00    9.69 ^ _5685_/A (sky130_fd_sc_hd__inv_1)
+     2    0.01    0.16    0.45   10.14 v _5685_/Y (sky130_fd_sc_hd__inv_1)
+                                         _4144_ (net)
+                  0.16    0.00   10.14 v _9165_/B (sky130_fd_sc_hd__ha_1)
+     3    0.01    0.23    1.48   11.61 v _9165_/SUM (sky130_fd_sc_hd__ha_1)
+                                         _4200_ (net)
+                  0.23    0.00   11.61 v _7858_/B_N (sky130_fd_sc_hd__nor2b_1)
+     1    0.00    0.08    0.56   12.17 v _7858_/Y (sky130_fd_sc_hd__nor2b_1)
+                                         _3121_ (net)
+                  0.08    0.00   12.17 v _7859_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.06    0.99   13.16 ^ _7859_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3122_ (net)
+                  1.06    0.00   13.16 ^ _7862_/A2 (sky130_fd_sc_hd__a21boi_2)
+     2    0.01    0.15    0.59   13.75 v _7862_/Y (sky130_fd_sc_hd__a21boi_2)
+                                         _3125_ (net)
+                  0.15    0.00   13.75 v _7880_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.32    1.23   14.98 ^ _7880_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3141_ (net)
+                  1.32    0.00   14.98 ^ _7883_/A2 (sky130_fd_sc_hd__a21boi_1)
+     2    0.01    0.23    0.78   15.76 v _7883_/Y (sky130_fd_sc_hd__a21boi_1)
+                                         _3144_ (net)
+                  0.23    0.00   15.76 v _7899_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    0.98    1.01   16.77 ^ _7899_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3158_ (net)
+                  0.98    0.00   16.77 ^ _7900_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.01    0.25    0.71   17.48 v _7900_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3159_ (net)
+                  0.25    0.00   17.48 v _7923_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.17    1.17   18.65 ^ _7923_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3180_ (net)
+                  1.17    0.00   18.65 ^ _7924_/A2 (sky130_fd_sc_hd__a21boi_2)
+     2    0.01    0.17    0.64   19.29 v _7924_/Y (sky130_fd_sc_hd__a21boi_2)
+                                         _3181_ (net)
+                  0.17    0.00   19.29 v _7947_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.43    1.32   20.61 ^ _7947_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3202_ (net)
+                  1.43    0.00   20.61 ^ _7948_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.01    0.29    0.90   21.52 v _7948_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3203_ (net)
+                  0.29    0.00   21.52 v _7975_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.00    1.05   22.57 ^ _7975_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3228_ (net)
+                  1.00    0.00   22.57 ^ _7976_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.00    0.22    0.68   23.25 v _7976_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3229_ (net)
+                  0.22    0.00   23.25 v _7999_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.36    1.29   24.54 ^ _7999_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3250_ (net)
+                  1.36    0.00   24.54 ^ _8000_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.01    0.27    0.86   25.40 v _8000_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3251_ (net)
+                  0.27    0.00   25.40 v _8021_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.14    1.16   26.56 ^ _8021_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3270_ (net)
+                  1.14    0.00   26.56 ^ _8022_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.01    0.25    0.77   27.33 v _8022_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3271_ (net)
+                  0.25    0.00   27.33 v _8042_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.08    1.10   28.43 ^ _8042_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3289_ (net)
+                  1.08    0.00   28.43 ^ _8044_/A2 (sky130_fd_sc_hd__a21oi_1)
+     2    0.01    0.19    0.66   29.09 v _8044_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _3291_ (net)
+                  0.19    0.00   29.09 v _8065_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.58    1.45   30.54 ^ _8065_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3310_ (net)
+                  1.58    0.00   30.54 ^ _8066_/A2 (sky130_fd_sc_hd__a21boi_0)
+     2    0.01    0.30    0.96   31.50 v _8066_/Y (sky130_fd_sc_hd__a21boi_0)
+                                         _3311_ (net)
+                  0.30    0.00   31.50 v _8081_/A2 (sky130_fd_sc_hd__o21ai_0)
+     2    0.01    1.21    1.22   32.73 ^ _8081_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3324_ (net)
+                  1.21    0.00   32.73 ^ _8084_/A2 (sky130_fd_sc_hd__a21boi_1)
+     2    0.01    0.20    0.71   33.44 v _8084_/Y (sky130_fd_sc_hd__a21boi_1)
+                                         _3327_ (net)
+                  0.20    0.00   33.44 v _8102_/A2 (sky130_fd_sc_hd__o21ai_0)
+     3    0.01    1.49    1.39   34.83 ^ _8102_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3343_ (net)
+                  1.49    0.00   34.83 ^ _8150_/A2 (sky130_fd_sc_hd__a2111oi_0)
+     2    0.01    0.32    0.97   35.80 v _8150_/Y (sky130_fd_sc_hd__a2111oi_0)
+                                         _3387_ (net)
+                  0.32    0.00   35.80 v _8155_/A1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.49    0.72   36.52 ^ _8155_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3392_ (net)
+                  0.49    0.00   36.52 ^ _8156_/B (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.10    0.32   36.83 v _8156_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _3393_ (net)
+                  0.10    0.00   36.83 v _8159_/A2 (sky130_fd_sc_hd__o221ai_1)
+     1    0.00    0.76    0.81   37.64 ^ _8159_/Y (sky130_fd_sc_hd__o221ai_1)
+                                         _3396_ (net)
+                  0.76    0.00   37.64 ^ _8161_/B1 (sky130_fd_sc_hd__a22o_1)
+     1    0.00    0.13    0.68   38.32 ^ _8161_/X (sky130_fd_sc_hd__a22o_1)
+                                         _0270_ (net)
+                  0.13    0.00   38.32 ^ reg_next_pc[31]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                 38.32   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+SC_METRIC: DRV violators
+max slew
+
+Pin                                    Limit    Slew   Slack
+------------------------------------------------------------
+_9118_/Y                                1.48    1.67   -0.18 (VIOLATED)
+load_slew546/A                          1.50    1.67   -0.17 (VIOLATED)
+_9092_/Y                                1.48    1.58   -0.09 (VIOLATED)
+load_slew615/A                          1.50    1.58   -0.08 (VIOLATED)
+
+max capacitance
+
+Pin                                    Limit     Cap   Slack
+------------------------------------------------------------
+_9118_/Y                                0.05    0.06   -0.01 (VIOLATED)
+_9092_/Y                                0.05    0.05   -0.00 (VIOLATED)
+_9033_/Y                                0.07    0.07   -0.00 (VIOLATED)
+
+SC_METRIC: floating nets
+SC_METRIC: overdriven nets
+SC_METRIC: fmax
+SC_METRIC: power
+Power for corner: fast
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.78e-02   1.74e-02   4.85e-05   4.53e-02  19.7%
+Combinational          8.55e-02   9.94e-02   4.87e-05   1.85e-01  80.3%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  1.13e-01   1.17e-01   9.72e-05   2.30e-01 100.0%
+                          49.2%      50.7%       0.0%
+Power for corner: slow
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             1.13e-02   8.39e-03   6.26e-10   1.97e-02  19.7%
+Combinational          3.34e-02   4.66e-02   1.17e-09   8.00e-02  80.3%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  4.47e-02   5.50e-02   1.79e-09   9.96e-02 100.0%
+                          44.8%      55.2%       0.0%
+Power for corner: typical
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.09e-02   1.46e-02   1.41e-08   3.55e-02  20.0%
+Combinational          5.96e-02   8.26e-02   1.70e-08   1.42e-01  80.0%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  8.06e-02   9.72e-02   3.11e-08   1.78e-01 100.0%
+                          45.3%      54.7%       0.0%
+SC_METRIC: cellarea
+Design area 89348 u^2 44% utilization.
+Cell type report:                       Count       Area
+  Tap cell                               2672    3343.21
+  Buffer                                  113     878.34
+  Timing Repair Buffer                   1091    5642.91
+  Inverter                                224     923.39
+  Sequential cell                        1597   45129.53
+  Multi-Input combinational cell         4190   36774.02
+  Total                                  9887   92691.40
+
+Cell instance report:
+  sky130_fd_sc_hd__a2111oi_0                1       8.76
+  sky130_fd_sc_hd__a2111oi_1                2      20.02
+  sky130_fd_sc_hd__a211o_1                 15     131.38
+  sky130_fd_sc_hd__a211o_4                  1      17.52
+  sky130_fd_sc_hd__a211oi_1                32     240.23
+  sky130_fd_sc_hd__a21boi_0                 9      67.56
+  sky130_fd_sc_hd__a21boi_1                 2      15.01
+  sky130_fd_sc_hd__a21boi_2                 2      22.52
+  sky130_fd_sc_hd__a21boi_4                 1      18.77
+  sky130_fd_sc_hd__a21o_1                  60     450.43
+  sky130_fd_sc_hd__a21o_4                   7     105.10
+  sky130_fd_sc_hd__a21oi_1                310    1551.49
+  sky130_fd_sc_hd__a21oi_2                 60     525.50
+  sky130_fd_sc_hd__a221o_4                  2      42.54
+  sky130_fd_sc_hd__a221oi_1                46     402.89
+  sky130_fd_sc_hd__a222oi_1                39     390.37
+  sky130_fd_sc_hd__a22o_1                  16     140.13
+  sky130_fd_sc_hd__a22oi_1                 73     548.03
+  sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+  sky130_fd_sc_hd__a311oi_1                 2      17.52
+  sky130_fd_sc_hd__a31o_1                   3      26.28
+  sky130_fd_sc_hd__a31o_4                   2      35.03
+  sky130_fd_sc_hd__a31oi_1                 71     444.18
+  sky130_fd_sc_hd__a32o_1                   6      60.06
+  sky130_fd_sc_hd__a32oi_1                 14     122.62
+  sky130_fd_sc_hd__a41o_1                   1      10.01
+  sky130_fd_sc_hd__a41oi_1                  5      43.79
+  sky130_fd_sc_hd__and2_0                  13      81.33
+  sky130_fd_sc_hd__and2_4                  18     157.65
+  sky130_fd_sc_hd__and3_1                  24     150.14
+  sky130_fd_sc_hd__and3_4                  39     439.17
+  sky130_fd_sc_hd__and3b_1                  1       8.76
+  sky130_fd_sc_hd__and4_1                   3      26.28
+  sky130_fd_sc_hd__and4_4                  24     270.26
+  sky130_fd_sc_hd__and4b_4                  2      27.53
+  sky130_fd_sc_hd__buf_1                  728    2732.62
+  sky130_fd_sc_hd__buf_2                   83     415.40
+  sky130_fd_sc_hd__buf_4                  274    2056.97
+  sky130_fd_sc_hd__buf_6                   95    1069.78
+  sky130_fd_sc_hd__clkdlybuf4s15_1          8      80.08
+  sky130_fd_sc_hd__clkdlybuf4s15_2          5      56.30
+  sky130_fd_sc_hd__clkdlybuf4s18_2         11     110.11
+  sky130_fd_sc_hd__clkinv_1                32     120.12
+  sky130_fd_sc_hd__clkinv_2                 2      10.01
+  sky130_fd_sc_hd__clkinv_8                 1      16.27
+  sky130_fd_sc_hd__conb_1                 138     518.00
+  sky130_fd_sc_hd__dfxtp_1                 54    1081.04
+  sky130_fd_sc_hd__dfxtp_2                256    5445.22
+  sky130_fd_sc_hd__dfxtp_4                  7     166.41
+  sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+  sky130_fd_sc_hd__fa_1                     5     100.10
+  sky130_fd_sc_hd__ha_1                   185    2314.72
+  sky130_fd_sc_hd__ha_2                    14     210.20
+  sky130_fd_sc_hd__inv_1                  143     536.76
+  sky130_fd_sc_hd__inv_2                   21      78.83
+  sky130_fd_sc_hd__inv_4                   23     143.89
+  sky130_fd_sc_hd__inv_6                    2      17.52
+  sky130_fd_sc_hd__mux2_1                  52     585.56
+  sky130_fd_sc_hd__mux2_4                   8     120.12
+  sky130_fd_sc_hd__mux2i_1                 87     870.84
+  sky130_fd_sc_hd__mux4_2                 545   12274.27
+  sky130_fd_sc_hd__nand2_1                430    1614.05
+  sky130_fd_sc_hd__nand2_4                 86     968.43
+  sky130_fd_sc_hd__nand2b_1                18     112.61
+  sky130_fd_sc_hd__nand3_1                 79     395.38
+  sky130_fd_sc_hd__nand3b_1                 3      22.52
+  sky130_fd_sc_hd__nand4_1                 29     181.42
+  sky130_fd_sc_hd__nand4b_1                 1       8.76
+  sky130_fd_sc_hd__nor2_1                 379    1422.61
+  sky130_fd_sc_hd__nor2_2                  67     419.15
+  sky130_fd_sc_hd__nor2_4                  40     450.43
+  sky130_fd_sc_hd__nor2b_1                 16     100.10
+  sky130_fd_sc_hd__nor2b_2                  3      26.28
+  sky130_fd_sc_hd__nor2b_4                  4      55.05
+  sky130_fd_sc_hd__nor3_1                 108     540.52
+  sky130_fd_sc_hd__nor3_2                  19     190.18
+  sky130_fd_sc_hd__nor3_4                   1      16.27
+  sky130_fd_sc_hd__nor3b_1                 11      82.58
+  sky130_fd_sc_hd__nor3b_2                  3      37.54
+  sky130_fd_sc_hd__nor4_1                  13      81.33
+  sky130_fd_sc_hd__nor4_2                  15     187.68
+  sky130_fd_sc_hd__nor4b_1                  1       8.76
+  sky130_fd_sc_hd__nor4b_2                  2      30.03
+  sky130_fd_sc_hd__o2111ai_1                1       8.76
+  sky130_fd_sc_hd__o211ai_1                26     195.19
+  sky130_fd_sc_hd__o21a_1                  75     563.04
+  sky130_fd_sc_hd__o21ai_0                486    2432.33
+  sky130_fd_sc_hd__o21ai_1                  2      10.01
+  sky130_fd_sc_hd__o21ai_4                  5      81.33
+  sky130_fd_sc_hd__o21bai_1                31     232.72
+  sky130_fd_sc_hd__o21bai_2                 5      56.30
+  sky130_fd_sc_hd__o21bai_4                 2      37.54
+  sky130_fd_sc_hd__o221a_1                  5      56.30
+  sky130_fd_sc_hd__o221ai_1                28     245.24
+  sky130_fd_sc_hd__o221ai_2                12     180.17
+  sky130_fd_sc_hd__o22a_1                   2      17.52
+  sky130_fd_sc_hd__o22ai_1                 21     131.38
+  sky130_fd_sc_hd__o22ai_2                  5      62.56
+  sky130_fd_sc_hd__o311a_1                  1      10.01
+  sky130_fd_sc_hd__o311ai_0                16     140.13
+  sky130_fd_sc_hd__o311ai_1                 1       8.76
+  sky130_fd_sc_hd__o31a_1                   3      26.28
+  sky130_fd_sc_hd__o31ai_1                 22     165.16
+  sky130_fd_sc_hd__o32a_1                   1      10.01
+  sky130_fd_sc_hd__o32ai_1                 17     148.89
+  sky130_fd_sc_hd__o41ai_1                  1       8.76
+  sky130_fd_sc_hd__or2_0                    1       6.26
+  sky130_fd_sc_hd__or2_4                   11      96.34
+  sky130_fd_sc_hd__or3_1                    6      37.54
+  sky130_fd_sc_hd__or3_4                   11     123.87
+  sky130_fd_sc_hd__or4_1                    2      15.01
+  sky130_fd_sc_hd__or4_4                    2      22.52
+  sky130_fd_sc_hd__or4b_1                   2      20.02
+  sky130_fd_sc_hd__or4b_4                   2      27.53
+  sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+  sky130_fd_sc_hd__xnor2_1                 92     805.77
+  sky130_fd_sc_hd__xor2_1                  21     183.93
+  sky130_fd_sc_hd__xor2_2                   1      16.27
+utl::pop_metrics_stage
+# Images
+utl::push_metrics_stage "sc__image__{}"
+if {
+    [sc_has_gui] &&
+    [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+} {
+    if { [gui::enabled] } {
+        source "$sc_refdir/common/write_images.tcl"
+    } else {
+        gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+    }
+}
+[WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+[INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+[INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+[INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+[WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+[INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+[INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+[INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+[INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+[INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+[INFO FLW-0001] Saving "optimizer" to reports/images/picorv32.optimizer.png
+utl::pop_metrics_stage

@@ -1,0 +1,979 @@
+| INFO     | job0 | route.global         | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | route.global         | 0 | Running in /nfs/sc_compute/builds/03ceb3a4f0e94730a95a08d439e9c2e9/picorv32/job0/route.global/0
+| INFO     | job0 | route.global         | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_global_route.tcl
+| INFO     | job0 | route.global         | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | route.global         | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | route.global         | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | route.global         | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | route.global         | 0 | ##############################
+| INFO     | job0 | route.global         | 0 | # Schema Adapter
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | route.global         | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | route.global         | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | route.global         | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | route.global         | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | route.global         | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | route.global         | 0 | ##############################
+| INFO     | job0 | route.global         | 0 | # Setup debugging
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Setup debugging if requested
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | route.global         | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | route.global         | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | route.global         | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | route.global         | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Suppress messages if requested
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | route.global         | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | route.global         | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | route.global         | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | route.global         | 0 |     } else {
+| INFO     | job0 | route.global         | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | route.global         | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | route.global         | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | route.global         | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Setup helper functions
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Design information
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Design
+| INFO     | job0 | route.global         | 0 | set sc_design [sc_top]
+| INFO     | job0 | route.global         | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | route.global         | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | route.global         | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | route.global         | 0 | # APR Parameters
+| INFO     | job0 | route.global         | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | route.global         | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | route.global         | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | route.global         | 0 | # Hard macro libraries
+| INFO     | job0 | route.global         | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | route.global         | 0 | # Threads
+| INFO     | job0 | route.global         | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | route.global         | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Read Files
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | route.global         | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | route.global         | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | route.global         | 0 | # Read Liberty
+| INFO     | job0 | route.global         | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | route.global         | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | route.global         | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | route.global         | 0 |     #Liberty
+| INFO     | job0 | route.global         | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | route.global         | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | route.global         | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | route.global         | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | route.global         | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | route.global         | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | route.global         | 0 |                 }
+| INFO     | job0 | route.global         | 0 |                 break
+| INFO     | job0 | route.global         | 0 |             }
+| INFO     | job0 | route.global         | 0 |         }
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | route.global         | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | route.global         | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | route.global         | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Read design files
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | route.global         | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | route.global         | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | route.global         | 0 |         read_db $odb_file
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | } else {
+| INFO     | job0 | route.global         | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | route.global         | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | route.global         | 0 |     # Read techlef
+| INFO     | job0 | route.global         | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | route.global         | 0 |     read_lef $sc_techlef
+| INFO     | job0 | route.global         | 0 |     # Read Lefs
+| INFO     | job0 | route.global         | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | route.global         | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | route.global         | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | route.global         | 0 |             read_lef $lef_file
+| INFO     | job0 | route.global         | 0 |         }
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | route.global         | 0 |         # Read DEF
+| INFO     | job0 | route.global         | 0 |         # get from previous step
+| INFO     | job0 | route.global         | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | route.global         | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | route.global         | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | route.global         | 0 |         # Read DEF
+| INFO     | job0 | route.global         | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | route.global         | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | route.global         | 0 |         read_def $sc_def
+| INFO     | job0 | route.global         | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | route.global         | 0 |         # Read Verilog
+| INFO     | job0 | route.global         | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | route.global         | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | route.global         | 0 |         link_design $sc_design
+| INFO     | job0 | route.global         | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | route.global         | 0 |         # Read Verilog
+| INFO     | job0 | route.global         | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | route.global         | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | route.global         | 0 |             read_verilog $netlist
+| INFO     | job0 | route.global         | 0 |         }
+| INFO     | job0 | route.global         | 0 |         link_design $sc_design
+| INFO     | job0 | route.global         | 0 |     } else {
+| INFO     | job0 | route.global         | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 |     # Handle global connect setup
+| INFO     | job0 | route.global         | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | route.global         | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | route.global         | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | route.global         | 0 |             source $global_connect
+| INFO     | job0 | route.global         | 0 |         }
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | Reading ODB: inputs/picorv32.odb
+| INFO     | job0 | route.global         | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Read timing constraints
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | route.global         | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | route.global         | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | route.global         | 0 |         read_sdc $sdc
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | } else {
+| INFO     | job0 | route.global         | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | route.global         | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | route.global         | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | route.global         | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | route.global         | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | Reading SDC: inputs/picorv32.sdc
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Common Setup
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | sc_setup_sta
+| INFO     | job0 | route.global         | 0 | [WARNING FLW-0001] No clocks defined.
+| INFO     | job0 | route.global         | 0 | sc_setup_parasitics
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | route.global         | 0 | sc_set_dont_use
+| INFO     | job0 | route.global         | 0 | sc_setup_global_routing
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing signal routing layers to: met1-met5
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Setting global routing clock routing layers to: met1-met5
+| INFO     | job0 | route.global         | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | route.global         | 0 | set sc_starting_markers []
+| INFO     | job0 | route.global         | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | route.global         | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Source Step Script
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | report_units_metric
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | route.global         | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | route.global         | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | route.global         | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | route.global         | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | route.global         | 0 | set openroad_dont_touch {}
+| INFO     | job0 | route.global         | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | route.global         | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | route.global         | 0 |     # set don't touch list
+| INFO     | job0 | route.global         | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | route.global         | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | route.global         | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | route.global         | 0 | Global connection rules: 2
+| INFO     | job0 | route.global         | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | route.global         | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0020] Min routing layer: met1
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0021] Max routing layer: met5
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0022] Global adjustment: 0%
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0023] Grid origin: (0, 0)
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0043] No OR_DEFAULT vias defined.
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer li1     Track-Pitch = 0.4600  line-2-Via Pitch: 0.3400
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer met1    Track-Pitch = 0.3400  line-2-Via Pitch: 0.3400
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer met2    Track-Pitch = 0.4600  line-2-Via Pitch: 0.3500
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer met3    Track-Pitch = 0.6800  line-2-Via Pitch: 0.6150
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer met4    Track-Pitch = 0.9200  line-2-Via Pitch: 1.0400
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0088] Layer met5    Track-Pitch = 3.4000  line-2-Via Pitch: 3.1100
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0003] Macros: 0
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0043] No OR_DEFAULT vias defined.
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0004] Blockages: 40838
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0019] Found 0 clock nets.
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0001] Minimum degree: 2
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0002] Maximum degree: 94
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0053] Routing resources analysis:
+| INFO     | job0 | route.global         | 0 |           Routing      Original      Derated      Resource
+| INFO     | job0 | route.global         | 0 | Layer     Direction    Resources     Resources    Reduction (%)
+| INFO     | job0 | route.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | li1        Vertical            0             0          0.00%
+| INFO     | job0 | route.global         | 0 | met1       Horizontal      85540         26501          69.02%
+| INFO     | job0 | route.global         | 0 | met2       Vertical        64155         31424          51.02%
+| INFO     | job0 | route.global         | 0 | met3       Horizontal      42770         26704          37.56%
+| INFO     | job0 | route.global         | 0 | met4       Vertical        25805         12480          51.64%
+| INFO     | job0 | route.global         | 0 | met5       Horizontal       8515          4160          51.15%
+| INFO     | job0 | route.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0101] Running extra iterations to remove overflow.
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0197] Via related to pin nodes: 50800
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0198] Via related Steiner nodes: 1599
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0199] Via filling finished.
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0111] Final number of vias: 68209
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0112] Final usage 3D: 250642
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0096] Final congestion report:
+| INFO     | job0 | route.global         | 0 | Layer         Resource        Demand        Usage (%)    Max H / Max V / Total Overflow
+| INFO     | job0 | route.global         | 0 | ---------------------------------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | li1                  0             0            0.00%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | met1             26501         11567           43.65%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | met2             31424         18521           58.94%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | met3             26704          9339           34.97%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | met4             12480          5601           44.88%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | met5              4160           987           23.73%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | ---------------------------------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Total           101269         46015           45.44%             0 /  0 /  0
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0018] Total wirelength: 470373 um
+| INFO     | job0 | route.global         | 0 | [INFO GRT-0014] Routed nets: 7393
+| INFO     | job0 | route.global         | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | route.global         | 0 |     # unset for next step
+| INFO     | job0 | route.global         | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | route.global         | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | route.global         | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | route.global         | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | route.global         | 0 |         source -echo $sc_post_script
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Write Design Data
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | route.global         | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | # Reporting
+| INFO     | job0 | route.global         | 0 | ###############################
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | route.global         | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | route.global         | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | route.global         | 0 | No paths found.
+| INFO     | job0 | route.global         | 0 | SC_METRIC: setupslack
+| INFO     | job0 | route.global         | 0 | worst slack INF
+| INFO     | job0 | route.global         | 0 | SC_METRIC: tns
+| INFO     | job0 | route.global         | 0 | tns 0.00
+| INFO     | job0 | route.global         | 0 | SC_METRIC: report_checks -path_delay min
+| INFO     | job0 | route.global         | 0 | No paths found.
+| INFO     | job0 | route.global         | 0 | SC_METRIC: holdslack
+| INFO     | job0 | route.global         | 0 | worst slack INF
+| INFO     | job0 | route.global         | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | route.global         | 0 | Startpoint: latched_stalu$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+| INFO     | job0 | route.global         | 0 | Endpoint: reg_next_pc[31]$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+| INFO     | job0 | route.global         | 0 | Path Group: unconstrained
+| INFO     | job0 | route.global         | 0 | Path Type: max
+| INFO     | job0 | route.global         | 0 | Corner: slow
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | route.global         | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 |                   1.31    0.00    0.00 ^ latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | route.global         | 0 |     33    0.31    5.71    5.94    5.94 ^ latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | route.global         | 0 |                                          latched_stalu (net)
+| INFO     | job0 | route.global         | 0 |                   5.71    0.03    5.97 ^ _5682_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.51    3.46    9.43 ^ _5682_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | route.global         | 0 |                                          _1275_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.51    0.00    9.43 ^ _5684_/A2 (sky130_fd_sc_hd__o21a_1)
+| INFO     | job0 | route.global         | 0 |      4    0.03    1.15    1.67   11.10 ^ _5684_/X (sky130_fd_sc_hd__o21a_1)
+| INFO     | job0 | route.global         | 0 |                                          _1277_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.15    0.00   11.11 ^ _5685_/A (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.24    0.67   11.78 v _5685_/Y (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | route.global         | 0 |                                          _4144_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.24    0.00   11.78 v _9165_/B (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | route.global         | 0 |      3    0.01    0.26    1.57   13.35 v _9165_/SUM (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | route.global         | 0 |                                          _4200_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.26    0.00   13.35 v _7858_/B_N (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | route.global         | 0 |      1    0.01    0.11    0.61   13.96 v _7858_/Y (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | route.global         | 0 |                                          _3121_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.11    0.00   13.96 v _7859_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.55    1.38   15.35 ^ _7859_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3122_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.55    0.00   15.35 ^ _7862_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.22    0.81   16.16 v _7862_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |                                          _3125_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.22    0.00   16.16 v _7880_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.75    1.61   17.77 ^ _7880_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3141_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.75    0.00   17.78 ^ _7883_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.32    1.02   18.80 v _7883_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |                                          _3144_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.32    0.00   18.80 v _7899_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.57    1.53   20.33 ^ _7899_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3158_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.57    0.00   20.33 ^ _7900_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.43    1.12   21.44 v _7900_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |                                          _3159_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.43    0.00   21.44 v _7923_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.40    1.47   22.91 ^ _7923_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3180_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.40    0.00   22.91 ^ _7924_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.21    0.76   23.67 v _7924_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |                                          _3181_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.21    0.00   23.67 v _7947_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.02    2.03    1.82   25.49 ^ _7947_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3202_ (net)
+| INFO     | job0 | route.global         | 0 |                   2.03    0.00   25.49 ^ _7948_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.43    1.28   26.77 v _7948_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |                                          _3203_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.43    0.00   26.77 v _7975_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.79    1.76   28.53 ^ _7975_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3228_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.79    0.00   28.53 ^ _7976_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.25    0.91   29.44 v _7976_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | route.global         | 0 |                                          _3229_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.25    0.00   29.44 v _7999_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.25    1.24   30.68 ^ _7999_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3250_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.25    0.00   30.68 ^ _8000_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.37    0.93   31.61 v _8000_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |                                          _3251_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.37    0.00   31.61 v _8021_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.68    1.64   33.26 ^ _8021_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3270_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.68    0.00   33.26 ^ _8022_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.28    0.95   34.21 v _8022_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |                                          _3271_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.28    0.00   34.21 v _8042_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.61    1.53   35.74 ^ _8042_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3289_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.61    0.00   35.75 ^ _8044_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.28    0.93   36.68 v _8044_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | route.global         | 0 |                                          _3291_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.28    0.00   36.68 v _8065_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.02    2.55    2.25   38.93 ^ _8065_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3310_ (net)
+| INFO     | job0 | route.global         | 0 |                   2.55    0.00   38.93 ^ _8066_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.39    1.36   40.30 v _8066_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | route.global         | 0 |                                          _3311_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.39    0.00   40.30 v _8081_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    1.61    1.60   41.90 ^ _8081_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3324_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.61    0.00   41.90 ^ _8084_/A2 (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.38    1.08   42.97 v _8084_/Y (sky130_fd_sc_hd__a21boi_0)
+| INFO     | job0 | route.global         | 0 |                                          _3327_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.38    0.00   42.97 v _8102_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      3    0.02    2.10    1.96   44.94 ^ _8102_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3343_ (net)
+| INFO     | job0 | route.global         | 0 |                   2.10    0.00   44.94 ^ _8150_/A2 (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | route.global         | 0 |      2    0.01    0.42    1.32   46.25 v _8150_/Y (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | route.global         | 0 |                                          _3387_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.42    0.00   46.25 v _8155_/A1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |      1    0.00    0.52    0.80   47.05 ^ _8155_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | route.global         | 0 |                                          _3392_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.52    0.00   47.05 ^ _8156_/B (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | route.global         | 0 |      1    0.00    0.10    0.34   47.39 v _8156_/Y (sky130_fd_sc_hd__nand2_1)
+| INFO     | job0 | route.global         | 0 |                                          _3393_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.10    0.00   47.39 v _8159_/A2 (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | route.global         | 0 |      1    0.01    1.21    1.12   48.51 ^ _8159_/Y (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | route.global         | 0 |                                          _3396_ (net)
+| INFO     | job0 | route.global         | 0 |                   1.21    0.00   48.51 ^ _8161_/B1 (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | route.global         | 0 |      1    0.01    0.24    0.98   49.49 ^ _8161_/X (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | route.global         | 0 |                                          _0270_ (net)
+| INFO     | job0 | route.global         | 0 |                   0.24    0.00   49.49 ^ reg_next_pc[31]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | route.global         | 0 |                                  49.49   data arrival time
+| INFO     | job0 | route.global         | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | (Path is unconstrained)
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | SC_METRIC: DRV violators
+| INFO     | job0 | route.global         | 0 | max slew
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | Pin                                    Limit    Slew   Slack
+| INFO     | job0 | route.global         | 0 | ------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | _9039_/Y                                1.49    1.85   -0.35 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | mem_addr[23]$_DFFE_PP_/D                1.50    1.85   -0.35 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[24][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[21][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[17][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[16][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[19][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[18][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[22][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[23][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[20][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[28][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[29][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[30][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[27][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[25][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[31][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[26][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[14][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[15][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[10][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[11][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[12][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[8][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[9][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[13][10]$_DFFE_PP_/D             1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[6][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[7][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[2][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[3][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[4][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[5][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[0][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[1][10]$_DFFE_PP_/D              1.50    1.78   -0.28 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8864_/Y                                1.50    1.78   -0.27 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9030_/Y                                1.49    1.72   -0.23 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | mem_addr[20]$_DFFE_PP_/D                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9100_/Y                                1.48    1.68   -0.20 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | load_slew11/A                           1.50    1.68   -0.18 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5781_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5777_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5769_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5765_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5773_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5761_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5757_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5749_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5753_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5745_/S                                1.50    1.67   -0.17 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5741_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5737_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5733_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5729_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5725_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5721_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5713_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5717_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5709_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5705_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5701_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5697_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5693_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5690_/S                                1.50    1.66   -0.16 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5784_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5787_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7827_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5686_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8856_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5678_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5682_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5675_/S                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8369_/A                                1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | latched_stalu$_SDFFE_PN0P_/Q            1.50    1.65   -0.15 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8739_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8738_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8696_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8695_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8706_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8752_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8707_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8718_/S                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8762_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8763_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8751_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8727_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8726_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8770_/C1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8771_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8808_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8783_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8782_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8806_/C1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8794_/C1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8797_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8684_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8683_/B1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8660_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8670_/S                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8646_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8647_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8634_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8613_/B1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8623_/B1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8624_/A1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9042_/Y                                1.49    1.62   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8602_/A1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8601_/A                                1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8577_/S                                1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8544_/A1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8531_/A                                1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8586_/B1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8843_/A1                               1.50    1.63   -0.13 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8848_/S                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8838_/A1                               1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8837_/A                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8831_/A                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8832_/A1                               1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8824_/S                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | load_slew548/A                          1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8818_/B1                               1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8819_/A1                               1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8813_/S                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8789_/A1                               1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8788_/A                                1.50    1.62   -0.12 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8675_/S                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7388_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7393_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7410_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7415_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4782_/B                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7412_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7398_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7377_/B                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8424_/A1                               1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7403_/A                                1.50    1.61   -0.11 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_sub$_SDFFE_PN0P_/Q                1.50    1.61   -0.10 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7375_/Y                                1.51    1.61   -0.10 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5991_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6004_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6020_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6032_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6043_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6065_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6076_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6054_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6087_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6098_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6109_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6132_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6120_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6167_/A1                               1.50    1.58   -0.08 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6143_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6178_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6155_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6193_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5822_/B2                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5834_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5843_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5862_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5885_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5872_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5918_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5945_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5979_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5964_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5957_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5933_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5850_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5900_/A1                               1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4779_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4845_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdinstrh$_DFFE_PP_/Q              1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7418_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7389_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7394_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7380_/B                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7409_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7416_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7404_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7399_/A                                1.50    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7378_/Y                                1.51    1.57   -0.06 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6166_/A                                1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6193_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6178_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6155_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6131_/A                                1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6143_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6108_/A                                1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6120_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6098_/C2                               1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6086_/A                                1.50    1.55   -0.05 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6076_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6064_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6043_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6053_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6032_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6020_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6004_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5991_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5978_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5945_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5957_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5964_/B2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5932_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5915_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5822_/A2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5834_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5842_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5849_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5885_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5872_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5899_/A                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5862_/C2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4779_/C                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4845_/C                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7230_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7201_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7138_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6934_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7046_/A2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7161_/B2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7110_/A2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7190_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7083_/B1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6925_/A2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7019_/B1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdinstr$_DFFE_PP_/Q               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[20][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[23][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[16][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[21][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[17][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[29][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[28][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[24][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[25][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[26][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[31][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[27][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[19][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[22][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[30][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[18][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[1][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[4][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[5][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[7][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[9][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[10][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[13][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[12][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[11][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[14][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[15][11]$_DFFE_PP_/D             1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[8][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6839_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6986_/B1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[0][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[6][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[2][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | cpuregs[3][11]$_DFFE_PP_/D              1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6901_/B1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6788_/B                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6871_/B2                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8872_/Y                                1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6774_/B1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6664_/A2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6747_/A2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6720_/A2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6696_/B2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6494_/B1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6326_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6440_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6372_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6308_/A2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6268_/Y                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6536_/A2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6545_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6425_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6641_/B1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6601_/B1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6177_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6167_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6192_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6154_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6142_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6132_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6119_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6109_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6097_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6087_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6075_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6065_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6054_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6042_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6031_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6018_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6003_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5990_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5964_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5979_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5944_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5956_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5918_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5933_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5900_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5822_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5884_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5831_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5843_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4779_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5850_/C2                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5871_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _5861_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _4845_/B                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdcycleh$_DFFE_PP_/Q              1.50    1.53   -0.02 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9098_/Y                                1.48    1.49   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | max capacitance
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | Pin                                    Limit     Cap   Slack
+| INFO     | job0 | route.global         | 0 | ------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | latched_stalu$_SDFFE_PN0P_/Q            0.30    0.33   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8864_/Y                                0.14    0.17   -0.03 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_sub$_SDFFE_PN0P_/Q                0.30    0.32   -0.02 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9039_/Y                                0.07    0.08   -0.02 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9030_/Y                                0.07    0.08   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7375_/Y                                0.15    0.16   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdinstrh$_DFFE_PP_/Q              0.17    0.18   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9100_/Y                                0.05    0.06   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _7378_/Y                                0.15    0.16   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9042_/Y                                0.07    0.07   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _8872_/Y                                0.14    0.14   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdinstr$_DFFE_PP_/Q               0.17    0.18   -0.01 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | instr_rdcycleh$_DFFE_PP_/Q              0.17    0.17   -0.00 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _6268_/Y                                0.25    0.26   -0.00 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9098_/Y                                0.05    0.05   -0.00 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | _9110_/Y                                0.05    0.05   -0.00 (VIOLATED)
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | SC_METRIC: floating nets
+| INFO     | job0 | route.global         | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | route.global         | 0 | SC_METRIC: fmax
+| INFO     | job0 | route.global         | 0 | SC_METRIC: power
+| INFO     | job0 | route.global         | 0 | Power for corner: fast
+| INFO     | job0 | route.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | route.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Sequential             2.53e-02   1.91e-02   4.85e-05   4.44e-02  18.1%
+| INFO     | job0 | route.global         | 0 | Combinational          8.83e-02   1.12e-01   5.34e-05   2.01e-01  81.9%
+| INFO     | job0 | route.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Total                  1.14e-01   1.31e-01   1.02e-04   2.45e-01 100.0%
+| INFO     | job0 | route.global         | 0 |                           46.3%      53.6%       0.0%
+| INFO     | job0 | route.global         | 0 | Power for corner: slow
+| INFO     | job0 | route.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | route.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Sequential             1.01e-02   9.22e-03   6.26e-10   1.93e-02  17.9%
+| INFO     | job0 | route.global         | 0 | Combinational          3.53e-02   5.35e-02   1.34e-09   8.88e-02  82.1%
+| INFO     | job0 | route.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Total                  4.55e-02   6.27e-02   1.97e-09   1.08e-01 100.0%
+| INFO     | job0 | route.global         | 0 |                           42.0%      58.0%       0.0%
+| INFO     | job0 | route.global         | 0 | Power for corner: typical
+| INFO     | job0 | route.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | route.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Sequential             1.89e-02   1.60e-02   1.41e-08   3.49e-02  18.2%
+| INFO     | job0 | route.global         | 0 | Combinational          6.26e-02   9.38e-02   1.89e-08   1.56e-01  81.8%
+| INFO     | job0 | route.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | route.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | route.global         | 0 | Total                  8.15e-02   1.10e-01   3.30e-08   1.91e-01 100.0%
+| INFO     | job0 | route.global         | 0 |                           42.6%      57.4%       0.0%
+| INFO     | job0 | route.global         | 0 | SC_METRIC: cellarea
+| INFO     | job0 | route.global         | 0 | Design area 93393 u^2 46% utilization.
+| INFO     | job0 | route.global         | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | route.global         | 0 |   Fill cell                             16624  105788.96
+| INFO     | job0 | route.global         | 0 |   Tap cell                               2672    3343.21
+| INFO     | job0 | route.global         | 0 |   Buffer                                  113     878.34
+| INFO     | job0 | route.global         | 0 |   Timing Repair Buffer                   1099    8883.52
+| INFO     | job0 | route.global         | 0 |   Inverter                                224    1111.07
+| INFO     | job0 | route.global         | 0 |   Sequential cell                        1597   45120.77
+| INFO     | job0 | route.global         | 0 |   Multi-Input combinational cell         4190   37399.62
+| INFO     | job0 | route.global         | 0 |   Total                                 26519  202525.49
+| INFO     | job0 | route.global         | 0 | 
+| INFO     | job0 | route.global         | 0 | Cell instance report:
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a2111oi_0                3      26.28
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a211o_1                 15     131.38
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a211o_4                  1      17.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a211oi_1                32     240.23
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21boi_0                 7      52.55
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21boi_1                 3      22.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21boi_2                 3      33.78
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21boi_4                 1      18.77
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21o_1                  62     465.45
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21o_4                   5      75.07
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21oi_1                306    1531.47
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a21oi_2                 64     560.54
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a221o_4                  2      42.54
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a221oi_1                46     402.89
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a222oi_1                39     390.37
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a22o_1                  16     140.13
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a22oi_1                 73     548.03
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a311oi_1                 2      17.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a31o_1                   3      26.28
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a31o_4                   2      35.03
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a31oi_1                 71     444.18
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a32o_1                   6      60.06
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a32oi_1                 14     122.62
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a41o_1                   1      10.01
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__a41oi_1                  5      43.79
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and2_0                  14      87.58
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and2_4                  17     148.89
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and3_1                  24     150.14
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and3_4                  39     439.17
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and3b_1                  1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and4_1                   2      17.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and4_4                  25     281.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__and4b_4                  2      27.53
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_1                  734    2755.14
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_12                  30     600.58
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_16                  80    2202.11
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_4                  108     810.78
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_6                  136    1531.47
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__buf_8                  124    1861.79
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__clkinv_1                43     161.40
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__clkinv_16                1      30.03
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__clkinv_2                 4      20.02
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__conb_1                 138     518.00
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__dfxtp_1                 49     980.94
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__dfxtp_2                267    5679.20
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__dfxtp_4                  1      23.77
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__fill_1                3200    4003.84
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__fill_2                3077    7699.88
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__fill_4                1895    9484.10
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__fill_8                8452   84601.14
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__ha_1                   185    2314.72
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__ha_2                    12     180.17
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__ha_4                     2      50.05
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_1                  136     510.49
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_12                  14     227.72
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_16                   1      20.02
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_2                   14      52.55
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_4                    4      25.02
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_6                    6      52.55
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__inv_8                    1      11.26
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__mux2_1                  54     608.08
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__mux2_4                   6      90.09
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__mux2i_1                 87     870.84
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__mux4_2                 545   12274.27
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand2_1                414    1553.99
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand2_4                102    1148.60
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand3_1                 79     395.38
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand3b_1                 3      22.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand4_1                 29     181.42
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2_1                 376    1411.35
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2_2                  44     275.26
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2_4                  34     382.87
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2_8                  32     640.61
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2b_1                 17     106.35
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2b_2                  2      17.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor2b_4                  4      55.05
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor3_1                 108     540.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor3_2                  15     150.14
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor3_4                   5      81.33
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor3b_1                 11      82.58
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor3b_2                  3      37.54
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor4_1                  14      87.58
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor4_2                  14     175.17
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor4b_1                  1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__nor4b_2                  2      30.03
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o211ai_1                26     195.19
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21a_1                  75     563.04
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21ai_0                487    2437.34
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21ai_1                  1       5.00
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21ai_4                  5      81.33
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21bai_1                31     232.72
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21bai_2                 5      56.30
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o21bai_4                 2      37.54
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o221a_1                  5      56.30
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o221ai_1                26     227.72
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o221ai_2                10     150.14
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o221ai_4                 4     105.10
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o22ai_1                 21     131.38
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o22ai_2                  5      62.56
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o311ai_0                16     140.13
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o311ai_1                 1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o31a_1                   3      26.28
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o31ai_1                 22     165.16
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o32ai_1                 17     148.89
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__o41ai_1                  1       8.76
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or2_0                    1       6.26
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or2_4                   11      96.34
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or3_1                    6      37.54
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or3_4                   11     123.87
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or4_1                    2      15.01
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or4_4                    2      22.52
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or4b_1                   2      20.02
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__or4b_4                   2      27.53
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__xnor2_1                 92     805.77
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__xor2_1                  21     183.93
+| INFO     | job0 | route.global         | 0 |   sky130_fd_sc_hd__xor2_2                   1      16.27
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | route.global         | 0 | # Images
+| INFO     | job0 | route.global         | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | route.global         | 0 | if {
+| INFO     | job0 | route.global         | 0 |     [sc_has_gui] &&
+| INFO     | job0 | route.global         | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | route.global         | 0 | } {
+| INFO     | job0 | route.global         | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | route.global         | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | route.global         | 0 |     } else {
+| INFO     | job0 | route.global         | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | route.global         | 0 |     }
+| INFO     | job0 | route.global         | 0 | }
+| INFO     | job0 | route.global         | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | route.global         | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving hold timing histogram to reports/images/timing/hold.histogram.png
+| INFO     | job0 | route.global         | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "routing congestion heatmap" to reports/images/heatmap/routing_congestion.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | route.global         | 0 | [WARNING STA-0351] clock '*' not found.
+| INFO     | job0 | route.global         | 0 | [INFO FLW-0001] Saving "optimizer" to reports/images/picorv32.optimizer.png
+| INFO     | job0 | route.global         | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | route.global         | 0 | 168: [WARNING FLW-0001] No clocks defined.
+| WARNING  | job0 | route.global         | 0 | 952: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| WARNING  | job0 | route.global         | 0 | 956: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| WARNING  | job0 | route.global         | 0 | 958: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| WARNING  | job0 | route.global         | 0 | 965: [WARNING STA-0351] clock '*' not found.
+| INFO     | job0 | route.global         | 0 | Number of errors: 0
+| INFO     | job0 | route.global         | 0 | Number of warnings: 5
+| INFO     | job0 | route.global         | 0 | Finished task in 36.23s
+| INFO     | job0 | route.global         | 0 | Archiving route.global0...

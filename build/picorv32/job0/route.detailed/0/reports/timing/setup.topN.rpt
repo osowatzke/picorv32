@@ -1,0 +1,2 @@
+[WARNING STA-0503] report_checks -group_count is deprecated. Use -group_path_count instead.
+No paths found.

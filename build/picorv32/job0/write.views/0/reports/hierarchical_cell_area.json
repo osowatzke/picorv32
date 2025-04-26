@@ -1,0 +1,11 @@
+{
+    "picorv32": {
+        "module": "picorv32",
+        "cellarea": 202525,
+        "cellcount": 26532,
+        "macroarea": null,
+        "macrocount": null,
+        "stdcellarea": 93428.432,
+        "stdcellcount": 7237
+    }
+}

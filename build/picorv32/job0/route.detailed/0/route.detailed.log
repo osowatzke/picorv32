@@ -1,0 +1,2245 @@
+OpenROAD v2.0-20575-ge78e29127 
+Features included (+) or not (-): +GPU +GUI +Python
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+##############################
+# Schema Adapter
+###############################
+set sc_step [sc_cfg_get arg step]
+set sc_index [sc_cfg_get arg index]
+set sc_flow [sc_cfg_get option flow]
+set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+set sc_refdir [sc_cfg_tool_task_get refdir]
+##############################
+# Setup debugging
+###############################
+source -echo "$sc_refdir/common/debugging.tcl"
+###############################
+# Setup debugging if requested
+###############################
+if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+    foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+        lassign [split $debug " "] debug_tool debug_category debug_level
+        utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+        set_debug_level $debug_tool $debug_category $debug_level
+    }
+}
+###############################
+# Suppress messages if requested
+###############################
+foreach msg [sc_cfg_tool_task_get warningoff] {
+    set or_msg [split $msg "-"]
+    if { [llength $or_msg] != 2 } {
+        utl::warn FLW 1 "$msg is not a valid message id"
+    } else {
+        set or_tool [lindex $or_msg 0]
+        set or_msg_id [expr { int([lindex $or_msg 1]) }]
+        utl::info FLW 1 "Suppressing $msg messages"
+        suppress_message $or_tool $or_msg_id
+    }
+}
+###############################
+# Setup helper functions
+###############################
+source "$sc_refdir/common/procs.tcl"
+###############################
+# Design information
+###############################
+# Design
+set sc_design [sc_top]
+set sc_optmode [sc_cfg_get option optmode]
+set sc_pdk [sc_cfg_get option pdk]
+set sc_stackup [sc_cfg_get option stackup]
+# APR Parameters
+set sc_targetlibs [sc_get_asic_libraries logic]
+set sc_mainlib [lindex $sc_targetlibs 0]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Hard macro libraries
+set sc_macrolibs [sc_get_asic_libraries macro]
+# Threads
+set_thread_count [sc_cfg_tool_task_get threads]
+[INFO ORD-0030] Using 2 thread(s).
+###############################
+# Read Files
+###############################
+source -echo "$sc_refdir/common/read_liberty.tcl"
+set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Read Liberty
+utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+[INFO FLW-0001] Defining timing corners: slow fast typical
+define_corners {*}$sc_scenarios
+foreach lib "$sc_targetlibs $sc_macrolibs" {
+    #Liberty
+    foreach corner $sc_scenarios {
+        foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+            if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+                foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+                    puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+                    read_liberty -corner $corner $lib_file
+                }
+                break
+            }
+        }
+    }
+}
+Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+source -echo "$sc_refdir/common/read_input_files.tcl"
+###############################
+# Read design files
+###############################
+if { [sc_has_input_files odb "input layout odb"] } {
+    foreach odb_file [sc_get_input_files odb "input layout odb"] {
+        puts "Reading ODB: ${odb_file}"
+        read_db $odb_file
+    }
+} else {
+    set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+    set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+    # Read techlef
+    puts "Reading techlef: ${sc_techlef}"
+    read_lef $sc_techlef
+    # Read Lefs
+    foreach lib "$sc_targetlibs $sc_macrolibs" {
+        foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+            puts "Reading lef: ${lef_file}"
+            read_lef $lef_file
+        }
+    }
+    if { [file exists "inputs/${sc_design}.def"] } {
+        # Read DEF
+        # get from previous step
+        puts "Reading DEF: inputs/${sc_design}.def"
+        read_def "inputs/${sc_design}.def"
+    } elseif { [sc_cfg_exists input layout def] } {
+        # Read DEF
+        set sc_def [lindex [sc_cfg_get input layout def] 0]
+        puts "Reading DEF: ${sc_def}"
+        read_def $sc_def
+    } elseif { [file exists "inputs/${sc_design}.vg"] } {
+        # Read Verilog
+        puts "Reading netlist verilog: inputs/${sc_design}.vg"
+        read_verilog "inputs/${sc_design}.vg"
+        link_design $sc_design
+    } elseif { [sc_cfg_exists input netlist verilog] } {
+        # Read Verilog
+        foreach netlist [sc_cfg_get input netlist verilog] {
+            puts "Reading netlist verilog: ${netlist}"
+            read_verilog $netlist
+        }
+        link_design $sc_design
+    } else {
+        utl::error FLW 1 "No input files available"
+    }
+    # Handle global connect setup
+    if { [sc_cfg_tool_task_exists {file} global_connect] } {
+        foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+            puts "Loading global connect configuration: ${global_connect}"
+            source $global_connect
+        }
+    }
+    tee -file reports/global_connections.rpt {report_global_connect}
+}
+Reading ODB: inputs/picorv32.odb
+source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+###############################
+# Read timing constraints
+###############################
+if { [sc_has_input_files sdc "input constraint sdc"] } {
+    foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+        puts "Reading SDC: ${sdc}"
+        read_sdc $sdc
+    }
+} else {
+    # fall back on default auto generated constraints file
+    set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+    puts "Reading SDC: ${sdc}"
+    utl::warn FLW 1 "Defaulting back to default SDC"
+    read_sdc "${sdc}"
+}
+Reading SDC: inputs/picorv32.sdc
+###############################
+# Common Setup
+###############################
+sc_setup_sta
+[WARNING FLW-0001] No clocks defined.
+sc_setup_parasitics
+[INFO FLW-0001] Using met5 for clock parasitics estimation
+[INFO FLW-0001] Using met2 for signal parasitics estimation
+sc_set_dont_use
+sc_setup_global_routing
+[INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+[INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+# Store incoming markers to avoid rewriting them
+set sc_starting_markers []
+foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+    lappend sc_starting_markers [$markerdb getName]
+}
+###############################
+# Source Step Script
+###############################
+report_units_metric
+utl::push_metrics_stage "sc__prestep__{}"
+if { [sc_cfg_tool_task_exists prescript] } {
+    foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+        puts "Sourcing pre script: ${sc_pre_script}"
+        source -echo $sc_pre_script
+    }
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__step__{}"
+set openroad_dont_touch {}
+if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+    set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+}
+if { [llength $openroad_dont_touch] > 0 } {
+    # set don't touch list
+    set_dont_touch $openroad_dont_touch
+}
+tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+tee -file reports/global_connections.start.rpt {report_global_connect}
+Global connection rules: 2
+  Instances: ".*" with pins "VPWR" connect to "VDD"
+  Instances: ".*" with pins "VGND" connect to "VSS"
+detailed_route siliconcompiler arguments: -drc_report_iter_step 5
+[INFO DRT-0149] Reading tech and libs.
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer mcon
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer mcon
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via2
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via2
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via3
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via3
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via4
+[WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via4
+
+Units:                1000
+Number of layers:     13
+Number of macros:     437
+Number of vias:       29
+Number of viarulegen: 25
+
+[INFO DRT-0150] Reading design.
+
+Design:                   picorv32
+Die area:                 ( 0 0 ) ( 454070 454070 )
+Number of track patterns: 12
+Number of DEF vias:       0
+Number of components:     26532
+Number of terminals:      411
+Number of snets:          2
+Number of nets:           7529
+
+[WARNING DRT-0422] No routing tracks pass through the center of Term VSS.
+[WARNING DRT-0422] No routing tracks pass through the center of Term VDD.
+[INFO DRT-0167] List of default vias:
+  Layer via
+    default via: M1M2_PR
+  Layer via2
+    default via: M2M3_PR
+  Layer via3
+    default via: M3M4_PR
+  Layer via4
+    default via: M4M5_PR
+[INFO DRT-0162] Library cell analysis.
+[INFO DRT-0163] Instance analysis.
+[INFO DRT-0164] Number of unique instances = 226.
+[INFO DRT-0168] Init region query.
+[INFO DRT-0024]   Complete FR_MASTERSLICE.
+[INFO DRT-0024]   Complete Fr_VIA.
+[INFO DRT-0024]   Complete li1.
+[INFO DRT-0024]   Complete mcon.
+[INFO DRT-0024]   Complete met1.
+[INFO DRT-0024]   Complete via.
+[INFO DRT-0024]   Complete met2.
+[INFO DRT-0024]   Complete via2.
+[INFO DRT-0024]   Complete met3.
+[INFO DRT-0024]   Complete via3.
+[INFO DRT-0024]   Complete met4.
+[INFO DRT-0024]   Complete via4.
+[INFO DRT-0024]   Complete met5.
+[INFO DRT-0033] FR_MASTERSLICE shape region query size = 0.
+[INFO DRT-0033] FR_VIA shape region query size = 0.
+[INFO DRT-0033] li1 shape region query size = 303702.
+[INFO DRT-0033] mcon shape region query size = 17998.
+[INFO DRT-0033] met1 shape region query size = 85274.
+[INFO DRT-0033] via shape region query size = 13695.
+[INFO DRT-0033] met2 shape region query size = 8524.
+[INFO DRT-0033] via2 shape region query size = 10956.
+[INFO DRT-0033] met3 shape region query size = 8319.
+[INFO DRT-0033] via3 shape region query size = 10956.
+[INFO DRT-0033] met4 shape region query size = 3317.
+[INFO DRT-0033] via4 shape region query size = 545.
+[INFO DRT-0033] met5 shape region query size = 611.
+[INFO DRT-0165] Start pin access.
+[WARNING DRT-0088] Exhaustive access point generation for _4721_/A (sky130_fd_sc_hd__nor3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4722_/A (sky130_fd_sc_hd__nand2_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4728_/A (sky130_fd_sc_hd__nor3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4730_/A (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4730_/C (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4739_/A (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4739_/C (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4742_/A (sky130_fd_sc_hd__clkinv_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4746_/A (sky130_fd_sc_hd__nand2_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4749_/A3 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4749_/B1 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4759_/A2 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4759_/B1 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4761_/B1 (sky130_fd_sc_hd__o32ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4762_/B (sky130_fd_sc_hd__or2_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4763_/A (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4763_/D (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4772_/A1 (sky130_fd_sc_hd__o21a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4780_/A (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4780_/D (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4781_/A (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4788_/B (sky130_fd_sc_hd__or2_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4781_/D (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4792_/A (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4793_/C (sky130_fd_sc_hd__or3_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4792_/D (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4798_/A1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4800_/A1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4798_/B1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4800_/B1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4804_/A (sky130_fd_sc_hd__clkinv_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4808_/A2 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4808_/B1 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4826_/A1 (sky130_fd_sc_hd__o211ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4854_/A3 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4854_/B1 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4855_/X (sky130_fd_sc_hd__or3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4857_/X (sky130_fd_sc_hd__or3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4871_/A3 (sky130_fd_sc_hd__a311oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4871_/C1 (sky130_fd_sc_hd__a311oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4882_/X (sky130_fd_sc_hd__or4b_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4907_/A0 (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4907_/S (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4901_/X (sky130_fd_sc_hd__or4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4910_/C (sky130_fd_sc_hd__or3_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4911_/A0 (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4915_/B1 (sky130_fd_sc_hd__a21oi_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4911_/S (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4918_/A (sky130_fd_sc_hd__inv_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4962_/D (sky130_fd_sc_hd__and4b_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4968_/D (sky130_fd_sc_hd__or4_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4974_/B_N (sky130_fd_sc_hd__nor2b_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4975_/A2 (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4975_/X (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5001_/S0 (sky130_fd_sc_hd__mux4_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _4954_/X (sky130_fd_sc_hd__and3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5011_/S0 (sky130_fd_sc_hd__mux4_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5087_/A1 (sky130_fd_sc_hd__o21a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5088_/X (sky130_fd_sc_hd__a22o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5097_/B1 (sky130_fd_sc_hd__o22ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5106_/A1 (sky130_fd_sc_hd__o211ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5148_/B2 (sky130_fd_sc_hd__a32oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5411_/B1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5245_/A3 (sky130_fd_sc_hd__a32o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5411_/C1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5452_/B1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5452_/C1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5441_/X (sky130_fd_sc_hd__a22o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5524_/C1 (sky130_fd_sc_hd__o311ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5525_/A3 (sky130_fd_sc_hd__a32o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5681_/A (sky130_fd_sc_hd__inv_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5685_/A (sky130_fd_sc_hd__inv_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5700_/A (sky130_fd_sc_hd__inv_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5653_/C1 (sky130_fd_sc_hd__a211o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5793_/B1 (sky130_fd_sc_hd__a21oi_2) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5868_/A2 (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5868_/X (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5904_/B_N (sky130_fd_sc_hd__nor2b_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _5897_/A2 (sky130_fd_sc_hd__a221o_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6001_/C1 (sky130_fd_sc_hd__o311ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6101_/C1 (sky130_fd_sc_hd__o311ai_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6126_/A1 (sky130_fd_sc_hd__o21ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6126_/B1 (sky130_fd_sc_hd__o21ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6202_/B2 (sky130_fd_sc_hd__a32oi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6526_/X (sky130_fd_sc_hd__o22a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6537_/B1 (sky130_fd_sc_hd__o32ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _6903_/C1 (sky130_fd_sc_hd__a211o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7173_/A2 (sky130_fd_sc_hd__a21boi_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7238_/B1 (sky130_fd_sc_hd__o22ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7172_/X (sky130_fd_sc_hd__and3b_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7299_/D (sky130_fd_sc_hd__and4b_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7293_/X (sky130_fd_sc_hd__or4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7359_/A1 (sky130_fd_sc_hd__o32a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7359_/B1 (sky130_fd_sc_hd__o32a_1) is unsatisfactory.
+[INFO DRT-0076]   Complete 1000 pins.
+[WARNING DRT-0088] Exhaustive access point generation for _7590_/A (sky130_fd_sc_hd__and4_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7596_/A (sky130_fd_sc_hd__and4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7713_/A4 (sky130_fd_sc_hd__a41o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7713_/X (sky130_fd_sc_hd__a41o_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7716_/A (sky130_fd_sc_hd__and4_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7883_/A2 (sky130_fd_sc_hd__a21boi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7883_/B1_N (sky130_fd_sc_hd__a21boi_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7900_/A2 (sky130_fd_sc_hd__a21boi_0) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7904_/B1 (sky130_fd_sc_hd__o41ai_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _7578_/X (sky130_fd_sc_hd__and3_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _8374_/C1 (sky130_fd_sc_hd__o311a_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _8527_/D (sky130_fd_sc_hd__or4_4) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _8800_/A (sky130_fd_sc_hd__and4_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9153_/A (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9156_/A (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9156_/CIN (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9153_/CIN (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9153_/COUT (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for _9156_/COUT (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for load_slew1/X (sky130_fd_sc_hd__buf_1) is unsatisfactory.
+[WARNING DRT-0088] Exhaustive access point generation for wire1/X (sky130_fd_sc_hd__buf_1) is unsatisfactory.
+[INFO DRT-0078]   Complete 1334 pins.
+[INFO DRT-0079]   Complete 100 unique inst patterns.
+[INFO DRT-0079]   Complete 200 unique inst patterns.
+[INFO DRT-0081]   Complete 226 unique inst patterns.
+[INFO DRT-0084]   Complete 4356 groups.
+#scanned instances     = 26532
+#unique  instances     = 226
+#stdCellGenAp          = 10014
+#stdCellValidPlanarAp  = 80
+#stdCellValidViaAp     = 7687
+#stdCellPinNoAp        = 0
+#stdCellPinCnt         = 26577
+#instTermValidViaApCnt = 0
+#macroGenAp            = 0
+#macroValidPlanarAp    = 0
+#macroValidViaAp       = 0
+#macroNoAp             = 0
+[INFO DRT-0166] Complete pin access.
+[INFO DRT-0267] cpu time = 00:07:35, elapsed time = 00:03:55, memory = 241.67 (MB), peak = 245.30 (MB)
+
+[INFO DRT-0157] Number of guides:     75786
+
+[INFO DRT-0169] Post process guides.
+[INFO DRT-0176] GCELLGRID X 0 DO 65 STEP 6900 ;
+[INFO DRT-0177] GCELLGRID Y 0 DO 65 STEP 6900 ;
+[INFO DRT-0028]   Complete FR_MASTERSLICE.
+[INFO DRT-0028]   Complete Fr_VIA.
+[INFO DRT-0028]   Complete li1.
+[INFO DRT-0028]   Complete mcon.
+[INFO DRT-0028]   Complete met1.
+[INFO DRT-0028]   Complete via.
+[INFO DRT-0028]   Complete met2.
+[INFO DRT-0028]   Complete via2.
+[INFO DRT-0028]   Complete met3.
+[INFO DRT-0028]   Complete via3.
+[INFO DRT-0028]   Complete met4.
+[INFO DRT-0028]   Complete via4.
+[INFO DRT-0028]   Complete met5.
+[INFO DRT-0178] Init guide query.
+[INFO DRT-0035]   Complete FR_MASTERSLICE (guide).
+[INFO DRT-0035]   Complete Fr_VIA (guide).
+[INFO DRT-0035]   Complete li1 (guide).
+[INFO DRT-0035]   Complete mcon (guide).
+[INFO DRT-0035]   Complete met1 (guide).
+[INFO DRT-0035]   Complete via (guide).
+[INFO DRT-0035]   Complete met2 (guide).
+[INFO DRT-0035]   Complete via2 (guide).
+[INFO DRT-0035]   Complete met3 (guide).
+[INFO DRT-0035]   Complete via3 (guide).
+[INFO DRT-0035]   Complete met4 (guide).
+[INFO DRT-0035]   Complete via4 (guide).
+[INFO DRT-0035]   Complete met5 (guide).
+[INFO DRT-0036] FR_MASTERSLICE guide region query size = 0.
+[INFO DRT-0036] FR_VIA guide region query size = 0.
+[INFO DRT-0036] li1 guide region query size = 21568.
+[INFO DRT-0036] mcon guide region query size = 0.
+[INFO DRT-0036] met1 guide region query size = 19436.
+[INFO DRT-0036] via guide region query size = 0.
+[INFO DRT-0036] met2 guide region query size = 12352.
+[INFO DRT-0036] via2 guide region query size = 0.
+[INFO DRT-0036] met3 guide region query size = 3829.
+[INFO DRT-0036] via3 guide region query size = 0.
+[INFO DRT-0036] met4 guide region query size = 1175.
+[INFO DRT-0036] via4 guide region query size = 0.
+[INFO DRT-0036] met5 guide region query size = 162.
+[INFO DRT-0179] Init gr pin query.
+[INFO DRT-0267] cpu time = 00:00:00, elapsed time = 00:00:00, memory = 268.50 (MB), peak = 268.50 (MB)
+[INFO DRT-0185] Post process initialize RPin region query.
+[INFO DRT-0181] Start track assignment.
+[INFO DRT-0184] Done with 35095 vertical wires in 2 frboxes and 23427 horizontal wires in 2 frboxes.
+[INFO DRT-0186] Done with 4792 vertical wires in 2 frboxes and 6391 horizontal wires in 2 frboxes.
+[INFO DRT-0182] Complete track assignment.
+[INFO DRT-0267] cpu time = 00:00:06, elapsed time = 00:00:05, memory = 368.71 (MB), peak = 368.71 (MB)
+[INFO DRT-0187] Start routing data preparation.
+[INFO DRT-0267] cpu time = 00:00:00, elapsed time = 00:00:00, memory = 368.71 (MB), peak = 368.71 (MB)
+[INFO DRT-0194] Start detail routing.
+[INFO DRT-0195] Start 0th optimization iteration.
+    Completing 10% with 0 violations.
+    elapsed time = 00:00:50, memory = 476.69 (MB).
+    Completing 20% with 0 violations.
+    elapsed time = 00:01:20, memory = 528.63 (MB).
+    Completing 30% with 598 violations.
+    elapsed time = 00:01:47, memory = 601.36 (MB).
+    Completing 40% with 598 violations.
+    elapsed time = 00:02:44, memory = 597.14 (MB).
+    Completing 50% with 598 violations.
+    elapsed time = 00:03:12, memory = 565.37 (MB).
+    Completing 60% with 1452 violations.
+    elapsed time = 00:04:07, memory = 586.25 (MB).
+    Completing 70% with 1452 violations.
+    elapsed time = 00:04:42, memory = 580.73 (MB).
+    Completing 80% with 2185 violations.
+    elapsed time = 00:05:22, memory = 602.36 (MB).
+    Completing 90% with 2185 violations.
+    elapsed time = 00:06:09, memory = 590.37 (MB).
+    Completing 100% with 2880 violations.
+    elapsed time = 00:06:44, memory = 595.10 (MB).
+[INFO DRT-0199]   Number of violations = 3496.
+Viol/Layer         li1   mcon   met1   met2   met3   met4   met5
+Cut Spacing          0     11      0      0      0      0      0
+Metal Spacing        4      0    895    139     55     15     14
+Min Hole             0      0      5      0      0      0      0
+NS Metal             0      0      1      0      0      0      0
+Recheck             30      0    362    165     41      5     13
+Short                4      7   1431    232     45      6     16
+[INFO DRT-0267] cpu time = 00:12:33, elapsed time = 00:06:45, memory = 816.10 (MB), peak = 816.10 (MB)
+Total wire length = 330380 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 94343 um.
+Total wire length on LAYER met2 = 134829 um.
+Total wire length on LAYER met3 = 59835 um.
+Total wire length on LAYER met4 = 35448 um.
+Total wire length on LAYER met5 = 5923 um.
+Total number of vias = 62140.
+Up-via summary (total 62140):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26308
+           met1    28539
+           met2     5296
+           met3     1774
+           met4      223
+------------------------
+               62140
+
+
+[INFO DRT-0195] Start 1st optimization iteration.
+    Completing 10% with 3496 violations.
+    elapsed time = 00:00:45, memory = 874.31 (MB).
+    Completing 20% with 3496 violations.
+    elapsed time = 00:01:16, memory = 818.37 (MB).
+    Completing 30% with 3097 violations.
+    elapsed time = 00:01:45, memory = 851.62 (MB).
+    Completing 40% with 3097 violations.
+    elapsed time = 00:02:44, memory = 820.13 (MB).
+    Completing 50% with 3097 violations.
+    elapsed time = 00:03:11, memory = 820.13 (MB).
+    Completing 60% with 2719 violations.
+    elapsed time = 00:04:11, memory = 865.25 (MB).
+    Completing 70% with 2719 violations.
+    elapsed time = 00:04:48, memory = 823.90 (MB).
+    Completing 80% with 2275 violations.
+    elapsed time = 00:05:17, memory = 823.90 (MB).
+    Completing 90% with 2275 violations.
+    elapsed time = 00:05:58, memory = 823.90 (MB).
+    Completing 100% with 1897 violations.
+    elapsed time = 00:06:19, memory = 825.09 (MB).
+[INFO DRT-0199]   Number of violations = 1897.
+Viol/Layer        mcon   met1   met2   met3   met4
+Cut Spacing          3      0      0      0      0
+Metal Spacing        0    641     42     10      6
+Short                0   1115     71      8      1
+[INFO DRT-0267] cpu time = 00:11:31, elapsed time = 00:06:20, memory = 825.87 (MB), peak = 893.25 (MB)
+Total wire length = 327763 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 94187 um.
+Total wire length on LAYER met2 = 134023 um.
+Total wire length on LAYER met3 = 58998 um.
+Total wire length on LAYER met4 = 35041 um.
+Total wire length on LAYER met5 = 5512 um.
+Total number of vias = 61276.
+Up-via summary (total 61276):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26277
+           met1    28107
+           met2     5007
+           met3     1690
+           met4      195
+------------------------
+               61276
+
+
+[INFO DRT-0195] Start 2nd optimization iteration.
+    Completing 10% with 1897 violations.
+    elapsed time = 00:00:30, memory = 825.87 (MB).
+    Completing 20% with 1897 violations.
+    elapsed time = 00:01:01, memory = 868.40 (MB).
+    Completing 30% with 1829 violations.
+    elapsed time = 00:01:58, memory = 825.87 (MB).
+    Completing 40% with 1829 violations.
+    elapsed time = 00:02:46, memory = 825.87 (MB).
+    Completing 50% with 1829 violations.
+    elapsed time = 00:03:25, memory = 837.21 (MB).
+    Completing 60% with 1822 violations.
+    elapsed time = 00:04:24, memory = 842.11 (MB).
+    Completing 70% with 1822 violations.
+    elapsed time = 00:05:07, memory = 847.37 (MB).
+    Completing 80% with 1796 violations.
+    elapsed time = 00:05:26, memory = 847.37 (MB).
+    Completing 90% with 1796 violations.
+    elapsed time = 00:06:17, memory = 850.91 (MB).
+    Completing 100% with 1604 violations.
+    elapsed time = 00:06:30, memory = 850.91 (MB).
+[INFO DRT-0199]   Number of violations = 1604.
+Viol/Layer        mcon   met1   met2   met3
+Cut Spacing          5      0      0      0
+Metal Spacing        0    580     40     14
+Short                0    888     73      4
+[INFO DRT-0267] cpu time = 00:12:00, elapsed time = 00:06:31, memory = 853.75 (MB), peak = 937.75 (MB)
+Total wire length = 326995 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 93932 um.
+Total wire length on LAYER met2 = 133930 um.
+Total wire length on LAYER met3 = 59105 um.
+Total wire length on LAYER met4 = 34772 um.
+Total wire length on LAYER met5 = 5254 um.
+Total number of vias = 61086.
+Up-via summary (total 61086):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26291
+           met1    27990
+           met2     4997
+           met3     1636
+           met4      172
+------------------------
+               61086
+
+
+[INFO DRT-0195] Start 3rd optimization iteration.
+    Completing 10% with 1604 violations.
+    elapsed time = 00:00:26, memory = 854.18 (MB).
+    Completing 20% with 1604 violations.
+    elapsed time = 00:00:46, memory = 871.19 (MB).
+    Completing 30% with 1291 violations.
+    elapsed time = 00:01:18, memory = 792.52 (MB).
+    Completing 40% with 1291 violations.
+    elapsed time = 00:02:04, memory = 835.10 (MB).
+    Completing 50% with 1291 violations.
+    elapsed time = 00:02:27, memory = 792.52 (MB).
+    Completing 60% with 975 violations.
+    elapsed time = 00:02:56, memory = 792.52 (MB).
+    Completing 70% with 975 violations.
+    elapsed time = 00:03:40, memory = 828.86 (MB).
+    Completing 80% with 577 violations.
+    elapsed time = 00:04:04, memory = 792.52 (MB).
+    Completing 90% with 577 violations.
+    elapsed time = 00:04:42, memory = 796.89 (MB).
+    Completing 100% with 238 violations.
+    elapsed time = 00:05:13, memory = 851.17 (MB).
+[INFO DRT-0199]   Number of violations = 238.
+Viol/Layer        met1   met2
+Metal Spacing       97      1
+Short              138      2
+[INFO DRT-0267] cpu time = 00:09:28, elapsed time = 00:05:13, memory = 851.17 (MB), peak = 951.58 (MB)
+Total wire length = 326935 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92561 um.
+Total wire length on LAYER met2 = 134442 um.
+Total wire length on LAYER met3 = 60157 um.
+Total wire length on LAYER met4 = 34595 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61653.
+Up-via summary (total 61653):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26299
+           met1    28335
+           met2     5234
+           met3     1616
+           met4      169
+------------------------
+               61653
+
+
+[INFO DRT-0195] Start 4th optimization iteration.
+    Completing 10% with 238 violations.
+    elapsed time = 00:00:00, memory = 851.17 (MB).
+    Completing 20% with 238 violations.
+    elapsed time = 00:00:06, memory = 851.17 (MB).
+    Completing 30% with 183 violations.
+    elapsed time = 00:00:15, memory = 851.31 (MB).
+    Completing 40% with 183 violations.
+    elapsed time = 00:00:26, memory = 903.90 (MB).
+    Completing 50% with 183 violations.
+    elapsed time = 00:00:31, memory = 851.31 (MB).
+    Completing 60% with 135 violations.
+    elapsed time = 00:00:37, memory = 851.31 (MB).
+    Completing 70% with 135 violations.
+    elapsed time = 00:00:54, memory = 851.31 (MB).
+    Completing 80% with 98 violations.
+    elapsed time = 00:01:03, memory = 891.52 (MB).
+    Completing 90% with 98 violations.
+    elapsed time = 00:01:08, memory = 898.48 (MB).
+    Completing 100% with 56 violations.
+    elapsed time = 00:01:16, memory = 851.31 (MB).
+[INFO DRT-0199]   Number of violations = 56.
+Viol/Layer        mcon   met1   met2
+Cut Spacing          1      0      0
+Metal Spacing        0     21      1
+Short                0     33      0
+[INFO DRT-0267] cpu time = 00:02:15, elapsed time = 00:01:16, memory = 851.31 (MB), peak = 951.58 (MB)
+Total wire length = 326941 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92537 um.
+Total wire length on LAYER met2 = 134463 um.
+Total wire length on LAYER met3 = 60171 um.
+Total wire length on LAYER met4 = 34589 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61668.
+Up-via summary (total 61668):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26298
+           met1    28342
+           met2     5245
+           met3     1614
+           met4      169
+------------------------
+               61668
+
+
+[INFO DRT-0195] Start 5th optimization iteration.
+    Completing 10% with 56 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 20% with 56 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 30% with 40 violations.
+    elapsed time = 00:00:13, memory = 851.31 (MB).
+    Completing 40% with 40 violations.
+    elapsed time = 00:00:13, memory = 851.31 (MB).
+    Completing 50% with 40 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 60% with 37 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 70% with 37 violations.
+    elapsed time = 00:00:21, memory = 851.31 (MB).
+    Completing 80% with 24 violations.
+    elapsed time = 00:00:24, memory = 851.31 (MB).
+    Completing 90% with 24 violations.
+    elapsed time = 00:00:24, memory = 851.31 (MB).
+    Completing 100% with 24 violations.
+    elapsed time = 00:00:24, memory = 851.31 (MB).
+[INFO DRT-0199]   Number of violations = 24.
+Viol/Layer        met1
+Metal Spacing        9
+Short               15
+[INFO DRT-0267] cpu time = 00:00:32, elapsed time = 00:00:24, memory = 851.31 (MB), peak = 951.58 (MB)
+Total wire length = 326926 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92487 um.
+Total wire length on LAYER met2 = 134463 um.
+Total wire length on LAYER met3 = 60201 um.
+Total wire length on LAYER met4 = 34595 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61674.
+Up-via summary (total 61674):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26298
+           met1    28339
+           met2     5252
+           met3     1616
+           met4      169
+------------------------
+               61674
+
+
+[INFO DRT-0195] Start 6th optimization iteration.
+    Completing 10% with 24 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 20% with 24 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 30% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 40% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 50% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 60% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 70% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 80% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 90% with 24 violations.
+    elapsed time = 00:00:16, memory = 851.31 (MB).
+    Completing 100% with 24 violations.
+    elapsed time = 00:00:18, memory = 851.31 (MB).
+[INFO DRT-0199]   Number of violations = 24.
+Viol/Layer        met1
+Metal Spacing       13
+Short               11
+[INFO DRT-0267] cpu time = 00:00:18, elapsed time = 00:00:18, memory = 851.31 (MB), peak = 951.58 (MB)
+Total wire length = 326937 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92494 um.
+Total wire length on LAYER met2 = 134471 um.
+Total wire length on LAYER met3 = 60202 um.
+Total wire length on LAYER met4 = 34589 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61668.
+Up-via summary (total 61668):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26298
+           met1    28339
+           met2     5248
+           met3     1614
+           met4      169
+------------------------
+               61668
+
+
+[INFO DRT-0195] Start 7th optimization iteration.
+    Completing 10% with 24 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 20% with 24 violations.
+    elapsed time = 00:00:00, memory = 851.31 (MB).
+    Completing 30% with 2 violations.
+    elapsed time = 00:00:07, memory = 851.31 (MB).
+    Completing 40% with 2 violations.
+    elapsed time = 00:00:07, memory = 851.31 (MB).
+    Completing 50% with 2 violations.
+    elapsed time = 00:00:08, memory = 851.31 (MB).
+    Completing 60% with 2 violations.
+    elapsed time = 00:00:08, memory = 851.31 (MB).
+    Completing 70% with 2 violations.
+    elapsed time = 00:00:08, memory = 851.31 (MB).
+    Completing 80% with 2 violations.
+    elapsed time = 00:00:08, memory = 851.31 (MB).
+    Completing 90% with 2 violations.
+    elapsed time = 00:00:08, memory = 851.31 (MB).
+    Completing 100% with 0 violations.
+    elapsed time = 00:00:09, memory = 851.31 (MB).
+[INFO DRT-0199]   Number of violations = 0.
+[INFO DRT-0267] cpu time = 00:00:10, elapsed time = 00:00:10, memory = 851.31 (MB), peak = 951.58 (MB)
+Total wire length = 326932 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92491 um.
+Total wire length on LAYER met2 = 134472 um.
+Total wire length on LAYER met3 = 60200 um.
+Total wire length on LAYER met4 = 34589 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61672.
+Up-via summary (total 61672):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26298
+           met1    28342
+           met2     5249
+           met3     1614
+           met4      169
+------------------------
+               61672
+
+
+[INFO DRT-0198] Complete detail routing.
+Total wire length = 326932 um.
+Total wire length on LAYER li1 = 0 um.
+Total wire length on LAYER met1 = 92491 um.
+Total wire length on LAYER met2 = 134472 um.
+Total wire length on LAYER met3 = 60200 um.
+Total wire length on LAYER met4 = 34589 um.
+Total wire length on LAYER met5 = 5178 um.
+Total number of vias = 61672.
+Up-via summary (total 61672):
+
+------------------------
+ FR_MASTERSLICE        0
+            li1    26298
+           met1    28342
+           met2     5249
+           met3     1614
+           met4      169
+------------------------
+               61672
+
+
+[INFO DRT-0267] cpu time = 00:48:49, elapsed time = 00:27:00, memory = 851.31 (MB), peak = 951.58 (MB)
+
+[INFO DRT-0180] Post processing.
+[INFO FLW-0001] Deleted 0 routing obstructions
+[WARNING GRT-0026] Missing route to pin is_slti_blt_slt$_DFF_P_/D in net _0002_.
+[WARNING GRT-0026] Missing route to pin _4856_/X in net _0002_.
+[WARNING GRT-0026] Missing route to pin is_slti_blt_slt$_DFF_P_/D in net _0002_.
+[WARNING GRT-0026] Missing route to pin _4856_/X in net _0002_.
+[WARNING GRT-0026] Missing route to pin is_slti_blt_slt$_DFF_P_/D in net _0002_.
+[WARNING GRT-0026] Missing route to pin _4856_/X in net _0002_.
+[WARNING GRT-0026] Missing route to pin is_sltiu_bltu_sltu$_DFF_P_/D in net _0003_.
+[WARNING GRT-0026] Missing route to pin _4857_/X in net _0003_.
+[WARNING GRT-0026] Missing route to pin is_sltiu_bltu_sltu$_DFF_P_/D in net _0003_.
+[WARNING GRT-0026] Missing route to pin _4857_/X in net _0003_.
+[WARNING GRT-0026] Missing route to pin is_sltiu_bltu_sltu$_DFF_P_/D in net _0003_.
+[WARNING GRT-0026] Missing route to pin _4857_/X in net _0003_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[0\]$_DFFE_PP_/D in net _0004_.
+[WARNING GRT-0026] Missing route to pin _7347_/Y in net _0004_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[0\]$_DFFE_PP_/D in net _0004_.
+[WARNING GRT-0026] Missing route to pin _7347_/Y in net _0004_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[0\]$_DFFE_PP_/D in net _0004_.
+[WARNING GRT-0026] Missing route to pin _7347_/Y in net _0004_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[2\]$_DFF_P_/D in net _0006_.
+[WARNING GRT-0026] Missing route to pin _7356_/X in net _0006_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[2\]$_DFF_P_/D in net _0006_.
+[WARNING GRT-0026] Missing route to pin _7356_/X in net _0006_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[2\]$_DFF_P_/D in net _0006_.
+[WARNING GRT-0026] Missing route to pin _7356_/X in net _0006_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[4\]$_DFF_P_/D in net _0008_.
+[WARNING GRT-0026] Missing route to pin _7366_/Y in net _0008_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[4\]$_DFF_P_/D in net _0008_.
+[WARNING GRT-0026] Missing route to pin _7366_/Y in net _0008_.
+[WARNING GRT-0026] Missing route to pin reg_sh\[4\]$_DFF_P_/D in net _0008_.
+[WARNING GRT-0026] Missing route to pin _7366_/Y in net _0008_.
+[WARNING GRT-0026] Missing route to pin load_slew769/A in net _0009_.
+[WARNING GRT-0026] Missing route to pin load_slew769/A in net _0009_.
+[WARNING GRT-0026] Missing route to pin load_slew769/A in net _0009_.
+[WARNING GRT-0026] Missing route to pin _6487_/S0 in net _0014_.
+[WARNING GRT-0026] Missing route to pin _6487_/S0 in net _0014_.
+[WARNING GRT-0026] Missing route to pin _6487_/S0 in net _0014_.
+[WARNING GRT-0026] Missing route to pin load_slew796/A in net _0018_.
+[WARNING GRT-0026] Missing route to pin load_slew796/A in net _0018_.
+[WARNING GRT-0026] Missing route to pin load_slew796/A in net _0018_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[2\]$_DFF_P_/D in net _0021_.
+[WARNING GRT-0026] Missing route to pin _4878_/Y in net _0021_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[2\]$_DFF_P_/D in net _0021_.
+[WARNING GRT-0026] Missing route to pin _4878_/Y in net _0021_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[2\]$_DFF_P_/D in net _0021_.
+[WARNING GRT-0026] Missing route to pin _4878_/Y in net _0021_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[6\]$_DFF_P_/D in net _0025_.
+[WARNING GRT-0026] Missing route to pin _4903_/Y in net _0025_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[6\]$_DFF_P_/D in net _0025_.
+[WARNING GRT-0026] Missing route to pin _4903_/Y in net _0025_.
+[WARNING GRT-0026] Missing route to pin cpu_state\[6\]$_DFF_P_/D in net _0025_.
+[WARNING GRT-0026] Missing route to pin _4903_/Y in net _0025_.
+[WARNING GRT-0026] Missing route to pin mem_wordsize\[1\]$_DFF_P_/D in net _0027_.
+[WARNING GRT-0026] Missing route to pin _4841_/Y in net _0027_.
+[WARNING GRT-0026] Missing route to pin mem_wordsize\[1\]$_DFF_P_/D in net _0027_.
+[WARNING GRT-0026] Missing route to pin _4841_/Y in net _0027_.
+[WARNING GRT-0026] Missing route to pin mem_wordsize\[1\]$_DFF_P_/D in net _0027_.
+[WARNING GRT-0026] Missing route to pin _4841_/Y in net _0027_.
+[WARNING GRT-0026] Missing route to pin load_slew338/A in net net339.
+[WARNING GRT-0026] Missing route to pin load_slew338/A in net net339.
+[WARNING GRT-0026] Missing route to pin load_slew338/A in net net339.
+[WARNING GRT-0026] Missing route to pin mem_la_wdata\[6\]$_DFFE_PP_/DE in net _0036_.
+[WARNING GRT-0026] Missing route to pin mem_la_wdata\[6\]$_DFFE_PP_/DE in net _0036_.
+[WARNING GRT-0026] Missing route to pin mem_la_wdata\[6\]$_DFFE_PP_/DE in net _0036_.
+[WARNING GRT-0026] Missing route to pin _9357_/D in net _0044_.
+[WARNING GRT-0026] Missing route to pin _7256_/X in net _0044_.
+[WARNING GRT-0026] Missing route to pin _9357_/D in net _0044_.
+[WARNING GRT-0026] Missing route to pin _7256_/X in net _0044_.
+[WARNING GRT-0026] Missing route to pin _9357_/D in net _0044_.
+[WARNING GRT-0026] Missing route to pin _7256_/X in net _0044_.
+[WARNING GRT-0026] Missing route to pin instr_lui$_DFFE_PP_/D in net _0049_.
+[WARNING GRT-0026] Missing route to pin _4917_/Y in net _0049_.
+[WARNING GRT-0026] Missing route to pin instr_lui$_DFFE_PP_/D in net _0049_.
+[WARNING GRT-0026] Missing route to pin _4917_/Y in net _0049_.
+[WARNING GRT-0026] Missing route to pin instr_lui$_DFFE_PP_/D in net _0049_.
+[WARNING GRT-0026] Missing route to pin _4917_/Y in net _0049_.
+[WARNING GRT-0026] Missing route to pin is_lb_lh_lw_lbu_lhu$_DFFE_PP_/D in net _0052_.
+[WARNING GRT-0026] Missing route to pin _4925_/Y in net _0052_.
+[WARNING GRT-0026] Missing route to pin is_lb_lh_lw_lbu_lhu$_DFFE_PP_/D in net _0052_.
+[WARNING GRT-0026] Missing route to pin _4925_/Y in net _0052_.
+[WARNING GRT-0026] Missing route to pin is_lb_lh_lw_lbu_lhu$_DFFE_PP_/D in net _0052_.
+[WARNING GRT-0026] Missing route to pin _4925_/Y in net _0052_.
+[WARNING GRT-0026] Missing route to pin instr_jalr$_DFFE_PP_/D in net _0056_.
+[WARNING GRT-0026] Missing route to pin _4935_/Y in net _0056_.
+[WARNING GRT-0026] Missing route to pin instr_jalr$_DFFE_PP_/D in net _0056_.
+[WARNING GRT-0026] Missing route to pin _4935_/Y in net _0056_.
+[WARNING GRT-0026] Missing route to pin instr_jalr$_DFFE_PP_/D in net _0056_.
+[WARNING GRT-0026] Missing route to pin _4935_/Y in net _0056_.
+[WARNING GRT-0026] Missing route to pin is_slli_srli_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin instr_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[22\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[1\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin is_slli_srli_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin instr_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[22\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[1\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin is_slli_srli_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin instr_srai$_DFFE_PP_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[22\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[1\]$_SDFFCE_PN0P_/DE in net _0057_.
+[WARNING GRT-0026] Missing route to pin instr_lh$_DFFE_PP_/D in net _0059_.
+[WARNING GRT-0026] Missing route to pin _4940_/X in net _0059_.
+[WARNING GRT-0026] Missing route to pin instr_lh$_DFFE_PP_/D in net _0059_.
+[WARNING GRT-0026] Missing route to pin _4940_/X in net _0059_.
+[WARNING GRT-0026] Missing route to pin instr_lh$_DFFE_PP_/D in net _0059_.
+[WARNING GRT-0026] Missing route to pin _4940_/X in net _0059_.
+[WARNING GRT-0026] Missing route to pin instr_lw$_DFFE_PP_/D in net _0060_.
+[WARNING GRT-0026] Missing route to pin _4942_/X in net _0060_.
+[WARNING GRT-0026] Missing route to pin instr_lw$_DFFE_PP_/D in net _0060_.
+[WARNING GRT-0026] Missing route to pin _4942_/X in net _0060_.
+[WARNING GRT-0026] Missing route to pin instr_lw$_DFFE_PP_/D in net _0060_.
+[WARNING GRT-0026] Missing route to pin _4942_/X in net _0060_.
+[WARNING GRT-0026] Missing route to pin instr_lbu$_DFFE_PP_/D in net _0061_.
+[WARNING GRT-0026] Missing route to pin _4944_/X in net _0061_.
+[WARNING GRT-0026] Missing route to pin instr_lbu$_DFFE_PP_/D in net _0061_.
+[WARNING GRT-0026] Missing route to pin _4944_/X in net _0061_.
+[WARNING GRT-0026] Missing route to pin instr_lbu$_DFFE_PP_/D in net _0061_.
+[WARNING GRT-0026] Missing route to pin _4944_/X in net _0061_.
+[WARNING GRT-0026] Missing route to pin instr_lhu$_DFFE_PP_/D in net _0062_.
+[WARNING GRT-0026] Missing route to pin _4946_/X in net _0062_.
+[WARNING GRT-0026] Missing route to pin instr_lhu$_DFFE_PP_/D in net _0062_.
+[WARNING GRT-0026] Missing route to pin _4946_/X in net _0062_.
+[WARNING GRT-0026] Missing route to pin instr_lhu$_DFFE_PP_/D in net _0062_.
+[WARNING GRT-0026] Missing route to pin _4946_/X in net _0062_.
+[WARNING GRT-0026] Missing route to pin instr_sh$_DFFE_PP_/D in net _0064_.
+[WARNING GRT-0026] Missing route to pin _4949_/X in net _0064_.
+[WARNING GRT-0026] Missing route to pin instr_sh$_DFFE_PP_/D in net _0064_.
+[WARNING GRT-0026] Missing route to pin _4949_/X in net _0064_.
+[WARNING GRT-0026] Missing route to pin instr_sh$_DFFE_PP_/D in net _0064_.
+[WARNING GRT-0026] Missing route to pin _4949_/X in net _0064_.
+[WARNING GRT-0026] Missing route to pin _4717_/Y in net _0107_.
+[WARNING GRT-0026] Missing route to pin _4717_/Y in net _0107_.
+[WARNING GRT-0026] Missing route to pin _4717_/Y in net _0107_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[12\]$_DFFE_PP_/D in net _0111_.
+[WARNING GRT-0026] Missing route to pin _5320_/Y in net _0111_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[12\]$_DFFE_PP_/D in net _0111_.
+[WARNING GRT-0026] Missing route to pin _5320_/Y in net _0111_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[12\]$_DFFE_PP_/D in net _0111_.
+[WARNING GRT-0026] Missing route to pin _5320_/Y in net _0111_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[30\]$_DFFE_PP_/D in net _0131_.
+[WARNING GRT-0026] Missing route to pin _5639_/Y in net _0131_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[30\]$_DFFE_PP_/D in net _0131_.
+[WARNING GRT-0026] Missing route to pin _5639_/Y in net _0131_.
+[WARNING GRT-0026] Missing route to pin pcpi_rs2\[30\]$_DFFE_PP_/D in net _0131_.
+[WARNING GRT-0026] Missing route to pin _5639_/Y in net _0131_.
+[WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PP_/D in net _0141_.
+[WARNING GRT-0026] Missing route to pin _5800_/Y in net _0141_.
+[WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PP_/D in net _0141_.
+[WARNING GRT-0026] Missing route to pin _5800_/Y in net _0141_.
+[WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PP_/D in net _0141_.
+[WARNING GRT-0026] Missing route to pin _5800_/Y in net _0141_.
+[WARNING GRT-0026] Missing route to pin count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+[WARNING GRT-0026] Missing route to pin _7502_/Y in net _0146_.
+[WARNING GRT-0026] Missing route to pin count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+[WARNING GRT-0026] Missing route to pin _7502_/Y in net _0146_.
+[WARNING GRT-0026] Missing route to pin count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+[WARNING GRT-0026] Missing route to pin _7502_/Y in net _0146_.
+[WARNING GRT-0026] Missing route to pin count_instr\[2\]$_SDFFE_PN0P_/D in net _0147_.
+[WARNING GRT-0026] Missing route to pin _7506_/Y in net _0147_.
+[WARNING GRT-0026] Missing route to pin count_instr\[2\]$_SDFFE_PN0P_/D in net _0147_.
+[WARNING GRT-0026] Missing route to pin _7506_/Y in net _0147_.
+[WARNING GRT-0026] Missing route to pin count_instr\[2\]$_SDFFE_PN0P_/D in net _0147_.
+[WARNING GRT-0026] Missing route to pin _7506_/Y in net _0147_.
+[WARNING GRT-0026] Missing route to pin count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+[WARNING GRT-0026] Missing route to pin _7511_/Y in net _0148_.
+[WARNING GRT-0026] Missing route to pin count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+[WARNING GRT-0026] Missing route to pin _7511_/Y in net _0148_.
+[WARNING GRT-0026] Missing route to pin count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+[WARNING GRT-0026] Missing route to pin _7511_/Y in net _0148_.
+[WARNING GRT-0026] Missing route to pin count_instr\[4\]$_SDFFE_PN0P_/D in net _0149_.
+[WARNING GRT-0026] Missing route to pin _7515_/Y in net _0149_.
+[WARNING GRT-0026] Missing route to pin count_instr\[4\]$_SDFFE_PN0P_/D in net _0149_.
+[WARNING GRT-0026] Missing route to pin _7515_/Y in net _0149_.
+[WARNING GRT-0026] Missing route to pin count_instr\[4\]$_SDFFE_PN0P_/D in net _0149_.
+[WARNING GRT-0026] Missing route to pin _7515_/Y in net _0149_.
+[WARNING GRT-0026] Missing route to pin count_instr\[5\]$_SDFFE_PN0P_/D in net _0150_.
+[WARNING GRT-0026] Missing route to pin _7520_/Y in net _0150_.
+[WARNING GRT-0026] Missing route to pin count_instr\[5\]$_SDFFE_PN0P_/D in net _0150_.
+[WARNING GRT-0026] Missing route to pin _7520_/Y in net _0150_.
+[WARNING GRT-0026] Missing route to pin count_instr\[5\]$_SDFFE_PN0P_/D in net _0150_.
+[WARNING GRT-0026] Missing route to pin _7520_/Y in net _0150_.
+[WARNING GRT-0026] Missing route to pin count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+[WARNING GRT-0026] Missing route to pin _7528_/Y in net _0152_.
+[WARNING GRT-0026] Missing route to pin count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+[WARNING GRT-0026] Missing route to pin _7528_/Y in net _0152_.
+[WARNING GRT-0026] Missing route to pin count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+[WARNING GRT-0026] Missing route to pin _7528_/Y in net _0152_.
+[WARNING GRT-0026] Missing route to pin count_instr\[8\]$_SDFFE_PN0P_/D in net _0153_.
+[WARNING GRT-0026] Missing route to pin _7533_/Y in net _0153_.
+[WARNING GRT-0026] Missing route to pin count_instr\[8\]$_SDFFE_PN0P_/D in net _0153_.
+[WARNING GRT-0026] Missing route to pin _7533_/Y in net _0153_.
+[WARNING GRT-0026] Missing route to pin count_instr\[8\]$_SDFFE_PN0P_/D in net _0153_.
+[WARNING GRT-0026] Missing route to pin _7533_/Y in net _0153_.
+[WARNING GRT-0026] Missing route to pin count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+[WARNING GRT-0026] Missing route to pin _7536_/Y in net _0154_.
+[WARNING GRT-0026] Missing route to pin count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+[WARNING GRT-0026] Missing route to pin _7536_/Y in net _0154_.
+[WARNING GRT-0026] Missing route to pin count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+[WARNING GRT-0026] Missing route to pin _7536_/Y in net _0154_.
+[WARNING GRT-0026] Missing route to pin count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+[WARNING GRT-0026] Missing route to pin _7540_/Y in net _0155_.
+[WARNING GRT-0026] Missing route to pin count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+[WARNING GRT-0026] Missing route to pin _7540_/Y in net _0155_.
+[WARNING GRT-0026] Missing route to pin count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+[WARNING GRT-0026] Missing route to pin _7540_/Y in net _0155_.
+[WARNING GRT-0026] Missing route to pin count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+[WARNING GRT-0026] Missing route to pin _7551_/Y in net _0158_.
+[WARNING GRT-0026] Missing route to pin count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+[WARNING GRT-0026] Missing route to pin _7551_/Y in net _0158_.
+[WARNING GRT-0026] Missing route to pin count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+[WARNING GRT-0026] Missing route to pin _7551_/Y in net _0158_.
+[WARNING GRT-0026] Missing route to pin count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+[WARNING GRT-0026] Missing route to pin _7572_/Y in net _0162_.
+[WARNING GRT-0026] Missing route to pin count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+[WARNING GRT-0026] Missing route to pin _7572_/Y in net _0162_.
+[WARNING GRT-0026] Missing route to pin count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+[WARNING GRT-0026] Missing route to pin _7572_/Y in net _0162_.
+[WARNING GRT-0026] Missing route to pin count_instr\[19\]$_SDFFE_PN0P_/D in net _0164_.
+[WARNING GRT-0026] Missing route to pin _7580_/Y in net _0164_.
+[WARNING GRT-0026] Missing route to pin count_instr\[19\]$_SDFFE_PN0P_/D in net _0164_.
+[WARNING GRT-0026] Missing route to pin _7580_/Y in net _0164_.
+[WARNING GRT-0026] Missing route to pin count_instr\[19\]$_SDFFE_PN0P_/D in net _0164_.
+[WARNING GRT-0026] Missing route to pin _7580_/Y in net _0164_.
+[WARNING GRT-0026] Missing route to pin count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+[WARNING GRT-0026] Missing route to pin _7591_/Y in net _0165_.
+[WARNING GRT-0026] Missing route to pin count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+[WARNING GRT-0026] Missing route to pin _7591_/Y in net _0165_.
+[WARNING GRT-0026] Missing route to pin count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+[WARNING GRT-0026] Missing route to pin _7591_/Y in net _0165_.
+[WARNING GRT-0026] Missing route to pin count_instr\[21\]$_SDFFE_PN0P_/D in net _0166_.
+[WARNING GRT-0026] Missing route to pin _7594_/Y in net _0166_.
+[WARNING GRT-0026] Missing route to pin count_instr\[21\]$_SDFFE_PN0P_/D in net _0166_.
+[WARNING GRT-0026] Missing route to pin _7594_/Y in net _0166_.
+[WARNING GRT-0026] Missing route to pin count_instr\[21\]$_SDFFE_PN0P_/D in net _0166_.
+[WARNING GRT-0026] Missing route to pin _7594_/Y in net _0166_.
+[WARNING GRT-0026] Missing route to pin count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+[WARNING GRT-0026] Missing route to pin _7613_/Y in net _0170_.
+[WARNING GRT-0026] Missing route to pin count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+[WARNING GRT-0026] Missing route to pin _7613_/Y in net _0170_.
+[WARNING GRT-0026] Missing route to pin count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+[WARNING GRT-0026] Missing route to pin _7613_/Y in net _0170_.
+[WARNING GRT-0026] Missing route to pin count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+[WARNING GRT-0026] Missing route to pin _7618_/Y in net _0171_.
+[WARNING GRT-0026] Missing route to pin count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+[WARNING GRT-0026] Missing route to pin _7618_/Y in net _0171_.
+[WARNING GRT-0026] Missing route to pin count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+[WARNING GRT-0026] Missing route to pin _7618_/Y in net _0171_.
+[WARNING GRT-0026] Missing route to pin count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+[WARNING GRT-0026] Missing route to pin _7622_/Y in net _0172_.
+[WARNING GRT-0026] Missing route to pin count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+[WARNING GRT-0026] Missing route to pin _7622_/Y in net _0172_.
+[WARNING GRT-0026] Missing route to pin count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+[WARNING GRT-0026] Missing route to pin _7622_/Y in net _0172_.
+[WARNING GRT-0026] Missing route to pin count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+[WARNING GRT-0026] Missing route to pin _7636_/Y in net _0176_.
+[WARNING GRT-0026] Missing route to pin count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+[WARNING GRT-0026] Missing route to pin _7636_/Y in net _0176_.
+[WARNING GRT-0026] Missing route to pin count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+[WARNING GRT-0026] Missing route to pin _7636_/Y in net _0176_.
+[WARNING GRT-0026] Missing route to pin count_instr\[32\]$_SDFFE_PN0P_/D in net _0177_.
+[WARNING GRT-0026] Missing route to pin _7641_/Y in net _0177_.
+[WARNING GRT-0026] Missing route to pin count_instr\[32\]$_SDFFE_PN0P_/D in net _0177_.
+[WARNING GRT-0026] Missing route to pin _7641_/Y in net _0177_.
+[WARNING GRT-0026] Missing route to pin count_instr\[32\]$_SDFFE_PN0P_/D in net _0177_.
+[WARNING GRT-0026] Missing route to pin _7641_/Y in net _0177_.
+[WARNING GRT-0026] Missing route to pin count_instr\[35\]$_SDFFE_PN0P_/D in net _0180_.
+[WARNING GRT-0026] Missing route to pin _7658_/Y in net _0180_.
+[WARNING GRT-0026] Missing route to pin count_instr\[35\]$_SDFFE_PN0P_/D in net _0180_.
+[WARNING GRT-0026] Missing route to pin _7658_/Y in net _0180_.
+[WARNING GRT-0026] Missing route to pin count_instr\[35\]$_SDFFE_PN0P_/D in net _0180_.
+[WARNING GRT-0026] Missing route to pin _7658_/Y in net _0180_.
+[WARNING GRT-0026] Missing route to pin count_instr\[39\]$_SDFFE_PN0P_/D in net _0184_.
+[WARNING GRT-0026] Missing route to pin _7675_/Y in net _0184_.
+[WARNING GRT-0026] Missing route to pin count_instr\[39\]$_SDFFE_PN0P_/D in net _0184_.
+[WARNING GRT-0026] Missing route to pin _7675_/Y in net _0184_.
+[WARNING GRT-0026] Missing route to pin count_instr\[39\]$_SDFFE_PN0P_/D in net _0184_.
+[WARNING GRT-0026] Missing route to pin _7675_/Y in net _0184_.
+[WARNING GRT-0026] Missing route to pin count_instr\[45\]$_SDFFE_PN0P_/D in net _0190_.
+[WARNING GRT-0026] Missing route to pin _7699_/Y in net _0190_.
+[WARNING GRT-0026] Missing route to pin count_instr\[45\]$_SDFFE_PN0P_/D in net _0190_.
+[WARNING GRT-0026] Missing route to pin _7699_/Y in net _0190_.
+[WARNING GRT-0026] Missing route to pin count_instr\[45\]$_SDFFE_PN0P_/D in net _0190_.
+[WARNING GRT-0026] Missing route to pin _7699_/Y in net _0190_.
+[WARNING GRT-0026] Missing route to pin count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+[WARNING GRT-0026] Missing route to pin _7702_/Y in net _0191_.
+[WARNING GRT-0026] Missing route to pin count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+[WARNING GRT-0026] Missing route to pin _7702_/Y in net _0191_.
+[WARNING GRT-0026] Missing route to pin count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+[WARNING GRT-0026] Missing route to pin _7702_/Y in net _0191_.
+[WARNING GRT-0026] Missing route to pin count_instr\[48\]$_SDFFE_PN0P_/D in net _0193_.
+[WARNING GRT-0026] Missing route to pin _7708_/Y in net _0193_.
+[WARNING GRT-0026] Missing route to pin count_instr\[48\]$_SDFFE_PN0P_/D in net _0193_.
+[WARNING GRT-0026] Missing route to pin _7708_/Y in net _0193_.
+[WARNING GRT-0026] Missing route to pin count_instr\[48\]$_SDFFE_PN0P_/D in net _0193_.
+[WARNING GRT-0026] Missing route to pin _7708_/Y in net _0193_.
+[WARNING GRT-0026] Missing route to pin count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+[WARNING GRT-0026] Missing route to pin _7717_/Y in net _0196_.
+[WARNING GRT-0026] Missing route to pin count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+[WARNING GRT-0026] Missing route to pin _7717_/Y in net _0196_.
+[WARNING GRT-0026] Missing route to pin count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+[WARNING GRT-0026] Missing route to pin _7717_/Y in net _0196_.
+[WARNING GRT-0026] Missing route to pin count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+[WARNING GRT-0026] Missing route to pin _7722_/Y in net _0197_.
+[WARNING GRT-0026] Missing route to pin count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+[WARNING GRT-0026] Missing route to pin _7722_/Y in net _0197_.
+[WARNING GRT-0026] Missing route to pin count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+[WARNING GRT-0026] Missing route to pin _7722_/Y in net _0197_.
+[WARNING GRT-0026] Missing route to pin count_instr\[55\]$_SDFFE_PN0P_/D in net _0200_.
+[WARNING GRT-0026] Missing route to pin _7731_/Y in net _0200_.
+[WARNING GRT-0026] Missing route to pin count_instr\[55\]$_SDFFE_PN0P_/D in net _0200_.
+[WARNING GRT-0026] Missing route to pin _7731_/Y in net _0200_.
+[WARNING GRT-0026] Missing route to pin count_instr\[55\]$_SDFFE_PN0P_/D in net _0200_.
+[WARNING GRT-0026] Missing route to pin _7731_/Y in net _0200_.
+[WARNING GRT-0026] Missing route to pin count_instr\[57\]$_SDFFE_PN0P_/D in net _0202_.
+[WARNING GRT-0026] Missing route to pin _7737_/Y in net _0202_.
+[WARNING GRT-0026] Missing route to pin count_instr\[57\]$_SDFFE_PN0P_/D in net _0202_.
+[WARNING GRT-0026] Missing route to pin _7737_/Y in net _0202_.
+[WARNING GRT-0026] Missing route to pin count_instr\[57\]$_SDFFE_PN0P_/D in net _0202_.
+[WARNING GRT-0026] Missing route to pin _7737_/Y in net _0202_.
+[WARNING GRT-0026] Missing route to pin count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+[WARNING GRT-0026] Missing route to pin _7741_/Y in net _0203_.
+[WARNING GRT-0026] Missing route to pin count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+[WARNING GRT-0026] Missing route to pin _7741_/Y in net _0203_.
+[WARNING GRT-0026] Missing route to pin count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+[WARNING GRT-0026] Missing route to pin _7741_/Y in net _0203_.
+[WARNING GRT-0026] Missing route to pin count_instr\[61\]$_SDFFE_PN0P_/D in net _0206_.
+[WARNING GRT-0026] Missing route to pin _7754_/Y in net _0206_.
+[WARNING GRT-0026] Missing route to pin count_instr\[61\]$_SDFFE_PN0P_/D in net _0206_.
+[WARNING GRT-0026] Missing route to pin _7754_/Y in net _0206_.
+[WARNING GRT-0026] Missing route to pin count_instr\[61\]$_SDFFE_PN0P_/D in net _0206_.
+[WARNING GRT-0026] Missing route to pin _7754_/Y in net _0206_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+[WARNING GRT-0026] Missing route to pin _7768_/Y in net _0210_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+[WARNING GRT-0026] Missing route to pin _7768_/Y in net _0210_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+[WARNING GRT-0026] Missing route to pin _7768_/Y in net _0210_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+[WARNING GRT-0026] Missing route to pin _7770_/Y in net _0211_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+[WARNING GRT-0026] Missing route to pin _7770_/Y in net _0211_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+[WARNING GRT-0026] Missing route to pin _7770_/Y in net _0211_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+[WARNING GRT-0026] Missing route to pin _7772_/Y in net _0212_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+[WARNING GRT-0026] Missing route to pin _7772_/Y in net _0212_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+[WARNING GRT-0026] Missing route to pin _7772_/Y in net _0212_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[6\]$_SDFFE_PN0P_/D in net _0214_.
+[WARNING GRT-0026] Missing route to pin _7776_/X in net _0214_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[6\]$_SDFFE_PN0P_/D in net _0214_.
+[WARNING GRT-0026] Missing route to pin _7776_/X in net _0214_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[6\]$_SDFFE_PN0P_/D in net _0214_.
+[WARNING GRT-0026] Missing route to pin _7776_/X in net _0214_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+[WARNING GRT-0026] Missing route to pin _7784_/X in net _0218_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+[WARNING GRT-0026] Missing route to pin _7784_/X in net _0218_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+[WARNING GRT-0026] Missing route to pin _7784_/X in net _0218_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+[WARNING GRT-0026] Missing route to pin _7786_/Y in net _0219_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+[WARNING GRT-0026] Missing route to pin _7786_/Y in net _0219_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+[WARNING GRT-0026] Missing route to pin _7786_/Y in net _0219_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+[WARNING GRT-0026] Missing route to pin _7794_/X in net _0222_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+[WARNING GRT-0026] Missing route to pin _7794_/X in net _0222_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+[WARNING GRT-0026] Missing route to pin _7794_/X in net _0222_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[15\]$_SDFFE_PN0P_/D in net _0223_.
+[WARNING GRT-0026] Missing route to pin _7796_/X in net _0223_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[15\]$_SDFFE_PN0P_/D in net _0223_.
+[WARNING GRT-0026] Missing route to pin _7796_/X in net _0223_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[15\]$_SDFFE_PN0P_/D in net _0223_.
+[WARNING GRT-0026] Missing route to pin _7796_/X in net _0223_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[16\]$_SDFFE_PN0P_/D in net _0224_.
+[WARNING GRT-0026] Missing route to pin _7798_/X in net _0224_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[16\]$_SDFFE_PN0P_/D in net _0224_.
+[WARNING GRT-0026] Missing route to pin _7798_/X in net _0224_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[16\]$_SDFFE_PN0P_/D in net _0224_.
+[WARNING GRT-0026] Missing route to pin _7798_/X in net _0224_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[19\]$_SDFFE_PN0P_/D in net _0227_.
+[WARNING GRT-0026] Missing route to pin _7804_/X in net _0227_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[19\]$_SDFFE_PN0P_/D in net _0227_.
+[WARNING GRT-0026] Missing route to pin _7804_/X in net _0227_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[19\]$_SDFFE_PN0P_/D in net _0227_.
+[WARNING GRT-0026] Missing route to pin _7804_/X in net _0227_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+[WARNING GRT-0026] Missing route to pin _7806_/X in net _0228_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+[WARNING GRT-0026] Missing route to pin _7806_/X in net _0228_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+[WARNING GRT-0026] Missing route to pin _7806_/X in net _0228_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[21\]$_SDFFE_PN0P_/D in net _0229_.
+[WARNING GRT-0026] Missing route to pin _7808_/X in net _0229_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[21\]$_SDFFE_PN0P_/D in net _0229_.
+[WARNING GRT-0026] Missing route to pin _7808_/X in net _0229_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[21\]$_SDFFE_PN0P_/D in net _0229_.
+[WARNING GRT-0026] Missing route to pin _7808_/X in net _0229_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[22\]$_SDFFE_PN0P_/D in net _0230_.
+[WARNING GRT-0026] Missing route to pin _7810_/X in net _0230_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[22\]$_SDFFE_PN0P_/D in net _0230_.
+[WARNING GRT-0026] Missing route to pin _7810_/X in net _0230_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[22\]$_SDFFE_PN0P_/D in net _0230_.
+[WARNING GRT-0026] Missing route to pin _7810_/X in net _0230_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[24\]$_SDFFE_PN0P_/D in net _0232_.
+[WARNING GRT-0026] Missing route to pin _7814_/Y in net _0232_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[24\]$_SDFFE_PN0P_/D in net _0232_.
+[WARNING GRT-0026] Missing route to pin _7814_/Y in net _0232_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[24\]$_SDFFE_PN0P_/D in net _0232_.
+[WARNING GRT-0026] Missing route to pin _7814_/Y in net _0232_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[25\]$_SDFFE_PN0P_/D in net _0233_.
+[WARNING GRT-0026] Missing route to pin _7816_/X in net _0233_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[25\]$_SDFFE_PN0P_/D in net _0233_.
+[WARNING GRT-0026] Missing route to pin _7816_/X in net _0233_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[25\]$_SDFFE_PN0P_/D in net _0233_.
+[WARNING GRT-0026] Missing route to pin _7816_/X in net _0233_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+[WARNING GRT-0026] Missing route to pin _7821_/Y in net _0235_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+[WARNING GRT-0026] Missing route to pin _7821_/Y in net _0235_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+[WARNING GRT-0026] Missing route to pin _7821_/Y in net _0235_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+[WARNING GRT-0026] Missing route to pin _7824_/X in net _0237_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+[WARNING GRT-0026] Missing route to pin _7824_/X in net _0237_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+[WARNING GRT-0026] Missing route to pin _7824_/X in net _0237_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+[WARNING GRT-0026] Missing route to pin _7826_/X in net _0238_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+[WARNING GRT-0026] Missing route to pin _7826_/X in net _0238_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+[WARNING GRT-0026] Missing route to pin _7826_/X in net _0238_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+[WARNING GRT-0026] Missing route to pin _7831_/Y in net _0239_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+[WARNING GRT-0026] Missing route to pin _7831_/Y in net _0239_.
+[WARNING GRT-0026] Missing route to pin reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+[WARNING GRT-0026] Missing route to pin _7831_/Y in net _0239_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[2\]$_SDFFE_PN0P_/D in net _0241_.
+[WARNING GRT-0026] Missing route to pin _7839_/Y in net _0241_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[2\]$_SDFFE_PN0P_/D in net _0241_.
+[WARNING GRT-0026] Missing route to pin _7839_/Y in net _0241_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[2\]$_SDFFE_PN0P_/D in net _0241_.
+[WARNING GRT-0026] Missing route to pin _7839_/Y in net _0241_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[3\]$_SDFFE_PN0P_/D in net _0242_.
+[WARNING GRT-0026] Missing route to pin _7843_/Y in net _0242_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[3\]$_SDFFE_PN0P_/D in net _0242_.
+[WARNING GRT-0026] Missing route to pin _7843_/Y in net _0242_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[3\]$_SDFFE_PN0P_/D in net _0242_.
+[WARNING GRT-0026] Missing route to pin _7843_/Y in net _0242_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+[WARNING GRT-0026] Missing route to pin _7866_/Y in net _0244_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+[WARNING GRT-0026] Missing route to pin _7866_/Y in net _0244_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+[WARNING GRT-0026] Missing route to pin _7866_/Y in net _0244_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+[WARNING GRT-0026] Missing route to pin _7876_/Y in net _0245_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+[WARNING GRT-0026] Missing route to pin _7876_/Y in net _0245_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+[WARNING GRT-0026] Missing route to pin _7876_/Y in net _0245_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+[WARNING GRT-0026] Missing route to pin _7887_/X in net _0246_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+[WARNING GRT-0026] Missing route to pin _7887_/X in net _0246_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+[WARNING GRT-0026] Missing route to pin _7887_/X in net _0246_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+[WARNING GRT-0026] Missing route to pin _7909_/X in net _0248_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+[WARNING GRT-0026] Missing route to pin _7909_/X in net _0248_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+[WARNING GRT-0026] Missing route to pin _7909_/X in net _0248_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[10\]$_SDFFE_PN0P_/D in net _0249_.
+[WARNING GRT-0026] Missing route to pin _7921_/Y in net _0249_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[10\]$_SDFFE_PN0P_/D in net _0249_.
+[WARNING GRT-0026] Missing route to pin _7921_/Y in net _0249_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[10\]$_SDFFE_PN0P_/D in net _0249_.
+[WARNING GRT-0026] Missing route to pin _7921_/Y in net _0249_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[11\]$_SDFFE_PN0P_/D in net _0250_.
+[WARNING GRT-0026] Missing route to pin _7932_/Y in net _0250_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[11\]$_SDFFE_PN0P_/D in net _0250_.
+[WARNING GRT-0026] Missing route to pin _7932_/Y in net _0250_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[11\]$_SDFFE_PN0P_/D in net _0250_.
+[WARNING GRT-0026] Missing route to pin _7932_/Y in net _0250_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[12\]$_SDFFE_PN0P_/D in net _0251_.
+[WARNING GRT-0026] Missing route to pin _7945_/Y in net _0251_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[12\]$_SDFFE_PN0P_/D in net _0251_.
+[WARNING GRT-0026] Missing route to pin _7945_/Y in net _0251_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[12\]$_SDFFE_PN0P_/D in net _0251_.
+[WARNING GRT-0026] Missing route to pin _7945_/Y in net _0251_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[15\]$_SDFFE_PN0P_/D in net _0254_.
+[WARNING GRT-0026] Missing route to pin _7982_/Y in net _0254_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[15\]$_SDFFE_PN0P_/D in net _0254_.
+[WARNING GRT-0026] Missing route to pin _7982_/Y in net _0254_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[15\]$_SDFFE_PN0P_/D in net _0254_.
+[WARNING GRT-0026] Missing route to pin _7982_/Y in net _0254_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+[WARNING GRT-0026] Missing route to pin _8005_/Y in net _0256_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+[WARNING GRT-0026] Missing route to pin _8005_/Y in net _0256_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+[WARNING GRT-0026] Missing route to pin _8005_/Y in net _0256_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+[WARNING GRT-0026] Missing route to pin _8037_/Y in net _0259_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+[WARNING GRT-0026] Missing route to pin _8037_/Y in net _0259_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+[WARNING GRT-0026] Missing route to pin _8037_/Y in net _0259_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[21\]$_SDFFE_PN0P_/D in net _0260_.
+[WARNING GRT-0026] Missing route to pin _8049_/Y in net _0260_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[21\]$_SDFFE_PN0P_/D in net _0260_.
+[WARNING GRT-0026] Missing route to pin _8049_/Y in net _0260_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[21\]$_SDFFE_PN0P_/D in net _0260_.
+[WARNING GRT-0026] Missing route to pin _8049_/Y in net _0260_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[22\]$_SDFFE_PN0P_/D in net _0261_.
+[WARNING GRT-0026] Missing route to pin _8060_/Y in net _0261_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[22\]$_SDFFE_PN0P_/D in net _0261_.
+[WARNING GRT-0026] Missing route to pin _8060_/Y in net _0261_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[22\]$_SDFFE_PN0P_/D in net _0261_.
+[WARNING GRT-0026] Missing route to pin _8060_/Y in net _0261_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+[WARNING GRT-0026] Missing route to pin _8071_/Y in net _0262_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+[WARNING GRT-0026] Missing route to pin _8071_/Y in net _0262_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+[WARNING GRT-0026] Missing route to pin _8071_/Y in net _0262_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+[WARNING GRT-0026] Missing route to pin _8079_/X in net _0263_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+[WARNING GRT-0026] Missing route to pin _8079_/X in net _0263_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+[WARNING GRT-0026] Missing route to pin _8079_/X in net _0263_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+[WARNING GRT-0026] Missing route to pin _8090_/Y in net _0264_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+[WARNING GRT-0026] Missing route to pin _8090_/Y in net _0264_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+[WARNING GRT-0026] Missing route to pin _8090_/Y in net _0264_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[27\]$_SDFFE_PN0P_/D in net _0266_.
+[WARNING GRT-0026] Missing route to pin _8112_/Y in net _0266_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[27\]$_SDFFE_PN0P_/D in net _0266_.
+[WARNING GRT-0026] Missing route to pin _8112_/Y in net _0266_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[27\]$_SDFFE_PN0P_/D in net _0266_.
+[WARNING GRT-0026] Missing route to pin _8112_/Y in net _0266_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[29\]$_SDFFE_PN0P_/D in net _0268_.
+[WARNING GRT-0026] Missing route to pin _8136_/Y in net _0268_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[29\]$_SDFFE_PN0P_/D in net _0268_.
+[WARNING GRT-0026] Missing route to pin _8136_/Y in net _0268_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[29\]$_SDFFE_PN0P_/D in net _0268_.
+[WARNING GRT-0026] Missing route to pin _8136_/Y in net _0268_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[30\]$_SDFFE_PN0P_/D in net _0269_.
+[WARNING GRT-0026] Missing route to pin _8148_/Y in net _0269_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[30\]$_SDFFE_PN0P_/D in net _0269_.
+[WARNING GRT-0026] Missing route to pin _8148_/Y in net _0269_.
+[WARNING GRT-0026] Missing route to pin reg_next_pc\[30\]$_SDFFE_PN0P_/D in net _0269_.
+[WARNING GRT-0026] Missing route to pin _8148_/Y in net _0269_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+[WARNING GRT-0026] Missing route to pin _8168_/Y in net _0274_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+[WARNING GRT-0026] Missing route to pin _8168_/Y in net _0274_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+[WARNING GRT-0026] Missing route to pin _8168_/Y in net _0274_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[8\]$_SDFF_PN0_/D in net _0279_.
+[WARNING GRT-0026] Missing route to pin _8184_/Y in net _0279_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[8\]$_SDFF_PN0_/D in net _0279_.
+[WARNING GRT-0026] Missing route to pin _8184_/Y in net _0279_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[8\]$_SDFF_PN0_/D in net _0279_.
+[WARNING GRT-0026] Missing route to pin _8184_/Y in net _0279_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+[WARNING GRT-0026] Missing route to pin _8187_/Y in net _0280_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+[WARNING GRT-0026] Missing route to pin _8187_/Y in net _0280_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+[WARNING GRT-0026] Missing route to pin _8187_/Y in net _0280_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[10\]$_SDFF_PN0_/D in net _0281_.
+[WARNING GRT-0026] Missing route to pin _8190_/Y in net _0281_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[10\]$_SDFF_PN0_/D in net _0281_.
+[WARNING GRT-0026] Missing route to pin _8190_/Y in net _0281_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[10\]$_SDFF_PN0_/D in net _0281_.
+[WARNING GRT-0026] Missing route to pin _8190_/Y in net _0281_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[11\]$_SDFF_PN0_/D in net _0282_.
+[WARNING GRT-0026] Missing route to pin _8193_/Y in net _0282_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[11\]$_SDFF_PN0_/D in net _0282_.
+[WARNING GRT-0026] Missing route to pin _8193_/Y in net _0282_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[11\]$_SDFF_PN0_/D in net _0282_.
+[WARNING GRT-0026] Missing route to pin _8193_/Y in net _0282_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[13\]$_SDFF_PN0_/D in net _0284_.
+[WARNING GRT-0026] Missing route to pin _8199_/Y in net _0284_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[13\]$_SDFF_PN0_/D in net _0284_.
+[WARNING GRT-0026] Missing route to pin _8199_/Y in net _0284_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[13\]$_SDFF_PN0_/D in net _0284_.
+[WARNING GRT-0026] Missing route to pin _8199_/Y in net _0284_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+[WARNING GRT-0026] Missing route to pin _8202_/Y in net _0285_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+[WARNING GRT-0026] Missing route to pin _8202_/Y in net _0285_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+[WARNING GRT-0026] Missing route to pin _8202_/Y in net _0285_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[15\]$_SDFF_PN0_/D in net _0286_.
+[WARNING GRT-0026] Missing route to pin _8205_/Y in net _0286_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[15\]$_SDFF_PN0_/D in net _0286_.
+[WARNING GRT-0026] Missing route to pin _8205_/Y in net _0286_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[15\]$_SDFF_PN0_/D in net _0286_.
+[WARNING GRT-0026] Missing route to pin _8205_/Y in net _0286_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[16\]$_SDFF_PN0_/D in net _0287_.
+[WARNING GRT-0026] Missing route to pin _8208_/Y in net _0287_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[16\]$_SDFF_PN0_/D in net _0287_.
+[WARNING GRT-0026] Missing route to pin _8208_/Y in net _0287_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[16\]$_SDFF_PN0_/D in net _0287_.
+[WARNING GRT-0026] Missing route to pin _8208_/Y in net _0287_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+[WARNING GRT-0026] Missing route to pin _8211_/Y in net _0288_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+[WARNING GRT-0026] Missing route to pin _8211_/Y in net _0288_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+[WARNING GRT-0026] Missing route to pin _8211_/Y in net _0288_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[26\]$_SDFF_PN0_/D in net _0297_.
+[WARNING GRT-0026] Missing route to pin _8240_/Y in net _0297_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[26\]$_SDFF_PN0_/D in net _0297_.
+[WARNING GRT-0026] Missing route to pin _8240_/Y in net _0297_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[26\]$_SDFF_PN0_/D in net _0297_.
+[WARNING GRT-0026] Missing route to pin _8240_/Y in net _0297_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[28\]$_SDFF_PN0_/D in net _0299_.
+[WARNING GRT-0026] Missing route to pin _8246_/Y in net _0299_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[28\]$_SDFF_PN0_/D in net _0299_.
+[WARNING GRT-0026] Missing route to pin _8246_/Y in net _0299_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[28\]$_SDFF_PN0_/D in net _0299_.
+[WARNING GRT-0026] Missing route to pin _8246_/Y in net _0299_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[33\]$_SDFF_PN0_/D in net _0304_.
+[WARNING GRT-0026] Missing route to pin _8262_/Y in net _0304_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[33\]$_SDFF_PN0_/D in net _0304_.
+[WARNING GRT-0026] Missing route to pin _8262_/Y in net _0304_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[33\]$_SDFF_PN0_/D in net _0304_.
+[WARNING GRT-0026] Missing route to pin _8262_/Y in net _0304_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+[WARNING GRT-0026] Missing route to pin _8276_/Y in net _0308_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+[WARNING GRT-0026] Missing route to pin _8276_/Y in net _0308_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+[WARNING GRT-0026] Missing route to pin _8276_/Y in net _0308_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+[WARNING GRT-0026] Missing route to pin _8279_/Y in net _0309_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+[WARNING GRT-0026] Missing route to pin _8279_/Y in net _0309_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+[WARNING GRT-0026] Missing route to pin _8279_/Y in net _0309_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+[WARNING GRT-0026] Missing route to pin _8282_/Y in net _0310_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+[WARNING GRT-0026] Missing route to pin _8282_/Y in net _0310_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+[WARNING GRT-0026] Missing route to pin _8282_/Y in net _0310_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[41\]$_SDFF_PN0_/D in net _0312_.
+[WARNING GRT-0026] Missing route to pin _8289_/Y in net _0312_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[41\]$_SDFF_PN0_/D in net _0312_.
+[WARNING GRT-0026] Missing route to pin _8289_/Y in net _0312_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[41\]$_SDFF_PN0_/D in net _0312_.
+[WARNING GRT-0026] Missing route to pin _8289_/Y in net _0312_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+[WARNING GRT-0026] Missing route to pin _8293_/Y in net _0313_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+[WARNING GRT-0026] Missing route to pin _8293_/Y in net _0313_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+[WARNING GRT-0026] Missing route to pin _8293_/Y in net _0313_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+[WARNING GRT-0026] Missing route to pin _8296_/Y in net _0314_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+[WARNING GRT-0026] Missing route to pin _8296_/Y in net _0314_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+[WARNING GRT-0026] Missing route to pin _8296_/Y in net _0314_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[44\]$_SDFF_PN0_/D in net _0315_.
+[WARNING GRT-0026] Missing route to pin _8299_/Y in net _0315_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[44\]$_SDFF_PN0_/D in net _0315_.
+[WARNING GRT-0026] Missing route to pin _8299_/Y in net _0315_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[44\]$_SDFF_PN0_/D in net _0315_.
+[WARNING GRT-0026] Missing route to pin _8299_/Y in net _0315_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+[WARNING GRT-0026] Missing route to pin _8302_/Y in net _0316_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+[WARNING GRT-0026] Missing route to pin _8302_/Y in net _0316_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+[WARNING GRT-0026] Missing route to pin _8302_/Y in net _0316_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+[WARNING GRT-0026] Missing route to pin _8305_/Y in net _0317_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+[WARNING GRT-0026] Missing route to pin _8305_/Y in net _0317_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+[WARNING GRT-0026] Missing route to pin _8305_/Y in net _0317_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[47\]$_SDFF_PN0_/D in net _0318_.
+[WARNING GRT-0026] Missing route to pin _8309_/Y in net _0318_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[47\]$_SDFF_PN0_/D in net _0318_.
+[WARNING GRT-0026] Missing route to pin _8309_/Y in net _0318_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[47\]$_SDFF_PN0_/D in net _0318_.
+[WARNING GRT-0026] Missing route to pin _8309_/Y in net _0318_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[48\]$_SDFF_PN0_/D in net _0319_.
+[WARNING GRT-0026] Missing route to pin _8313_/Y in net _0319_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[48\]$_SDFF_PN0_/D in net _0319_.
+[WARNING GRT-0026] Missing route to pin _8313_/Y in net _0319_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[48\]$_SDFF_PN0_/D in net _0319_.
+[WARNING GRT-0026] Missing route to pin _8313_/Y in net _0319_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+[WARNING GRT-0026] Missing route to pin _8319_/Y in net _0321_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+[WARNING GRT-0026] Missing route to pin _8319_/Y in net _0321_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+[WARNING GRT-0026] Missing route to pin _8319_/Y in net _0321_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+[WARNING GRT-0026] Missing route to pin _8322_/Y in net _0322_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+[WARNING GRT-0026] Missing route to pin _8322_/Y in net _0322_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+[WARNING GRT-0026] Missing route to pin _8322_/Y in net _0322_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[54\]$_SDFF_PN0_/D in net _0325_.
+[WARNING GRT-0026] Missing route to pin _8333_/Y in net _0325_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[54\]$_SDFF_PN0_/D in net _0325_.
+[WARNING GRT-0026] Missing route to pin _8333_/Y in net _0325_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[54\]$_SDFF_PN0_/D in net _0325_.
+[WARNING GRT-0026] Missing route to pin _8333_/Y in net _0325_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[57\]$_SDFF_PN0_/D in net _0328_.
+[WARNING GRT-0026] Missing route to pin _8343_/Y in net _0328_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[57\]$_SDFF_PN0_/D in net _0328_.
+[WARNING GRT-0026] Missing route to pin _8343_/Y in net _0328_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[57\]$_SDFF_PN0_/D in net _0328_.
+[WARNING GRT-0026] Missing route to pin _8343_/Y in net _0328_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[63\]$_SDFF_PN0_/D in net _0334_.
+[WARNING GRT-0026] Missing route to pin _8363_/Y in net _0334_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[63\]$_SDFF_PN0_/D in net _0334_.
+[WARNING GRT-0026] Missing route to pin _8363_/Y in net _0334_.
+[WARNING GRT-0026] Missing route to pin count_cycle\[63\]$_SDFF_PN0_/D in net _0334_.
+[WARNING GRT-0026] Missing route to pin _8363_/Y in net _0334_.
+[WARNING GRT-0026] Missing route to pin mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+[WARNING GRT-0026] Missing route to pin _7482_/Y in net _0338_.
+[WARNING GRT-0026] Missing route to pin mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+[WARNING GRT-0026] Missing route to pin _7482_/Y in net _0338_.
+[WARNING GRT-0026] Missing route to pin mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+[WARNING GRT-0026] Missing route to pin _7482_/Y in net _0338_.
+[WARNING GRT-0026] Missing route to pin latched_store$_SDFFE_PN0P_/D in net _0339_.
+[WARNING GRT-0026] Missing route to pin _8368_/Y in net _0339_.
+[WARNING GRT-0026] Missing route to pin latched_store$_SDFFE_PN0P_/D in net _0339_.
+[WARNING GRT-0026] Missing route to pin _8368_/Y in net _0339_.
+[WARNING GRT-0026] Missing route to pin latched_store$_SDFFE_PN0P_/D in net _0339_.
+[WARNING GRT-0026] Missing route to pin _8368_/Y in net _0339_.
+[WARNING GRT-0026] Missing route to pin _4871_/B1 in net _0342_.
+[WARNING GRT-0026] Missing route to pin _4871_/B1 in net _0342_.
+[WARNING GRT-0026] Missing route to pin _4871_/B1 in net _0342_.
+[WARNING GRT-0026] Missing route to pin latched_is_lh$_SDFFE_PN0P_/D in net _0343_.
+[WARNING GRT-0026] Missing route to pin _8378_/Y in net _0343_.
+[WARNING GRT-0026] Missing route to pin latched_is_lh$_SDFFE_PN0P_/D in net _0343_.
+[WARNING GRT-0026] Missing route to pin _8378_/Y in net _0343_.
+[WARNING GRT-0026] Missing route to pin latched_is_lh$_SDFFE_PN0P_/D in net _0343_.
+[WARNING GRT-0026] Missing route to pin _8378_/Y in net _0343_.
+[WARNING GRT-0026] Missing route to pin instr_beq$_SDFFE_PN0P_/D in net _0345_.
+[WARNING GRT-0026] Missing route to pin _8385_/Y in net _0345_.
+[WARNING GRT-0026] Missing route to pin instr_beq$_SDFFE_PN0P_/D in net _0345_.
+[WARNING GRT-0026] Missing route to pin _8385_/Y in net _0345_.
+[WARNING GRT-0026] Missing route to pin instr_beq$_SDFFE_PN0P_/D in net _0345_.
+[WARNING GRT-0026] Missing route to pin _8385_/Y in net _0345_.
+[WARNING GRT-0026] Missing route to pin instr_bne$_SDFFE_PN0P_/D in net _0346_.
+[WARNING GRT-0026] Missing route to pin _8387_/Y in net _0346_.
+[WARNING GRT-0026] Missing route to pin instr_bne$_SDFFE_PN0P_/D in net _0346_.
+[WARNING GRT-0026] Missing route to pin _8387_/Y in net _0346_.
+[WARNING GRT-0026] Missing route to pin instr_bne$_SDFFE_PN0P_/D in net _0346_.
+[WARNING GRT-0026] Missing route to pin _8387_/Y in net _0346_.
+[WARNING GRT-0026] Missing route to pin instr_blt$_SDFFE_PN0P_/D in net _0347_.
+[WARNING GRT-0026] Missing route to pin _8389_/Y in net _0347_.
+[WARNING GRT-0026] Missing route to pin instr_blt$_SDFFE_PN0P_/D in net _0347_.
+[WARNING GRT-0026] Missing route to pin _8389_/Y in net _0347_.
+[WARNING GRT-0026] Missing route to pin instr_blt$_SDFFE_PN0P_/D in net _0347_.
+[WARNING GRT-0026] Missing route to pin _8389_/Y in net _0347_.
+[WARNING GRT-0026] Missing route to pin instr_addi$_SDFFE_PN0P_/D in net _0351_.
+[WARNING GRT-0026] Missing route to pin _8402_/Y in net _0351_.
+[WARNING GRT-0026] Missing route to pin instr_addi$_SDFFE_PN0P_/D in net _0351_.
+[WARNING GRT-0026] Missing route to pin _8402_/Y in net _0351_.
+[WARNING GRT-0026] Missing route to pin instr_addi$_SDFFE_PN0P_/D in net _0351_.
+[WARNING GRT-0026] Missing route to pin _8402_/Y in net _0351_.
+[WARNING GRT-0026] Missing route to pin instr_slti$_SDFFE_PN0P_/D in net _0352_.
+[WARNING GRT-0026] Missing route to pin _8404_/Y in net _0352_.
+[WARNING GRT-0026] Missing route to pin instr_slti$_SDFFE_PN0P_/D in net _0352_.
+[WARNING GRT-0026] Missing route to pin _8404_/Y in net _0352_.
+[WARNING GRT-0026] Missing route to pin instr_slti$_SDFFE_PN0P_/D in net _0352_.
+[WARNING GRT-0026] Missing route to pin _8404_/Y in net _0352_.
+[WARNING GRT-0026] Missing route to pin instr_andi$_SDFFE_PN0P_/D in net _0356_.
+[WARNING GRT-0026] Missing route to pin _8414_/Y in net _0356_.
+[WARNING GRT-0026] Missing route to pin instr_andi$_SDFFE_PN0P_/D in net _0356_.
+[WARNING GRT-0026] Missing route to pin _8414_/Y in net _0356_.
+[WARNING GRT-0026] Missing route to pin instr_andi$_SDFFE_PN0P_/D in net _0356_.
+[WARNING GRT-0026] Missing route to pin _8414_/Y in net _0356_.
+[WARNING GRT-0026] Missing route to pin instr_sll$_SDFFE_PN0P_/D in net _0359_.
+[WARNING GRT-0026] Missing route to pin _8427_/Y in net _0359_.
+[WARNING GRT-0026] Missing route to pin instr_sll$_SDFFE_PN0P_/D in net _0359_.
+[WARNING GRT-0026] Missing route to pin _8427_/Y in net _0359_.
+[WARNING GRT-0026] Missing route to pin instr_sll$_SDFFE_PN0P_/D in net _0359_.
+[WARNING GRT-0026] Missing route to pin _8427_/Y in net _0359_.
+[WARNING GRT-0026] Missing route to pin instr_sltu$_SDFFE_PN0P_/D in net _0361_.
+[WARNING GRT-0026] Missing route to pin _8431_/Y in net _0361_.
+[WARNING GRT-0026] Missing route to pin instr_sltu$_SDFFE_PN0P_/D in net _0361_.
+[WARNING GRT-0026] Missing route to pin _8431_/Y in net _0361_.
+[WARNING GRT-0026] Missing route to pin instr_sltu$_SDFFE_PN0P_/D in net _0361_.
+[WARNING GRT-0026] Missing route to pin _8431_/Y in net _0361_.
+[WARNING GRT-0026] Missing route to pin instr_sra$_SDFFE_PN0P_/D in net _0364_.
+[WARNING GRT-0026] Missing route to pin _8437_/Y in net _0364_.
+[WARNING GRT-0026] Missing route to pin instr_sra$_SDFFE_PN0P_/D in net _0364_.
+[WARNING GRT-0026] Missing route to pin _8437_/Y in net _0364_.
+[WARNING GRT-0026] Missing route to pin instr_sra$_SDFFE_PN0P_/D in net _0364_.
+[WARNING GRT-0026] Missing route to pin _8437_/Y in net _0364_.
+[WARNING GRT-0026] Missing route to pin instr_and$_SDFFE_PN0P_/D in net _0366_.
+[WARNING GRT-0026] Missing route to pin _8441_/Y in net _0366_.
+[WARNING GRT-0026] Missing route to pin instr_and$_SDFFE_PN0P_/D in net _0366_.
+[WARNING GRT-0026] Missing route to pin _8441_/Y in net _0366_.
+[WARNING GRT-0026] Missing route to pin instr_and$_SDFFE_PN0P_/D in net _0366_.
+[WARNING GRT-0026] Missing route to pin _8441_/Y in net _0366_.
+[WARNING GRT-0026] Missing route to pin mem_state\[1\]$_SDFFCE_PN0P_/D in net _0372_.
+[WARNING GRT-0026] Missing route to pin _8452_/Y in net _0372_.
+[WARNING GRT-0026] Missing route to pin mem_state\[1\]$_SDFFCE_PN0P_/D in net _0372_.
+[WARNING GRT-0026] Missing route to pin _8452_/Y in net _0372_.
+[WARNING GRT-0026] Missing route to pin mem_state\[1\]$_SDFFCE_PN0P_/D in net _0372_.
+[WARNING GRT-0026] Missing route to pin _8452_/Y in net _0372_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[27\]$_SDFFCE_PN0P_/D in net _0382_.
+[WARNING GRT-0026] Missing route to pin _8463_/X in net _0382_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[27\]$_SDFFCE_PN0P_/D in net _0382_.
+[WARNING GRT-0026] Missing route to pin _8463_/X in net _0382_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[27\]$_SDFFCE_PN0P_/D in net _0382_.
+[WARNING GRT-0026] Missing route to pin _8463_/X in net _0382_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[18\]$_SDFFCE_PN0P_/D in net _0391_.
+[WARNING GRT-0026] Missing route to pin _8475_/Y in net _0391_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[18\]$_SDFFCE_PN0P_/D in net _0391_.
+[WARNING GRT-0026] Missing route to pin _8475_/Y in net _0391_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[18\]$_SDFFCE_PN0P_/D in net _0391_.
+[WARNING GRT-0026] Missing route to pin _8475_/Y in net _0391_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0392_.
+[WARNING GRT-0026] Missing route to pin _8477_/Y in net _0392_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0392_.
+[WARNING GRT-0026] Missing route to pin _8477_/Y in net _0392_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0392_.
+[WARNING GRT-0026] Missing route to pin _8477_/Y in net _0392_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[9\]$_SDFFCE_PN0P_/D in net _0400_.
+[WARNING GRT-0026] Missing route to pin _8494_/X in net _0400_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[9\]$_SDFFCE_PN0P_/D in net _0400_.
+[WARNING GRT-0026] Missing route to pin _8494_/X in net _0400_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[9\]$_SDFFCE_PN0P_/D in net _0400_.
+[WARNING GRT-0026] Missing route to pin _8494_/X in net _0400_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[8\]$_SDFFCE_PN0P_/D in net _0401_.
+[WARNING GRT-0026] Missing route to pin _8495_/X in net _0401_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[8\]$_SDFFCE_PN0P_/D in net _0401_.
+[WARNING GRT-0026] Missing route to pin _8495_/X in net _0401_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[8\]$_SDFFCE_PN0P_/D in net _0401_.
+[WARNING GRT-0026] Missing route to pin _8495_/X in net _0401_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/D in net _0402_.
+[WARNING GRT-0026] Missing route to pin _8496_/X in net _0402_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/D in net _0402_.
+[WARNING GRT-0026] Missing route to pin _8496_/X in net _0402_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[7\]$_SDFFCE_PN0P_/D in net _0402_.
+[WARNING GRT-0026] Missing route to pin _8496_/X in net _0402_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/D in net _0404_.
+[WARNING GRT-0026] Missing route to pin _8498_/X in net _0404_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/D in net _0404_.
+[WARNING GRT-0026] Missing route to pin _8498_/X in net _0404_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[5\]$_SDFFCE_PN0P_/D in net _0404_.
+[WARNING GRT-0026] Missing route to pin _8498_/X in net _0404_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[4\]$_SDFFCE_PN0P_/D in net _0405_.
+[WARNING GRT-0026] Missing route to pin _8502_/Y in net _0405_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[4\]$_SDFFCE_PN0P_/D in net _0405_.
+[WARNING GRT-0026] Missing route to pin _8502_/Y in net _0405_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[4\]$_SDFFCE_PN0P_/D in net _0405_.
+[WARNING GRT-0026] Missing route to pin _8502_/Y in net _0405_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[3\]$_SDFFCE_PN0P_/D in net _0406_.
+[WARNING GRT-0026] Missing route to pin _8505_/Y in net _0406_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[3\]$_SDFFCE_PN0P_/D in net _0406_.
+[WARNING GRT-0026] Missing route to pin _8505_/Y in net _0406_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[3\]$_SDFFCE_PN0P_/D in net _0406_.
+[WARNING GRT-0026] Missing route to pin _8505_/Y in net _0406_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[2\]$_SDFFCE_PN0P_/D in net _0407_.
+[WARNING GRT-0026] Missing route to pin _8508_/Y in net _0407_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[2\]$_SDFFCE_PN0P_/D in net _0407_.
+[WARNING GRT-0026] Missing route to pin _8508_/Y in net _0407_.
+[WARNING GRT-0026] Missing route to pin decoded_imm\[2\]$_SDFFCE_PN0P_/D in net _0407_.
+[WARNING GRT-0026] Missing route to pin _8508_/Y in net _0407_.
+[WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PN0P_/D in net _0409_.
+[WARNING GRT-0026] Missing route to pin _8512_/Y in net _0409_.
+[WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PN0P_/D in net _0409_.
+[WARNING GRT-0026] Missing route to pin _8512_/Y in net _0409_.
+[WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PN0P_/D in net _0409_.
+[WARNING GRT-0026] Missing route to pin _8512_/Y in net _0409_.
+[WARNING GRT-0026] Missing route to pin _9144_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9146_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9148_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[13\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[1\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[22\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[25\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[31\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[3\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[5\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[8\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin _4981_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9150_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9152_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9144_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9146_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9148_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[13\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[1\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[22\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[25\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[31\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[3\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[5\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[8\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin _4981_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9150_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9152_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9144_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9146_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9148_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[13\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[1\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[22\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[25\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[31\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[3\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[5\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[8\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0411_.
+[WARNING GRT-0026] Missing route to pin _4981_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9150_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin _9152_/S in net _0411_.
+[WARNING GRT-0026] Missing route to pin load_slew370/X in net net370.
+[WARNING GRT-0026] Missing route to pin load_slew370/X in net net370.
+[WARNING GRT-0026] Missing route to pin load_slew370/X in net net370.
+[WARNING GRT-0026] Missing route to pin _8512_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4762_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4716_/Y in net _0414_.
+[WARNING GRT-0026] Missing route to pin _8512_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4762_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4716_/Y in net _0414_.
+[WARNING GRT-0026] Missing route to pin _8512_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4762_/B in net _0414_.
+[WARNING GRT-0026] Missing route to pin _4716_/Y in net _0414_.
+[WARNING GRT-0026] Missing route to pin _8395_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8402_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8407_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8410_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8412_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8222_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8296_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8184_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8190_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8346_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8429_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8431_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8446_/B1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _7741_/C1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8381_/C1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8395_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8402_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8407_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8410_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8412_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8222_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8296_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8184_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8190_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8346_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8429_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8431_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8446_/B1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _7741_/C1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8381_/C1 in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8395_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8402_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8407_/A in net _0415_.
+[WARNING GRT-0026] Missing route to pin _8410_/A in net _0415_.
+[WARNING GRT-0026] message limit (1000) reached. This message will no longer print.
+if { [llength $openroad_dont_touch] > 0 } {
+    # unset for next step
+    unset_dont_touch $openroad_dont_touch
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__poststep__{}"
+if { [sc_cfg_tool_task_exists postscript] } {
+    foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+        puts "Sourcing post script: ${sc_post_script}"
+        source -echo $sc_post_script
+    }
+}
+utl::pop_metrics_stage
+###############################
+# Write Design Data
+###############################
+utl::push_metrics_stage "sc__write__{}"
+source "$sc_refdir/common/write_data.tcl"
+utl::pop_metrics_stage
+###############################
+# Reporting
+###############################
+utl::push_metrics_stage "sc__metric__{}"
+source "$sc_refdir/common/reports.tcl"
+SC_METRIC: report_checks -path_delay max
+No paths found.
+SC_METRIC: setupslack
+worst slack INF
+SC_METRIC: tns
+tns 0.00
+SC_METRIC: report_checks -path_delay min
+No paths found.
+SC_METRIC: holdslack
+worst slack INF
+SC_METRIC: unconstrained
+Startpoint: latched_stalu$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+Endpoint: reg_next_pc[30]$_SDFFE_PN0P_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.60    0.00    0.00 ^ latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+    33    0.14    2.51    3.31    3.31 ^ latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         latched_stalu (net)
+                  2.51    0.00    3.31 ^ _5678_/S (sky130_fd_sc_hd__mux2i_1)
+     2    0.00    0.63    1.78    5.09 ^ _5678_/Y (sky130_fd_sc_hd__mux2i_1)
+                                         _1273_ (net)
+                  0.63    0.00    5.09 ^ _5680_/A2 (sky130_fd_sc_hd__o21a_1)
+     5    0.02    0.80    1.05    6.15 ^ _5680_/X (sky130_fd_sc_hd__o21a_1)
+                                         _4165_ (net)
+                  0.80    0.00    6.15 ^ _5681_/A (sky130_fd_sc_hd__inv_2)
+     3    0.01    0.13    0.40    6.54 v _5681_/Y (sky130_fd_sc_hd__inv_2)
+                                         _4133_ (net)
+                  0.13    0.00    6.54 v _9163_/B (sky130_fd_sc_hd__ha_1)
+     1    0.00    0.16    1.35    7.89 v _9163_/SUM (sky130_fd_sc_hd__ha_1)
+                                         _4196_ (net)
+                  0.16    0.00    7.89 v _7845_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.00    0.08    0.68    8.58 v _7845_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3109_ (net)
+                  0.08    0.00    8.58 v _7846_/A2 (sky130_fd_sc_hd__a21oi_1)
+     2    0.01    0.59    0.66    9.23 ^ _7846_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _3110_ (net)
+                  0.59    0.00    9.23 ^ _7868_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.17    0.45    9.68 v _7868_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3130_ (net)
+                  0.17    0.00    9.68 v _7869_/A2 (sky130_fd_sc_hd__a21oi_2)
+     2    0.01    0.62    0.78   10.47 ^ _7869_/Y (sky130_fd_sc_hd__a21oi_2)
+                                         _3131_ (net)
+                  0.62    0.00   10.47 ^ _7889_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.01    0.33    0.59   11.06 v _7889_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3149_ (net)
+                  0.33    0.00   11.06 v _7890_/A2 (sky130_fd_sc_hd__a21oi_1)
+     2    0.01    0.62    0.84   11.90 ^ _7890_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _3150_ (net)
+                  0.62    0.00   11.90 ^ _7912_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.12    0.41   12.31 v _7912_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3170_ (net)
+                  0.12    0.00   12.31 v _7913_/A2 (sky130_fd_sc_hd__a21oi_1)
+     2    0.01    0.72    0.78   13.09 ^ _7913_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _3171_ (net)
+                  0.72    0.00   13.09 ^ _7939_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.18    0.51   13.60 v _7939_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _3195_ (net)
+                  0.18    0.00   13.60 v _7940_/A2 (sky130_fd_sc_hd__a21o_4)
+     3    0.01    0.11    0.94   14.54 v _7940_/X (sky130_fd_sc_hd__a21o_4)
+                                         _3196_ (net)
+                  0.11    0.00   14.54 v _7962_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.00    0.08    0.65   15.19 v _7962_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3216_ (net)
+                  0.08    0.00   15.19 v _7963_/A2 (sky130_fd_sc_hd__a21o_1)
+     3    0.01    0.11    0.67   15.86 v _7963_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3217_ (net)
+                  0.11    0.00   15.86 v _7987_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.00    0.10    0.68   16.54 v _7987_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3239_ (net)
+                  0.10    0.00   16.54 v _7988_/A2 (sky130_fd_sc_hd__a21o_4)
+     3    0.01    0.11    0.89   17.43 v _7988_/X (sky130_fd_sc_hd__a21o_4)
+                                         _3240_ (net)
+                  0.11    0.00   17.43 v _8010_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.00    0.08    0.65   18.07 v _8010_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3260_ (net)
+                  0.08    0.00   18.07 v _8011_/A2 (sky130_fd_sc_hd__a21o_1)
+     3    0.01    0.11    0.67   18.74 v _8011_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3261_ (net)
+                  0.11    0.00   18.74 v _8032_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.00    0.10    0.68   19.42 v _8032_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3280_ (net)
+                  0.10    0.00   19.42 v _8033_/A2 (sky130_fd_sc_hd__a21o_4)
+     3    0.01    0.11    0.89   20.31 v _8033_/X (sky130_fd_sc_hd__a21o_4)
+                                         _3281_ (net)
+                  0.11    0.00   20.31 v _8055_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.01    0.71    0.78   21.09 ^ _8055_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _3301_ (net)
+                  0.71    0.00   21.09 ^ _8056_/A2 (sky130_fd_sc_hd__o21bai_2)
+     3    0.01    0.18    0.48   21.57 v _8056_/Y (sky130_fd_sc_hd__o21bai_2)
+                                         _3302_ (net)
+                  0.18    0.00   21.57 v _8072_/A2 (sky130_fd_sc_hd__a21o_4)
+     1    0.02    0.14    1.00   22.57 v _8072_/X (sky130_fd_sc_hd__a21o_4)
+                                         _3316_ (net)
+                  0.14    0.00   22.57 v _8073_/A2 (sky130_fd_sc_hd__a21o_1)
+     2    0.01    0.11    0.71   23.29 v _8073_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3317_ (net)
+                  0.11    0.00   23.29 v _8092_/A2 (sky130_fd_sc_hd__a21o_1)
+     1    0.01    0.17    0.77   24.05 v _8092_/X (sky130_fd_sc_hd__a21o_1)
+                                         _3334_ (net)
+                  0.17    0.00   24.05 v _8093_/A2 (sky130_fd_sc_hd__a21o_4)
+     2    0.01    0.11    0.95   25.01 v _8093_/X (sky130_fd_sc_hd__a21o_4)
+                                         _3335_ (net)
+                  0.11    0.00   25.01 v _8115_/A3 (sky130_fd_sc_hd__a31o_4)
+     3    0.00    0.11    0.99   26.00 v _8115_/X (sky130_fd_sc_hd__a31o_4)
+                                         _3355_ (net)
+                  0.11    0.00   26.00 v _8139_/C (sky130_fd_sc_hd__and3_1)
+     2    0.00    0.10    0.72   26.72 v _8139_/X (sky130_fd_sc_hd__and3_1)
+                                         _3377_ (net)
+                  0.10    0.00   26.72 v _8140_/C (sky130_fd_sc_hd__or3_1)
+     1    0.01    0.26    1.76   28.48 v _8140_/X (sky130_fd_sc_hd__or3_1)
+                                         _3378_ (net)
+                  0.26    0.00   28.48 v _8145_/A2 (sky130_fd_sc_hd__a31oi_1)
+     1    0.01    0.84    1.01   29.49 ^ _8145_/Y (sky130_fd_sc_hd__a31oi_1)
+                                         _3383_ (net)
+                  0.84    0.00   29.49 ^ _8148_/A1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.12    0.52   30.01 v _8148_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _0269_ (net)
+                  0.12    0.00   30.01 v reg_next_pc[30]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                 30.01   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+SC_METRIC: DRV violators
+SC_METRIC: floating nets
+SC_METRIC: overdriven nets
+SC_METRIC: fmax
+SC_METRIC: power
+Power for corner: fast
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.96e-02   1.32e-02   4.85e-05   4.28e-02  18.7%
+Combinational          1.07e-01   7.96e-02   5.34e-05   1.86e-01  81.3%
+Clock                 -4.52e-10   0.00e+00   2.13e-11  -4.31e-10  -0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  1.36e-01   9.28e-02   1.02e-04   2.29e-01 100.0%
+                          59.4%      40.5%       0.0%
+Power for corner: slow
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             1.27e-02   6.06e-03   6.26e-10   1.87e-02  19.0%
+Combinational          4.41e-02   3.56e-02   1.34e-09   7.97e-02  81.0%
+Clock                  1.19e-09   0.00e+00   3.86e-14   1.19e-09   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  5.68e-02   4.17e-02   1.97e-09   9.85e-02 100.0%
+                          57.7%      42.3%       0.0%
+Power for corner: typical
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             2.33e-02   1.09e-02   1.41e-08   3.42e-02  19.2%
+Combinational          7.82e-02   6.55e-02   1.89e-08   1.44e-01  80.8%
+Clock                  2.79e-09   0.00e+00   8.08e-14   2.79e-09   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  1.01e-01   7.64e-02   3.30e-08   1.78e-01 100.0%
+                          57.0%      43.0%       0.0%
+SC_METRIC: cellarea
+Design area 93428 u^2 46% utilization.
+Cell type report:                       Count       Area
+  Fill cell                             16623  105753.93
+  Tap cell                               2672    3343.21
+  Buffer                                  113     878.34
+  Timing Repair Buffer                   1099    8883.52
+  Inverter                                224    1111.07
+  Sequential cell                        1597   45120.77
+  Multi-Input combinational cell         4204   37434.65
+  Total                                 26532  202525.49
+
+Cell instance report:
+  sky130_fd_sc_hd__a2111oi_0                3      26.28
+  sky130_fd_sc_hd__a211o_1                 15     131.38
+  sky130_fd_sc_hd__a211o_4                  1      17.52
+  sky130_fd_sc_hd__a211oi_1                32     240.23
+  sky130_fd_sc_hd__a21boi_0                 7      52.55
+  sky130_fd_sc_hd__a21boi_1                 3      22.52
+  sky130_fd_sc_hd__a21boi_2                 3      33.78
+  sky130_fd_sc_hd__a21boi_4                 1      18.77
+  sky130_fd_sc_hd__a21o_1                  62     465.45
+  sky130_fd_sc_hd__a21o_4                   5      75.07
+  sky130_fd_sc_hd__a21oi_1                306    1531.47
+  sky130_fd_sc_hd__a21oi_2                 64     560.54
+  sky130_fd_sc_hd__a221o_4                  2      42.54
+  sky130_fd_sc_hd__a221oi_1                46     402.89
+  sky130_fd_sc_hd__a222oi_1                39     390.37
+  sky130_fd_sc_hd__a22o_1                  16     140.13
+  sky130_fd_sc_hd__a22oi_1                 73     548.03
+  sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+  sky130_fd_sc_hd__a311oi_1                 2      17.52
+  sky130_fd_sc_hd__a31o_1                   3      26.28
+  sky130_fd_sc_hd__a31o_4                   2      35.03
+  sky130_fd_sc_hd__a31oi_1                 71     444.18
+  sky130_fd_sc_hd__a32o_1                   6      60.06
+  sky130_fd_sc_hd__a32oi_1                 14     122.62
+  sky130_fd_sc_hd__a41o_1                   1      10.01
+  sky130_fd_sc_hd__a41oi_1                  5      43.79
+  sky130_fd_sc_hd__and2_0                  14      87.58
+  sky130_fd_sc_hd__and2_4                  17     148.89
+  sky130_fd_sc_hd__and3_1                  24     150.14
+  sky130_fd_sc_hd__and3_4                  39     439.17
+  sky130_fd_sc_hd__and3b_1                  1       8.76
+  sky130_fd_sc_hd__and4_1                   2      17.52
+  sky130_fd_sc_hd__and4_4                  25     281.52
+  sky130_fd_sc_hd__and4b_4                  2      27.53
+  sky130_fd_sc_hd__buf_1                  734    2755.14
+  sky130_fd_sc_hd__buf_12                  30     600.58
+  sky130_fd_sc_hd__buf_16                  80    2202.11
+  sky130_fd_sc_hd__buf_4                  108     810.78
+  sky130_fd_sc_hd__buf_6                  136    1531.47
+  sky130_fd_sc_hd__buf_8                  124    1861.79
+  sky130_fd_sc_hd__clkinv_1                43     161.40
+  sky130_fd_sc_hd__clkinv_16                1      30.03
+  sky130_fd_sc_hd__clkinv_2                 4      20.02
+  sky130_fd_sc_hd__conb_1                 138     518.00
+  sky130_fd_sc_hd__dfxtp_1                 49     980.94
+  sky130_fd_sc_hd__dfxtp_2                267    5679.20
+  sky130_fd_sc_hd__dfxtp_4                  1      23.77
+  sky130_fd_sc_hd__diode_2                 14      35.03
+  sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+  sky130_fd_sc_hd__fa_1                     5     100.10
+  sky130_fd_sc_hd__fill_1                3200    4003.84
+  sky130_fd_sc_hd__fill_2                3079    7704.89
+  sky130_fd_sc_hd__fill_4                1897    9494.11
+  sky130_fd_sc_hd__fill_8                8447   84551.09
+  sky130_fd_sc_hd__ha_1                   185    2314.72
+  sky130_fd_sc_hd__ha_2                    12     180.17
+  sky130_fd_sc_hd__ha_4                     2      50.05
+  sky130_fd_sc_hd__inv_1                  136     510.49
+  sky130_fd_sc_hd__inv_12                  14     227.72
+  sky130_fd_sc_hd__inv_16                   1      20.02
+  sky130_fd_sc_hd__inv_2                   14      52.55
+  sky130_fd_sc_hd__inv_4                    4      25.02
+  sky130_fd_sc_hd__inv_6                    6      52.55
+  sky130_fd_sc_hd__inv_8                    1      11.26
+  sky130_fd_sc_hd__mux2_1                  54     608.08
+  sky130_fd_sc_hd__mux2_4                   6      90.09
+  sky130_fd_sc_hd__mux2i_1                 87     870.84
+  sky130_fd_sc_hd__mux4_2                 545   12274.27
+  sky130_fd_sc_hd__nand2_1                414    1553.99
+  sky130_fd_sc_hd__nand2_4                102    1148.60
+  sky130_fd_sc_hd__nand2b_1                18     112.61
+  sky130_fd_sc_hd__nand3_1                 79     395.38
+  sky130_fd_sc_hd__nand3b_1                 3      22.52
+  sky130_fd_sc_hd__nand4_1                 29     181.42
+  sky130_fd_sc_hd__nand4b_1                 1       8.76
+  sky130_fd_sc_hd__nor2_1                 376    1411.35
+  sky130_fd_sc_hd__nor2_2                  44     275.26
+  sky130_fd_sc_hd__nor2_4                  34     382.87
+  sky130_fd_sc_hd__nor2_8                  32     640.61
+  sky130_fd_sc_hd__nor2b_1                 17     106.35
+  sky130_fd_sc_hd__nor2b_2                  2      17.52
+  sky130_fd_sc_hd__nor2b_4                  4      55.05
+  sky130_fd_sc_hd__nor3_1                 108     540.52
+  sky130_fd_sc_hd__nor3_2                  15     150.14
+  sky130_fd_sc_hd__nor3_4                   5      81.33
+  sky130_fd_sc_hd__nor3b_1                 11      82.58
+  sky130_fd_sc_hd__nor3b_2                  3      37.54
+  sky130_fd_sc_hd__nor4_1                  14      87.58
+  sky130_fd_sc_hd__nor4_2                  14     175.17
+  sky130_fd_sc_hd__nor4b_1                  1       8.76
+  sky130_fd_sc_hd__nor4b_2                  2      30.03
+  sky130_fd_sc_hd__o2111ai_1                1       8.76
+  sky130_fd_sc_hd__o211ai_1                26     195.19
+  sky130_fd_sc_hd__o21a_1                  75     563.04
+  sky130_fd_sc_hd__o21ai_0                487    2437.34
+  sky130_fd_sc_hd__o21ai_1                  1       5.00
+  sky130_fd_sc_hd__o21ai_4                  5      81.33
+  sky130_fd_sc_hd__o21bai_1                31     232.72
+  sky130_fd_sc_hd__o21bai_2                 5      56.30
+  sky130_fd_sc_hd__o21bai_4                 2      37.54
+  sky130_fd_sc_hd__o221a_1                  5      56.30
+  sky130_fd_sc_hd__o221ai_1                26     227.72
+  sky130_fd_sc_hd__o221ai_2                10     150.14
+  sky130_fd_sc_hd__o221ai_4                 4     105.10
+  sky130_fd_sc_hd__o22a_1                   2      17.52
+  sky130_fd_sc_hd__o22ai_1                 21     131.38
+  sky130_fd_sc_hd__o22ai_2                  5      62.56
+  sky130_fd_sc_hd__o311a_1                  1      10.01
+  sky130_fd_sc_hd__o311ai_0                16     140.13
+  sky130_fd_sc_hd__o311ai_1                 1       8.76
+  sky130_fd_sc_hd__o31a_1                   3      26.28
+  sky130_fd_sc_hd__o31ai_1                 22     165.16
+  sky130_fd_sc_hd__o32a_1                   1      10.01
+  sky130_fd_sc_hd__o32ai_1                 17     148.89
+  sky130_fd_sc_hd__o41ai_1                  1       8.76
+  sky130_fd_sc_hd__or2_0                    1       6.26
+  sky130_fd_sc_hd__or2_4                   11      96.34
+  sky130_fd_sc_hd__or3_1                    6      37.54
+  sky130_fd_sc_hd__or3_4                   11     123.87
+  sky130_fd_sc_hd__or4_1                    2      15.01
+  sky130_fd_sc_hd__or4_4                    2      22.52
+  sky130_fd_sc_hd__or4b_1                   2      20.02
+  sky130_fd_sc_hd__or4b_4                   2      27.53
+  sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+  sky130_fd_sc_hd__xnor2_1                 92     805.77
+  sky130_fd_sc_hd__xor2_1                  21     183.93
+  sky130_fd_sc_hd__xor2_2                   1      16.27
+utl::pop_metrics_stage
+# Images
+utl::push_metrics_stage "sc__image__{}"
+if {
+    [sc_has_gui] &&
+    [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+} {
+    if { [gui::enabled] } {
+        source "$sc_refdir/common/write_images.tcl"
+    } else {
+        gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+    }
+}
+[WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+[INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+[INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+[INFO FLW-0001] Saving "routing" to reports/images/picorv32.routing.png
+[INFO FLW-0001] Saving "markers - DRC - iter 5" to reports/images/markers/picorv32.DRC - iter 5.png
+[INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+[WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+[INFO FLW-0001] Saving hold timing histogram to reports/images/timing/hold.histogram.png
+[WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+[INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+[INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+[INFO FLW-0001] Saving "routing congestion heatmap" to reports/images/heatmap/routing_congestion.png
+[INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+[INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+[INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+[WARNING STA-0351] clock '*' not found.
+[INFO FLW-0001] Saving "optimizer" to reports/images/picorv32.optimizer.png
+utl::pop_metrics_stage

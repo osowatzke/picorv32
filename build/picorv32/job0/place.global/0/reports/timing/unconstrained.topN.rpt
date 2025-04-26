@@ -1,0 +1,375 @@
+[WARNING STA-0503] report_checks -group_count is deprecated. Use -group_path_count instead.
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[26]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.92 ^ _7098_/A1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.01    5.36   23.05  129.97 v _7098_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2568_ (net)
+                  5.36    0.00  129.97 v _7101_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.66    3.43  133.40 ^ _7101_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2571_ (net)
+                  0.66    0.00  133.40 ^ _7102_/B1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.01    1.93    0.41  133.81 v _7102_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2572_ (net)
+                  1.93    0.00  133.82 v _7109_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.03    3.25    3.75  137.56 ^ _7109_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2579_ (net)
+                  3.25    0.00  137.56 ^ _7110_/B1 (sky130_fd_sc_hd__a22oi_1)
+     1    0.00    1.59    1.32  138.89 v _7110_/Y (sky130_fd_sc_hd__a22oi_1)
+                                         _2580_ (net)
+                  1.59    0.00  138.89 v _7111_/B1 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    1.02    1.41  140.30 ^ _7111_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _2581_ (net)
+                  1.02    0.00  140.30 ^ _7112_/C1 (sky130_fd_sc_hd__a211o_1)
+     1    0.00    0.12    0.68  140.98 ^ _7112_/X (sky130_fd_sc_hd__a211o_1)
+                                         _4696_ (net)
+                  0.12    0.00  140.98 ^ pcpi_rs1[26]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                140.98   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[7]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.91 ^ _6518_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.72   24.86  131.78 ^ _6518_/X (sky130_fd_sc_hd__mux4_2)
+                                         _2025_ (net)
+                  0.72    0.00  131.78 ^ _6519_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.01    1.67    0.41  132.19 v _6519_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2026_ (net)
+                  1.67    0.00  132.19 v _6526_/A1 (sky130_fd_sc_hd__o22a_1)
+     1    0.00    0.10    1.79  133.98 v _6526_/X (sky130_fd_sc_hd__o22a_1)
+                                         _2033_ (net)
+                  0.10    0.00  133.98 v _6534_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.03    3.54    2.90  136.88 ^ _6534_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2041_ (net)
+                  3.54    0.00  136.88 ^ _6536_/B1 (sky130_fd_sc_hd__a22oi_1)
+     1    0.01    1.83    1.79  138.67 v _6536_/Y (sky130_fd_sc_hd__a22oi_1)
+                                         _2043_ (net)
+                  1.83    0.00  138.67 v _6537_/B1 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    1.00    1.54  140.21 ^ _6537_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _2044_ (net)
+                  1.00    0.00  140.21 ^ _6538_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    0.16    0.49  140.70 v _6538_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2045_ (net)
+                  0.16    0.00  140.70 v _6539_/B1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.48    0.25  140.95 ^ _6539_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _4707_ (net)
+                  0.48    0.00  140.95 ^ pcpi_rs1[7]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                140.95   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9362_ (rising edge-triggered flip-flop)
+Endpoint: mem_la_wdata[4]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9362_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   264    1.84   67.22  107.58  107.58 ^ _9362_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0009_ (net)
+                 67.22    0.05  107.63 ^ _5123_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.75   25.37  133.00 ^ _5123_/X (sky130_fd_sc_hd__mux4_2)
+                                         _0747_ (net)
+                  0.75    0.00  133.00 ^ _5124_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    1.91    0.49  133.50 v _5124_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _0748_ (net)
+                  1.91    0.00  133.50 v _5125_/B2 (sky130_fd_sc_hd__o221ai_1)
+     2    0.03    3.49    3.99  137.49 ^ _5125_/Y (sky130_fd_sc_hd__o221ai_1)
+                                         _0749_ (net)
+                  3.49    0.00  137.49 ^ _5126_/C (sky130_fd_sc_hd__nand3_1)
+     1    0.00    0.36    1.46  138.95 v _5126_/Y (sky130_fd_sc_hd__nand3_1)
+                                         _0750_ (net)
+                  0.36    0.00  138.95 v _5128_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.01    1.70    1.64  140.60 ^ _5128_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _0134_ (net)
+                  1.70    0.00  140.60 ^ mem_la_wdata[4]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                140.60   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9362_ (rising edge-triggered flip-flop)
+Endpoint: reg_sh[4]$_DFF_P_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9362_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   264    1.84   67.22  107.58  107.58 ^ _9362_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0009_ (net)
+                 67.22    0.05  107.63 ^ _5123_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.75   25.37  133.00 ^ _5123_/X (sky130_fd_sc_hd__mux4_2)
+                                         _0747_ (net)
+                  0.75    0.00  133.00 ^ _5124_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    1.91    0.49  133.50 v _5124_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _0748_ (net)
+                  1.91    0.00  133.50 v _5125_/B2 (sky130_fd_sc_hd__o221ai_1)
+     2    0.03    3.49    3.99  137.49 ^ _5125_/Y (sky130_fd_sc_hd__o221ai_1)
+                                         _0749_ (net)
+                  3.49    0.00  137.49 ^ _7361_/A3 (sky130_fd_sc_hd__a31oi_1)
+     1    0.01    0.48    1.75  139.24 v _7361_/Y (sky130_fd_sc_hd__a31oi_1)
+                                         _2805_ (net)
+                  0.48    0.00  139.24 v _7366_/A2 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    0.74    1.25  140.49 ^ _7366_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _0008_ (net)
+                  0.74    0.00  140.49 ^ reg_sh[4]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                140.49   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[24]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.91 ^ _7035_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.73   24.89  131.81 ^ _7035_/X (sky130_fd_sc_hd__mux4_2)
+                                         _2508_ (net)
+                  0.73    0.00  131.81 ^ _7036_/B (sky130_fd_sc_hd__nand2_1)
+     1    0.00    1.31    0.43  132.23 v _7036_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _2509_ (net)
+                  1.31    0.00  132.23 v _7037_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.66    1.22  133.45 ^ _7037_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2510_ (net)
+                  0.66    0.00  133.45 ^ _7038_/B1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    1.52    0.34  133.79 v _7038_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2511_ (net)
+                  1.52    0.00  133.79 v _7045_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.02    2.94    3.25  137.05 ^ _7045_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2518_ (net)
+                  2.94    0.00  137.05 ^ _7046_/B1 (sky130_fd_sc_hd__a22oi_1)
+     1    0.00    1.56    1.19  138.24 v _7046_/Y (sky130_fd_sc_hd__a22oi_1)
+                                         _2519_ (net)
+                  1.56    0.00  138.24 v _7052_/B1 (sky130_fd_sc_hd__o221ai_1)
+     1    0.00    0.77    1.61  139.85 ^ _7052_/Y (sky130_fd_sc_hd__o221ai_1)
+                                         _4694_ (net)
+                  0.77    0.00  139.85 ^ pcpi_rs1[24]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                139.85   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[14]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.09  106.90 ^ _6731_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.73   24.88  131.78 ^ _6731_/X (sky130_fd_sc_hd__mux4_2)
+                                         _2224_ (net)
+                  0.73    0.00  131.78 ^ _6732_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    1.53    0.37  132.15 v _6732_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2225_ (net)
+                  1.53    0.00  132.15 v _6739_/A1 (sky130_fd_sc_hd__o22a_1)
+     1    0.00    0.12    1.72  133.88 v _6739_/X (sky130_fd_sc_hd__o22a_1)
+                                         _2232_ (net)
+                  0.12    0.00  133.88 v _6746_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.02    2.89    2.42  136.29 ^ _6746_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2239_ (net)
+                  2.89    0.00  136.29 ^ _6747_/B1 (sky130_fd_sc_hd__a22oi_1)
+     1    0.01    1.76    1.40  137.69 v _6747_/Y (sky130_fd_sc_hd__a22oi_1)
+                                         _2240_ (net)
+                  1.76    0.00  137.69 v _6748_/B1 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    0.93    1.44  139.13 ^ _6748_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _2241_ (net)
+                  0.93    0.00  139.13 ^ _6749_/C1 (sky130_fd_sc_hd__a211o_1)
+     1    0.00    0.14    0.66  139.79 ^ _6749_/X (sky130_fd_sc_hd__a211o_1)
+                                         _4683_ (net)
+                  0.14    0.00  139.79 ^ pcpi_rs1[14]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                139.79   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[12]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.91 ^ _6688_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.73   24.90  131.81 ^ _6688_/X (sky130_fd_sc_hd__mux4_2)
+                                         _2185_ (net)
+                  0.73    0.00  131.81 ^ _6689_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    1.13    0.38  132.19 v _6689_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2186_ (net)
+                  1.13    0.00  132.19 v _6692_/A (sky130_fd_sc_hd__nor2_1)
+     1    0.01    0.48    1.11  133.31 ^ _6692_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2189_ (net)
+                  0.48    0.00  133.31 ^ _6693_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    0.92    0.27  133.58 v _6693_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _2190_ (net)
+                  0.92    0.00  133.58 v _6694_/B1 (sky130_fd_sc_hd__a31oi_1)
+     1    0.00    0.70    1.04  134.62 ^ _6694_/Y (sky130_fd_sc_hd__a31oi_1)
+                                         _2191_ (net)
+                  0.70    0.00  134.62 ^ _6695_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.02    2.73    0.83  135.45 v _6695_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2192_ (net)
+                  2.73    0.00  135.45 v _6696_/A2_N (sky130_fd_sc_hd__a2bb2oi_1)
+     1    0.02    1.89    2.11  137.56 v _6696_/Y (sky130_fd_sc_hd__a2bb2oi_1)
+                                         _2193_ (net)
+                  1.89    0.00  137.56 v _6697_/B1 (sky130_fd_sc_hd__o32ai_1)
+     1    0.00    0.94    1.52  139.09 ^ _6697_/Y (sky130_fd_sc_hd__o32ai_1)
+                                         _2194_ (net)
+                  0.94    0.00  139.09 ^ _6698_/C1 (sky130_fd_sc_hd__a211o_1)
+     1    0.00    0.13    0.65  139.74 ^ _6698_/X (sky130_fd_sc_hd__a211o_1)
+                                         _4681_ (net)
+                  0.13    0.00  139.74 ^ pcpi_rs1[12]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                139.74   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9362_ (rising edge-triggered flip-flop)
+Endpoint: reg_sh[2]$_DFF_P_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9362_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   264    1.84   67.22  107.58  107.58 ^ _9362_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0009_ (net)
+                 67.22    0.10  107.68 ^ _5078_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.73   25.28  132.96 ^ _5078_/X (sky130_fd_sc_hd__mux4_2)
+                                         _0704_ (net)
+                  0.73    0.00  132.96 ^ _5079_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.01    1.60    0.56  133.51 v _5079_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _0705_ (net)
+                  1.60    0.00  133.51 v _5086_/A2 (sky130_fd_sc_hd__o221ai_1)
+     1    0.00    0.69    1.62  135.14 ^ _5086_/Y (sky130_fd_sc_hd__o221ai_1)
+                                         _0712_ (net)
+                  0.69    0.00  135.14 ^ _5087_/B1 (sky130_fd_sc_hd__o21a_1)
+     2    0.04    1.37    1.53  136.66 ^ _5087_/X (sky130_fd_sc_hd__o21a_1)
+                                         _0713_ (net)
+                  1.37    0.01  136.67 ^ _7354_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.01    0.27    0.77  137.44 v _7354_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2800_ (net)
+                  0.27    0.00  137.44 v _7355_/B1 (sky130_fd_sc_hd__a211oi_1)
+     1    0.01    1.30    1.42  138.86 ^ _7355_/Y (sky130_fd_sc_hd__a211oi_1)
+                                         _2801_ (net)
+                  1.30    0.00  138.86 ^ _7356_/B1 (sky130_fd_sc_hd__a31o_1)
+     1    0.00    0.18    0.81  139.67 ^ _7356_/X (sky130_fd_sc_hd__a31o_1)
+                                         _0006_ (net)
+                  0.18    0.00  139.67 ^ reg_sh[2]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                139.67   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[17]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.10  106.92 ^ _6831_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.75   25.01  131.93 ^ _6831_/X (sky130_fd_sc_hd__mux4_2)
+                                         _2318_ (net)
+                  0.75    0.00  131.93 ^ _6832_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    1.30    0.49  132.43 v _6832_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2319_ (net)
+                  1.30    0.00  132.43 v _6837_/A2 (sky130_fd_sc_hd__o22ai_1)
+     1    0.00    0.49    1.30  133.72 ^ _6837_/Y (sky130_fd_sc_hd__o22ai_1)
+                                         _2324_ (net)
+                  0.49    0.00  133.72 ^ _6838_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    1.77    0.37  134.09 v _6838_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2325_ (net)
+                  1.77    0.00  134.09 v _6840_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.02    2.89    3.41  137.50 ^ _6840_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _2327_ (net)
+                  2.89    0.00  137.50 ^ _6843_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.51    1.23  138.73 v _6843_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _2330_ (net)
+                  0.51    0.00  138.73 v _6848_/B1 (sky130_fd_sc_hd__o311ai_0)
+     1    0.00    1.02    0.57  139.30 ^ _6848_/Y (sky130_fd_sc_hd__o311ai_0)
+                                         _4686_ (net)
+                  1.02    0.00  139.30 ^ pcpi_rs1[17]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                139.30   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+
+Startpoint: _9357_ (rising edge-triggered flip-flop)
+Endpoint: pcpi_rs1[4]$_DFFE_PP_ (rising edge-triggered flip-flop)
+Path Group: unconstrained
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0014_ (net)
+                 66.01    0.05  106.86 ^ _6417_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.01    0.74   25.18  132.04 ^ _6417_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1930_ (net)
+                  0.74    0.00  132.04 ^ _6423_/A0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.23    0.99  133.04 ^ _6423_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1936_ (net)
+                  0.23    0.00  133.04 ^ _6424_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    1.83    0.25  133.28 v _6424_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _1937_ (net)
+                  1.83    0.00  133.28 v _6426_/A2 (sky130_fd_sc_hd__o21ai_0)
+     1    0.03    3.23    3.71  136.99 ^ _6426_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _1939_ (net)
+                  3.23    0.00  136.99 ^ _6433_/A2 (sky130_fd_sc_hd__a21oi_1)
+     1    0.01    0.76    1.66  138.66 v _6433_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _1946_ (net)
+                  0.76    0.00  138.66 v _6434_/B1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.47    0.62  139.28 ^ _6434_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _4704_ (net)
+                  0.47    0.00  139.28 ^ pcpi_rs1[4]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                139.28   data arrival time
+-----------------------------------------------------------------------------
+(Path is unconstrained)
+
+

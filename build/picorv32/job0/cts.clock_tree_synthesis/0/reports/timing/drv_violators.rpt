@@ -1,0 +1,20 @@
+max slew
+
+Pin                                    Limit    Slew   Slack
+------------------------------------------------------------
+_9118_/Y                                1.48    1.70   -0.21 (VIOLATED)
+load_slew546/A                          1.50    1.70   -0.20 (VIOLATED)
+_9092_/Y                                1.48    1.63   -0.15 (VIOLATED)
+load_slew615/A                          1.50    1.63   -0.13 (VIOLATED)
+_9100_/Y                                1.48    1.56   -0.08 (VIOLATED)
+load_slew612/A                          1.50    1.56   -0.06 (VIOLATED)
+
+max capacitance
+
+Pin                                    Limit     Cap   Slack
+------------------------------------------------------------
+_9118_/Y                                0.05    0.06   -0.01 (VIOLATED)
+_9092_/Y                                0.05    0.06   -0.01 (VIOLATED)
+_9100_/Y                                0.05    0.05   -0.00 (VIOLATED)
+_9033_/Y                                0.07    0.07   -0.00 (VIOLATED)
+

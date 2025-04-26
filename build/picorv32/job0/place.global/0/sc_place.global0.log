@@ -1,0 +1,907 @@
+| INFO     | job0 | place.global         | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | place.global         | 0 | Running in /nfs/sc_compute/builds/03ceb3a4f0e94730a95a08d439e9c2e9/picorv32/job0/place.global/0
+| INFO     | job0 | place.global         | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_global_placement.tcl
+| INFO     | job0 | place.global         | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | place.global         | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | place.global         | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | place.global         | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | place.global         | 0 | ##############################
+| INFO     | job0 | place.global         | 0 | # Schema Adapter
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | place.global         | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | place.global         | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | place.global         | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | place.global         | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | place.global         | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | place.global         | 0 | ##############################
+| INFO     | job0 | place.global         | 0 | # Setup debugging
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Setup debugging if requested
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | place.global         | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | place.global         | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | place.global         | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | place.global         | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Suppress messages if requested
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | place.global         | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | place.global         | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | place.global         | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | place.global         | 0 |     } else {
+| INFO     | job0 | place.global         | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | place.global         | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | place.global         | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | place.global         | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Setup helper functions
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Design information
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Design
+| INFO     | job0 | place.global         | 0 | set sc_design [sc_top]
+| INFO     | job0 | place.global         | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | place.global         | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | place.global         | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | place.global         | 0 | # APR Parameters
+| INFO     | job0 | place.global         | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | place.global         | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | place.global         | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | place.global         | 0 | # Hard macro libraries
+| INFO     | job0 | place.global         | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | place.global         | 0 | # Threads
+| INFO     | job0 | place.global         | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | place.global         | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Read Files
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | place.global         | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | place.global         | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | place.global         | 0 | # Read Liberty
+| INFO     | job0 | place.global         | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | place.global         | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | place.global         | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | place.global         | 0 |     #Liberty
+| INFO     | job0 | place.global         | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | place.global         | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | place.global         | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | place.global         | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | place.global         | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | place.global         | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | place.global         | 0 |                 }
+| INFO     | job0 | place.global         | 0 |                 break
+| INFO     | job0 | place.global         | 0 |             }
+| INFO     | job0 | place.global         | 0 |         }
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | place.global         | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | place.global         | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | place.global         | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Read design files
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | place.global         | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | place.global         | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | place.global         | 0 |         read_db $odb_file
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | } else {
+| INFO     | job0 | place.global         | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | place.global         | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | place.global         | 0 |     # Read techlef
+| INFO     | job0 | place.global         | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | place.global         | 0 |     read_lef $sc_techlef
+| INFO     | job0 | place.global         | 0 |     # Read Lefs
+| INFO     | job0 | place.global         | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | place.global         | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | place.global         | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | place.global         | 0 |             read_lef $lef_file
+| INFO     | job0 | place.global         | 0 |         }
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | place.global         | 0 |         # Read DEF
+| INFO     | job0 | place.global         | 0 |         # get from previous step
+| INFO     | job0 | place.global         | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | place.global         | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | place.global         | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | place.global         | 0 |         # Read DEF
+| INFO     | job0 | place.global         | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | place.global         | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | place.global         | 0 |         read_def $sc_def
+| INFO     | job0 | place.global         | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | place.global         | 0 |         # Read Verilog
+| INFO     | job0 | place.global         | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | place.global         | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | place.global         | 0 |         link_design $sc_design
+| INFO     | job0 | place.global         | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | place.global         | 0 |         # Read Verilog
+| INFO     | job0 | place.global         | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | place.global         | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | place.global         | 0 |             read_verilog $netlist
+| INFO     | job0 | place.global         | 0 |         }
+| INFO     | job0 | place.global         | 0 |         link_design $sc_design
+| INFO     | job0 | place.global         | 0 |     } else {
+| INFO     | job0 | place.global         | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 |     # Handle global connect setup
+| INFO     | job0 | place.global         | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | place.global         | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | place.global         | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | place.global         | 0 |             source $global_connect
+| INFO     | job0 | place.global         | 0 |         }
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | Reading ODB: inputs/picorv32.odb
+| INFO     | job0 | place.global         | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Read timing constraints
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | place.global         | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | place.global         | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | place.global         | 0 |         read_sdc $sdc
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | } else {
+| INFO     | job0 | place.global         | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | place.global         | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | place.global         | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | place.global         | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | place.global         | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | Reading SDC: inputs/picorv32.sdc
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Common Setup
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | sc_setup_sta
+| INFO     | job0 | place.global         | 0 | [WARNING FLW-0001] No clocks defined.
+| INFO     | job0 | place.global         | 0 | sc_setup_parasitics
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | place.global         | 0 | sc_set_dont_use
+| INFO     | job0 | place.global         | 0 | sc_setup_global_routing
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing signal routing layers to: met1-met5
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Setting global routing clock routing layers to: met1-met5
+| INFO     | job0 | place.global         | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | place.global         | 0 | set sc_starting_markers []
+| INFO     | job0 | place.global         | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | place.global         | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Source Step Script
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | report_units_metric
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | place.global         | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | place.global         | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | place.global         | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | place.global         | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | place.global         | 0 | set openroad_dont_touch {}
+| INFO     | job0 | place.global         | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | place.global         | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | place.global         | 0 |     # set don't touch list
+| INFO     | job0 | place.global         | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | place.global         | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | place.global         | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | place.global         | 0 | Global connection rules: 2
+| INFO     | job0 | place.global         | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | place.global         | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | place.global         | 0 | Dont use report: reports/dont_use.global_placement.rpt
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0002] DBU: 1000
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0004] CoreBBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0006] Number of instances:              8659
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0007] Movable instances:                5987
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0008] Fixed instances:                  2672
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0009] Dummy instances:                     0
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0010] Number of nets:                   6293
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0011] Number of pins:                  24637
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0012] Die BBox:  (  0.000  0.000 ) ( 454.070 454.070 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0013] Core BBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0016] Core area:                  202525.488 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0017] Fixed instances area:         3343.206 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0018] Movable instances area:      80347.059 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0019] Utilization:                    40.338 %
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0020] Standard cells area:         80347.059 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0021] Large instances area:            0.000 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0023] Placement target density:       1.0000
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0024] Movable insts average area:     13.420 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0025] Ideal bin area:                 13.420 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0026] Ideal bin count:                 15091
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0027] Total bin area:             202525.488 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0028] Bin count (X, Y):          64 ,     64
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0029] Bin size (W * H):       7.051 *  7.013 um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0030] Number of bins:                   4096
+| INFO     | job0 | place.global         | 0 | global_placement siliconcompiler arguments: -routability_driven -timing_driven
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0002] DBU: 1000
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0004] CoreBBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0006] Number of instances:              8659
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0007] Movable instances:                5987
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0008] Fixed instances:                  2672
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0009] Dummy instances:                     0
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0010] Number of nets:                   6293
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0011] Number of pins:                  24637
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0012] Die BBox:  (  0.000  0.000 ) ( 454.070 454.070 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0013] Core BBox: (  1.380  2.720 ) ( 452.640 451.520 ) um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0016] Core area:                  202525.488 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0017] Fixed instances area:         3343.206 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0018] Movable instances area:      80347.059 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0019] Utilization:                    40.338 %
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0020] Standard cells area:         80347.059 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0021] Large instances area:            0.000 um^2
+| INFO     | job0 | place.global         | 0 | [InitialPlace]  Iter: 1 conjugate gradient residual: 0.00057276 HPWL: 240069990
+| INFO     | job0 | place.global         | 0 | [InitialPlace]  Iter: 2 conjugate gradient residual: 0.00004776 HPWL: 131300894
+| INFO     | job0 | place.global         | 0 | [InitialPlace]  Iter: 3 conjugate gradient residual: 0.00000293 HPWL: 120888421
+| INFO     | job0 | place.global         | 0 | [InitialPlace]  Iter: 4 conjugate gradient residual: 0.00000442 HPWL: 118975391
+| INFO     | job0 | place.global         | 0 | [InitialPlace]  Iter: 5 conjugate gradient residual: 0.00000126 HPWL: 116633458
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0023] Placement target density:       0.6000
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0024] Movable insts average area:     13.420 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0025] Ideal bin area:                 22.367 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0026] Ideal bin count:                  9054
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0027] Total bin area:             202525.488 um^2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0028] Bin count (X, Y):          64 ,     64
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0029] Bin size (W * H):       7.051 *  7.013 um
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0030] Number of bins:                   4096
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0031] HPWL: Half-Perimeter Wirelength
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |         1 |   0.9455 |  7.214643e+07 |   +0.00% |  1.38e-15 |
+| INFO     | job0 | place.global         | 0 |        10 |   0.8967 |  9.461000e+07 |  +31.14% |  2.14e-15 |
+| INFO     | job0 | place.global         | 0 |        20 |   0.8768 |  9.893133e+07 |   +4.57% |  3.48e-15 |
+| INFO     | job0 | place.global         | 0 |        30 |   0.8693 |  1.001883e+08 |   +1.27% |  5.67e-15 |
+| INFO     | job0 | place.global         | 0 |        40 |   0.8711 |  9.976499e+07 |   -0.42% |  9.24e-15 |
+| INFO     | job0 | place.global         | 0 |        50 |   0.8733 |  9.928207e+07 |   -0.48% |  1.51e-14 |
+| INFO     | job0 | place.global         | 0 |        60 |   0.8730 |  9.922290e+07 |   -0.06% |  2.45e-14 |
+| INFO     | job0 | place.global         | 0 |        70 |   0.8720 |  9.947442e+07 |   +0.25% |  3.99e-14 |
+| INFO     | job0 | place.global         | 0 |        80 |   0.8716 |  9.961742e+07 |   +0.14% |  6.51e-14 |
+| INFO     | job0 | place.global         | 0 |        90 |   0.8717 |  9.955301e+07 |   -0.06% |  1.06e-13 |
+| INFO     | job0 | place.global         | 0 |       100 |   0.8718 |  9.949129e+07 |   -0.06% |  1.73e-13 |
+| INFO     | job0 | place.global         | 0 |       110 |   0.8717 |  9.954292e+07 |   +0.05% |  2.81e-13 |
+| INFO     | job0 | place.global         | 0 |       120 |   0.8714 |  9.966440e+07 |   +0.12% |  4.58e-13 |
+| INFO     | job0 | place.global         | 0 |       130 |   0.8709 |  9.984541e+07 |   +0.18% |  7.46e-13 |
+| INFO     | job0 | place.global         | 0 |       140 |   0.8702 |  1.001551e+08 |   +0.31% |  1.22e-12 |
+| INFO     | job0 | place.global         | 0 |       150 |   0.8692 |  1.007170e+08 |   +0.56% |  1.98e-12 |
+| INFO     | job0 | place.global         | 0 |       160 |   0.8674 |  1.017290e+08 |   +1.00% |  3.22e-12 |
+| INFO     | job0 | place.global         | 0 |       170 |   0.8646 |  1.033571e+08 |   +1.60% |  5.25e-12 |
+| INFO     | job0 | place.global         | 0 |       180 |   0.8601 |  1.057259e+08 |   +2.29% |  8.55e-12 |
+| INFO     | job0 | place.global         | 0 |       190 |   0.8526 |  1.090855e+08 |   +3.18% |  1.39e-11 |
+| INFO     | job0 | place.global         | 0 |       200 |   0.8395 |  1.135871e+08 |   +4.13% |  2.27e-11 |
+| INFO     | job0 | place.global         | 0 |       210 |   0.8205 |  1.188765e+08 |   +4.66% |  3.69e-11 |
+| INFO     | job0 | place.global         | 0 |       220 |   0.7940 |  1.245944e+08 |   +4.81% |  6.01e-11 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0100] Timing-driven iteration 1/5, virtual: true.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0101]    Iter: 224, overflow: 0.782, keep resizer changes at: 0.3, HPWL: 126978964
+| INFO     | job0 | place.global         | 0 | Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |         0 |     +0.0% |       0 |       0 |             0 |      6294
+| INFO     | job0 | place.global         | 0 |     final |     +7.7% |    1366 |     805 |            84 |         0
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | [INFO RSZ-0034] Found 80 slew violations.
+| INFO     | job0 | place.global         | 0 | [INFO RSZ-0036] Found 49 capacitance violations.
+| INFO     | job0 | place.global         | 0 | [INFO RSZ-0039] Resized 1366 instances.
+| INFO     | job0 | place.global         | 0 | [INFO RSZ-0038] Inserted 805 buffers in 84 nets.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0106] Timing-driven: worst slack 1e+30
+| INFO     | job0 | place.global         | 0 | [WARNING GPL-0102] Timing-driven: no slacks found. Timing-driven mode disabled.
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       230 |   0.7636 |  1.304496e+08 |   +4.70% |  9.78e-11 |
+| INFO     | job0 | place.global         | 0 |       240 |   0.7300 |  1.358599e+08 |   +4.15% |  1.59e-10 |
+| INFO     | job0 | place.global         | 0 |       250 |   0.6940 |  1.409026e+08 |   +3.71% |  2.59e-10 |
+| INFO     | job0 | place.global         | 0 |       260 |   0.6555 |  1.463983e+08 |   +3.90% |  4.22e-10 |
+| INFO     | job0 | place.global         | 0 |       270 |   0.6142 |  1.517212e+08 |   +3.64% |  6.87e-10 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0088] Routability snapshot saved at iter = 273
+| INFO     | job0 | place.global         | 0 |       280 |   0.5714 |  1.562285e+08 |   +2.97% |  1.12e-09 |
+| INFO     | job0 | place.global         | 0 |       290 |   0.5298 |  1.602134e+08 |   +2.55% |  1.82e-09 |
+| INFO     | job0 | place.global         | 0 |       300 |   0.4842 |  1.636496e+08 |   +2.14% |  2.96e-09 |
+| INFO     | job0 | place.global         | 0 |       310 |   0.4397 |  1.654734e+08 |   +1.11% |  4.83e-09 |
+| INFO     | job0 | place.global         | 0 |       320 |   0.3927 |  1.669348e+08 |   +0.88% |  7.86e-09 |
+| INFO     | job0 | place.global         | 0 |       330 |   0.3479 |  1.670744e+08 |   +0.08% |  1.28e-08 |
+| INFO     | job0 | place.global         | 0 |       340 |   0.3123 |  1.672384e+08 |   +0.10% |  1.91e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 1
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 47.0410
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 352 (8.33%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.3938
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.3451
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.2914
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.1953
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.3694
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.3694) lower than previous minimum (1e+30). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                9842.187 um^2 (+12.25%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.6000
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     129351.565 um^2 (+8.24%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.319 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    129351.565 um^2 (+8.24%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        139193.752 um^2 (+7.61%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.6494
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       350 |   0.5638 |  1.633199e+08 |   -2.34% |  1.06e-09 |
+| INFO     | job0 | place.global         | 0 |       360 |   0.5308 |  1.668655e+08 |   +2.17% |  1.57e-09 |
+| INFO     | job0 | place.global         | 0 |       370 |   0.4975 |  1.680862e+08 |   +0.73% |  2.31e-09 |
+| INFO     | job0 | place.global         | 0 |       380 |   0.4581 |  1.710456e+08 |   +1.76% |  3.40e-09 |
+| INFO     | job0 | place.global         | 0 |       390 |   0.4234 |  1.726174e+08 |   +0.92% |  5.00e-09 |
+| INFO     | job0 | place.global         | 0 |       400 |   0.3834 |  1.730929e+08 |   +0.28% |  7.37e-09 |
+| INFO     | job0 | place.global         | 0 |       410 |   0.3479 |  1.739684e+08 |   +0.51% |  1.09e-08 |
+| INFO     | job0 | place.global         | 0 |       420 |   0.3194 |  1.745406e+08 |   +0.33% |  1.60e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 2
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 25.4814
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 287 (6.79%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.2620
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.2248
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1784
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.1139
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.2434
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.2434) lower than previous minimum (1.369). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                4849.660 um^2 (+5.38%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.6494
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     134201.221 um^2 (+3.75%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.315 um^2 (-0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    134201.221 um^2 (+3.75%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        139050.881 um^2 (+3.61%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.6738
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       430 |   0.5760 |  1.647254e+08 |   -5.62% |  9.84e-10 |
+| INFO     | job0 | place.global         | 0 |       440 |   0.5310 |  1.709607e+08 |   +3.79% |  1.45e-09 |
+| INFO     | job0 | place.global         | 0 |       450 |   0.5000 |  1.722442e+08 |   +0.75% |  2.13e-09 |
+| INFO     | job0 | place.global         | 0 |       460 |   0.4641 |  1.747058e+08 |   +1.43% |  3.14e-09 |
+| INFO     | job0 | place.global         | 0 |       470 |   0.4258 |  1.769047e+08 |   +1.26% |  4.63e-09 |
+| INFO     | job0 | place.global         | 0 |       480 |   0.3890 |  1.768675e+08 |   -0.02% |  6.82e-09 |
+| INFO     | job0 | place.global         | 0 |       490 |   0.3551 |  1.776926e+08 |   +0.47% |  1.00e-08 |
+| INFO     | job0 | place.global         | 0 |       500 |   0.3235 |  1.785218e+08 |   +0.47% |  1.48e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 3
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 17.5828
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 233 (5.51%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1925
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1685
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1377
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0825
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1805
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1805) lower than previous minimum (1.243). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                3432.666 um^2 (+3.61%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.6738
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     137633.890 um^2 (+2.56%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.318 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    137633.890 um^2 (+2.56%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        141066.556 um^2 (+2.49%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.6910
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       510 |   0.6087 |  1.575008e+08 |  -11.77% |  9.11e-10 |
+| INFO     | job0 | place.global         | 0 |       520 |   0.5308 |  1.741764e+08 |  +10.59% |  1.34e-09 |
+| INFO     | job0 | place.global         | 0 |       530 |   0.5045 |  1.753507e+08 |   +0.67% |  1.97e-09 |
+| INFO     | job0 | place.global         | 0 |       540 |   0.4703 |  1.759717e+08 |   +0.35% |  2.91e-09 |
+| INFO     | job0 | place.global         | 0 |       550 |   0.4361 |  1.789038e+08 |   +1.67% |  4.28e-09 |
+| INFO     | job0 | place.global         | 0 |       560 |   0.3949 |  1.791466e+08 |   +0.14% |  6.31e-09 |
+| INFO     | job0 | place.global         | 0 |       570 |   0.3613 |  1.793071e+08 |   +0.09% |  9.29e-09 |
+| INFO     | job0 | place.global         | 0 |       580 |   0.3291 |  1.800967e+08 |   +0.44% |  1.37e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 4
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 13.6625
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 201 (4.76%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1921
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1562
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1206
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0644
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1741
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1741) lower than previous minimum (1.181). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                2787.834 um^2 (+2.83%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.6910
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     140421.726 um^2 (+2.03%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.320 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    140421.726 um^2 (+2.03%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        143209.561 um^2 (+1.99%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7050
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       590 |   0.6277 |  1.536070e+08 |  -14.71% |  8.76e-10 |
+| INFO     | job0 | place.global         | 0 |       600 |   0.5250 |  1.758188e+08 |  +14.46% |  1.29e-09 |
+| INFO     | job0 | place.global         | 0 |       610 |   0.5085 |  1.780076e+08 |   +1.24% |  1.90e-09 |
+| INFO     | job0 | place.global         | 0 |       620 |   0.4739 |  1.771437e+08 |   -0.49% |  2.80e-09 |
+| INFO     | job0 | place.global         | 0 |       630 |   0.4352 |  1.801100e+08 |   +1.67% |  4.12e-09 |
+| INFO     | job0 | place.global         | 0 |       640 |   0.4015 |  1.808435e+08 |   +0.41% |  6.06e-09 |
+| INFO     | job0 | place.global         | 0 |       650 |   0.3648 |  1.806916e+08 |   -0.08% |  8.93e-09 |
+| INFO     | job0 | place.global         | 0 |       660 |   0.3316 |  1.814015e+08 |   +0.39% |  1.32e-08 |
+| INFO     | job0 | place.global         | 0 |       670 |   0.2977 |  1.821962e+08 |   +0.44% |  1.94e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 5
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 15.0403
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 228 (5.40%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1795
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1516
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1207
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0707
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1656
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1656) lower than previous minimum (1.174). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                3109.336 um^2 (+3.07%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7050
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     143531.065 um^2 (+2.21%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.323 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    143531.065 um^2 (+2.21%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        146640.402 um^2 (+2.17%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7206
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       680 |   0.5161 |  1.791213e+08 |   -1.69% |  1.24e-09 |
+| INFO     | job0 | place.global         | 0 |       690 |   0.5062 |  1.811349e+08 |   +1.12% |  1.83e-09 |
+| INFO     | job0 | place.global         | 0 |       700 |   0.4731 |  1.795761e+08 |   -0.86% |  2.69e-09 |
+| INFO     | job0 | place.global         | 0 |       710 |   0.4325 |  1.824496e+08 |   +1.60% |  3.96e-09 |
+| INFO     | job0 | place.global         | 0 |       720 |   0.3986 |  1.834821e+08 |   +0.57% |  5.83e-09 |
+| INFO     | job0 | place.global         | 0 |       730 |   0.3629 |  1.830663e+08 |   -0.23% |  8.59e-09 |
+| INFO     | job0 | place.global         | 0 |       740 |   0.3298 |  1.837361e+08 |   +0.37% |  1.27e-08 |
+| INFO     | job0 | place.global         | 0 |       750 |   0.2992 |  1.843150e+08 |   +0.32% |  1.86e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 6
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 12.4302
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 202 (4.78%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1707
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1455
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1113
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0585
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1581
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1581) lower than previous minimum (1.166). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                2687.375 um^2 (+2.57%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7206
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     146218.435 um^2 (+1.87%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.317 um^2 (-0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    146218.435 um^2 (+1.87%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        148905.809 um^2 (+1.84%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7341
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       760 |   0.5106 |  1.821466e+08 |   -1.18% |  1.24e-09 |
+| INFO     | job0 | place.global         | 0 |       770 |   0.5044 |  1.836502e+08 |   +0.83% |  1.82e-09 |
+| INFO     | job0 | place.global         | 0 |       780 |   0.4678 |  1.816738e+08 |   -1.08% |  2.69e-09 |
+| INFO     | job0 | place.global         | 0 |       790 |   0.4288 |  1.844976e+08 |   +1.55% |  3.96e-09 |
+| INFO     | job0 | place.global         | 0 |       800 |   0.3919 |  1.851711e+08 |   +0.37% |  5.83e-09 |
+| INFO     | job0 | place.global         | 0 |       810 |   0.3615 |  1.846183e+08 |   -0.30% |  8.59e-09 |
+| INFO     | job0 | place.global         | 0 |       820 |   0.3321 |  1.851619e+08 |   +0.29% |  1.27e-08 |
+| INFO     | job0 | place.global         | 0 |       830 |   0.2975 |  1.851773e+08 |   +0.01% |  1.86e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 7
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 11.0981
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 176 (4.17%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1585
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1339
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.1033
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0512
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1462
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1462) lower than previous minimum (1.158). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                2525.930 um^2 (+2.36%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7341
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     148744.372 um^2 (+1.73%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.325 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    148744.372 um^2 (+1.73%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        151270.302 um^2 (+1.70%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7468
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       840 |   0.5057 |  1.848928e+08 |   -0.15% |  1.24e-09 |
+| INFO     | job0 | place.global         | 0 |       850 |   0.5020 |  1.860204e+08 |   +0.61% |  1.82e-09 |
+| INFO     | job0 | place.global         | 0 |       860 |   0.4661 |  1.834877e+08 |   -1.36% |  2.69e-09 |
+| INFO     | job0 | place.global         | 0 |       870 |   0.4312 |  1.864138e+08 |   +1.59% |  3.96e-09 |
+| INFO     | job0 | place.global         | 0 |       880 |   0.3937 |  1.867603e+08 |   +0.19% |  5.83e-09 |
+| INFO     | job0 | place.global         | 0 |       890 |   0.3615 |  1.855564e+08 |   -0.64% |  8.59e-09 |
+| INFO     | job0 | place.global         | 0 |       900 |   0.3275 |  1.863730e+08 |   +0.44% |  1.26e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 8
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 8.7718
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 174 (4.12%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1449
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1148
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.0849
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0404
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1299
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.1299) lower than previous minimum (1.146). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                1798.333 um^2 (+1.64%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7468
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     150542.713 um^2 (+1.21%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.333 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    150542.713 um^2 (+1.21%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        152341.046 um^2 (+1.19%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7558
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       910 |   0.6412 |  1.532329e+08 |  -17.78% |  8.76e-10 |
+| INFO     | job0 | place.global         | 0 |       920 |   0.5087 |  1.868312e+08 |  +21.93% |  1.29e-09 |
+| INFO     | job0 | place.global         | 0 |       930 |   0.5010 |  1.877765e+08 |   +0.51% |  1.90e-09 |
+| INFO     | job0 | place.global         | 0 |       940 |   0.4663 |  1.840746e+08 |   -1.97% |  2.79e-09 |
+| INFO     | job0 | place.global         | 0 |       950 |   0.4277 |  1.876116e+08 |   +1.92% |  4.11e-09 |
+| INFO     | job0 | place.global         | 0 |       960 |   0.3912 |  1.876612e+08 |   +0.03% |  6.06e-09 |
+| INFO     | job0 | place.global         | 0 |       970 |   0.3594 |  1.864760e+08 |   -0.63% |  8.92e-09 |
+| INFO     | job0 | place.global         | 0 |       980 |   0.3252 |  1.871206e+08 |   +0.35% |  1.31e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 9
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 6.4156
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 153 (3.62%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1046
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.0853
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.0644
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0273
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.0950
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0048] Routing congestion (1.0950) lower than previous minimum (1.13). Updating minimum.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                1370.792 um^2 (+1.23%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7558
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     151913.497 um^2 (+0.91%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.325 um^2 (-0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    151913.497 um^2 (+0.91%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        153284.288 um^2 (+0.90%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7627
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |       990 |   0.6210 |  1.601412e+08 |  -14.42% |  9.11e-10 |
+| INFO     | job0 | place.global         | 0 |      1000 |   0.5069 |  1.897434e+08 |  +18.49% |  1.34e-09 |
+| INFO     | job0 | place.global         | 0 |      1010 |   0.4969 |  1.896383e+08 |   -0.06% |  1.97e-09 |
+| INFO     | job0 | place.global         | 0 |      1020 |   0.4598 |  1.852434e+08 |   -2.32% |  2.90e-09 |
+| INFO     | job0 | place.global         | 0 |      1030 |   0.4204 |  1.890963e+08 |   +2.08% |  4.27e-09 |
+| INFO     | job0 | place.global         | 0 |      1040 |   0.3827 |  1.886854e+08 |   -0.22% |  6.30e-09 |
+| INFO     | job0 | place.global         | 0 |      1050 |   0.3545 |  1.874509e+08 |   -0.65% |  9.28e-09 |
+| INFO     | job0 | place.global         | 0 |      1060 |   0.3220 |  1.880899e+08 |   +0.34% |  1.37e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 10
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 7.0997
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 148 (3.50%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1157
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.0957
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.0726
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0307
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1057
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0049] Routing congestion (1.1057) higher than minimum (1.0950). Consecutive non-improvement count: 1.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                1587.362 um^2 (+1.41%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7627
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     153500.860 um^2 (+1.04%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.326 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    153500.860 um^2 (+1.04%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        155088.223 um^2 (+1.03%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7707
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |      1070 |   0.5409 |  1.875270e+08 |   -0.30% |  9.82e-10 |
+| INFO     | job0 | place.global         | 0 |      1080 |   0.5033 |  1.897690e+08 |   +1.20% |  1.45e-09 |
+| INFO     | job0 | place.global         | 0 |      1090 |   0.4911 |  1.900594e+08 |   +0.15% |  2.13e-09 |
+| INFO     | job0 | place.global         | 0 |      1100 |   0.4522 |  1.872728e+08 |   -1.47% |  3.14e-09 |
+| INFO     | job0 | place.global         | 0 |      1110 |   0.4118 |  1.906206e+08 |   +1.79% |  4.62e-09 |
+| INFO     | job0 | place.global         | 0 |      1120 |   0.3763 |  1.890312e+08 |   -0.83% |  6.80e-09 |
+| INFO     | job0 | place.global         | 0 |      1130 |   0.3458 |  1.884374e+08 |   -0.31% |  1.00e-08 |
+| INFO     | job0 | place.global         | 0 |      1140 |   0.3148 |  1.891354e+08 |   +0.37% |  1.48e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 11
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 6.8744
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 146 (3.46%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1253
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.0990
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.0711
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0295
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1121
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0049] Routing congestion (1.1121) higher than minimum (1.0950). Consecutive non-improvement count: 2.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                1499.362 um^2 (+1.31%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7707
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0058] White space area:           199182.282 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0059] Movable instances area:     155000.226 um^2 (+0.98%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0060] Total filler area:           39162.330 um^2 (+0.00%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0061] Total non-inflated area:    155000.226 um^2 (+0.98%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0062] Total inflated area:        156499.588 um^2 (+0.97%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0063] New Target Density:             0.7782
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |      1150 |   0.5217 |  1.912883e+08 |   +1.14% |  1.02e-09 |
+| INFO     | job0 | place.global         | 0 |      1160 |   0.5036 |  1.911476e+08 |   -0.07% |  1.50e-09 |
+| INFO     | job0 | place.global         | 0 |      1170 |   0.4903 |  1.902109e+08 |   -0.49% |  2.21e-09 |
+| INFO     | job0 | place.global         | 0 |      1180 |   0.4483 |  1.886964e+08 |   -0.80% |  3.26e-09 |
+| INFO     | job0 | place.global         | 0 |      1190 |   0.4118 |  1.915512e+08 |   +1.51% |  4.80e-09 |
+| INFO     | job0 | place.global         | 0 |      1200 |   0.3753 |  1.893122e+08 |   -1.17% |  7.07e-09 |
+| INFO     | job0 | place.global         | 0 |      1210 |   0.3407 |  1.889517e+08 |   -0.19% |  1.04e-08 |
+| INFO     | job0 | place.global         | 0 |      1220 |   0.3095 |  1.898196e+08 |   +0.46% |  1.53e-08 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0040] Routability iteration: 12
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0041] Total routing overflow: 8.1144
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0042] Number of overflowed tiles: 167 (3.95%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0043] Average top 0.5% routing congestion: 1.1407
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0044] Average top 1.0% routing congestion: 1.1127
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0045] Average top 2.0% routing congestion: 1.0821
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0046] Average top 5.0% routing congestion: 1.0367
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0047] Routability iteration weighted routing congestion: 1.1267
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0049] Routing congestion (1.1267) higher than minimum (1.0950). Consecutive non-improvement count: 3.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0051] Inflated area:                1826.094 um^2 (+1.58%)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0052] Placement target density:       0.7782
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0054] No improvement in routing congestion for 3 consecutive iterations (limit is 3).
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0055] Reverting inflation values and target density from the iteration with minimum observed routing congestion.
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0056] Minimum observed routing congestion: 1.0950
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0057] Target density at minimum routing congestion: 0.7558
+| INFO     | job0 | place.global         | 0 | [INFO GPL-0089] Routability end iteration: revert back to snapshot
+| INFO     | job0 | place.global         | 0 | Iteration | Overflow |     HPWL (um) |  HPWL(%) |   Penalty | Group
+| INFO     | job0 | place.global         | 0 | ---------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |      1230 |   0.5118 |  1.839417e+08 |   -3.10% |  1.06e-09 |
+| INFO     | job0 | place.global         | 0 |      1240 |   0.4925 |  1.847594e+08 |   +0.44% |  1.56e-09 |
+| INFO     | job0 | place.global         | 0 |      1250 |   0.4728 |  1.852364e+08 |   +0.26% |  2.30e-09 |
+| INFO     | job0 | place.global         | 0 |      1260 |   0.4369 |  1.839287e+08 |   -0.71% |  3.39e-09 |
+| INFO     | job0 | place.global         | 0 |      1270 |   0.3989 |  1.870039e+08 |   +1.67% |  4.99e-09 |
+| INFO     | job0 | place.global         | 0 |      1280 |   0.3612 |  1.861047e+08 |   -0.48% |  7.35e-09 |
+| INFO     | job0 | place.global         | 0 |      1290 |   0.3339 |  1.863993e+08 |   +0.16% |  1.08e-08 |
+| INFO     | job0 | place.global         | 0 |      1300 |   0.2986 |  1.869405e+08 |   +0.29% |  1.60e-08 |
+| INFO     | job0 | place.global         | 0 |      1310 |   0.2674 |  1.870048e+08 |   +0.03% |  2.35e-08 |
+| INFO     | job0 | place.global         | 0 |      1320 |   0.2364 |  1.872509e+08 |   +0.13% |  3.46e-08 |
+| INFO     | job0 | place.global         | 0 |      1330 |   0.2065 |  1.874674e+08 |   +0.12% |  5.10e-08 |
+| INFO     | job0 | place.global         | 0 |      1340 |   0.1838 |  1.878369e+08 |   +0.20% |  7.51e-08 |
+| INFO     | job0 | place.global         | 0 |      1350 |   0.1573 |  1.881998e+08 |   +0.19% |  1.11e-07 |
+| INFO     | job0 | place.global         | 0 |      1360 |   0.1399 |  1.885448e+08 |   +0.18% |  1.63e-07 |
+| INFO     | job0 | place.global         | 0 |      1370 |   0.1216 |  1.890634e+08 |   +0.28% |  2.40e-07 |
+| INFO     | job0 | place.global         | 0 |      1380 |   0.1056 |  1.894650e+08 |   +0.21% |  3.54e-07 |
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1001] Finished with Overflow: 0.099201
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1002] Placed Cell Area            115837.8961
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1003] Available Free Area         199182.2816
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1004] Minimum Feasible Density        0.5816 (cell_area / free_area)
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1006]   Suggested Target Densities:
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1007]     - For 90% usage of free space: 0.6462
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1008]     - For 80% usage of free space: 0.7270
+| INFO     | job0 | place.global         | 0 | [INFO GPL-1009]     - For 50% usage of free space: 1.1631
+| INFO     | job0 | place.global         | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | place.global         | 0 |     # unset for next step
+| INFO     | job0 | place.global         | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | place.global         | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | place.global         | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | place.global         | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | place.global         | 0 |         source -echo $sc_post_script
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Write Design Data
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | place.global         | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | # Reporting
+| INFO     | job0 | place.global         | 0 | ###############################
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | place.global         | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | place.global         | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | place.global         | 0 | No paths found.
+| INFO     | job0 | place.global         | 0 | SC_METRIC: setupslack
+| INFO     | job0 | place.global         | 0 | worst slack INF
+| INFO     | job0 | place.global         | 0 | SC_METRIC: tns
+| INFO     | job0 | place.global         | 0 | tns 0.00
+| INFO     | job0 | place.global         | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | place.global         | 0 | Startpoint: _9357_ (rising edge-triggered flip-flop)
+| INFO     | job0 | place.global         | 0 | Endpoint: pcpi_rs1[26]$_DFFE_PP_ (rising edge-triggered flip-flop)
+| INFO     | job0 | place.global         | 0 | Path Group: unconstrained
+| INFO     | job0 | place.global         | 0 | Path Type: max
+| INFO     | job0 | place.global         | 0 | Corner: slow
+| INFO     | job0 | place.global         | 0 | 
+| INFO     | job0 | place.global         | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | place.global         | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 |                 175.40    0.00    0.00 ^ _9357_/CLK (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | place.global         | 0 |    262    1.80   66.01  106.81  106.81 ^ _9357_/Q (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | place.global         | 0 |                                          _0014_ (net)
+| INFO     | job0 | place.global         | 0 |                  66.01    0.10  106.92 ^ _7098_/A1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.global         | 0 |      1    0.01    5.36   23.05  129.97 v _7098_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.global         | 0 |                                          _2568_ (net)
+| INFO     | job0 | place.global         | 0 |                   5.36    0.00  129.97 v _7101_/A1 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | place.global         | 0 |      1    0.00    0.66    3.43  133.40 ^ _7101_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | place.global         | 0 |                                          _2571_ (net)
+| INFO     | job0 | place.global         | 0 |                   0.66    0.00  133.40 ^ _7102_/B1 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | place.global         | 0 |      1    0.01    1.93    0.41  133.81 v _7102_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | place.global         | 0 |                                          _2572_ (net)
+| INFO     | job0 | place.global         | 0 |                   1.93    0.00  133.82 v _7109_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.global         | 0 |      1    0.03    3.25    3.75  137.56 ^ _7109_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.global         | 0 |                                          _2579_ (net)
+| INFO     | job0 | place.global         | 0 |                   3.25    0.00  137.56 ^ _7110_/B1 (sky130_fd_sc_hd__a22oi_1)
+| INFO     | job0 | place.global         | 0 |      1    0.00    1.59    1.32  138.89 v _7110_/Y (sky130_fd_sc_hd__a22oi_1)
+| INFO     | job0 | place.global         | 0 |                                          _2580_ (net)
+| INFO     | job0 | place.global         | 0 |                   1.59    0.00  138.89 v _7111_/B1 (sky130_fd_sc_hd__o32ai_1)
+| INFO     | job0 | place.global         | 0 |      1    0.00    1.02    1.41  140.30 ^ _7111_/Y (sky130_fd_sc_hd__o32ai_1)
+| INFO     | job0 | place.global         | 0 |                                          _2581_ (net)
+| INFO     | job0 | place.global         | 0 |                   1.02    0.00  140.30 ^ _7112_/C1 (sky130_fd_sc_hd__a211o_1)
+| INFO     | job0 | place.global         | 0 |      1    0.00    0.12    0.68  140.98 ^ _7112_/X (sky130_fd_sc_hd__a211o_1)
+| INFO     | job0 | place.global         | 0 |                                          _4696_ (net)
+| INFO     | job0 | place.global         | 0 |                   0.12    0.00  140.98 ^ pcpi_rs1[26]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | place.global         | 0 |                                 140.98   data arrival time
+| INFO     | job0 | place.global         | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | (Path is unconstrained)
+| INFO     | job0 | place.global         | 0 | 
+| INFO     | job0 | place.global         | 0 | 
+| INFO     | job0 | place.global         | 0 | SC_METRIC: floating nets
+| INFO     | job0 | place.global         | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | place.global         | 0 | SC_METRIC: fmax
+| INFO     | job0 | place.global         | 0 | SC_METRIC: power
+| INFO     | job0 | place.global         | 0 | Power for corner: fast
+| INFO     | job0 | place.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Sequential             6.23e-02   1.14e-02   4.78e-05   7.37e-02  48.4%
+| INFO     | job0 | place.global         | 0 | Combinational          5.16e-02   2.69e-02   3.54e-05   7.85e-02  51.6%
+| INFO     | job0 | place.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Total                  1.14e-01   3.82e-02   8.32e-05   1.52e-01 100.0%
+| INFO     | job0 | place.global         | 0 |                           74.9%      25.1%       0.1%
+| INFO     | job0 | place.global         | 0 | Power for corner: slow
+| INFO     | job0 | place.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Sequential             2.80e-03   5.43e-03   6.07e-10   8.23e-03  29.0%
+| INFO     | job0 | place.global         | 0 | Combinational          7.47e-03   1.27e-02   6.87e-10   2.01e-02  71.0%
+| INFO     | job0 | place.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Total                  1.03e-02   1.81e-02   1.29e-09   2.84e-02 100.0%
+| INFO     | job0 | place.global         | 0 |                           36.2%      63.8%       0.0%
+| INFO     | job0 | place.global         | 0 | Power for corner: typical
+| INFO     | job0 | place.global         | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.global         | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Sequential             1.57e-02   9.48e-03   1.40e-08   2.52e-02  37.9%
+| INFO     | job0 | place.global         | 0 | Combinational          1.89e-02   2.24e-02   1.34e-08   4.13e-02  62.1%
+| INFO     | job0 | place.global         | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.global         | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.global         | 0 | Total                  3.46e-02   3.19e-02   2.73e-08   6.65e-02 100.0%
+| INFO     | job0 | place.global         | 0 |                           52.1%      47.9%       0.0%
+| INFO     | job0 | place.global         | 0 | SC_METRIC: cellarea
+| INFO     | job0 | place.global         | 0 | Design area 80347 u^2 40% utilization.
+| INFO     | job0 | place.global         | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | place.global         | 0 |   Tap cell                               2672    3343.21
+| INFO     | job0 | place.global         | 0 |   Buffer                                  113     848.31
+| INFO     | job0 | place.global         | 0 |   Inverter                                224     840.81
+| INFO     | job0 | place.global         | 0 |   Sequential cell                        1597   44782.95
+| INFO     | job0 | place.global         | 0 |   Multi-Input combinational cell         4053   33874.99
+| INFO     | job0 | place.global         | 0 |   Total                                  8659   83690.27
+| INFO     | job0 | place.global         | 0 | 
+| INFO     | job0 | place.global         | 0 | Cell instance report:
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a2111oi_0                3      26.28
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a211o_1                 16     140.13
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a211oi_1                31     232.72
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a211oi_2                 1      12.51
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a21boi_0                14     105.10
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a21o_1                  67     502.98
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a21oi_1                368    1841.77
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a21oi_2                  2      17.52
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a221o_1                  2      20.02
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a221oi_1                46     402.89
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a222oi_1                39     390.37
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a22o_1                  16     140.13
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a22oi_1                 73     548.03
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a2bb2oi_1                3      26.28
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a311oi_1                 2      17.52
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a31o_1                   5      43.79
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a31oi_1                 71     444.18
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a32o_1                   6      60.06
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a32oi_1                 14     122.62
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a41o_1                   1      10.01
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__a41oi_1                  5      43.79
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and2_0                  10      62.56
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and2_1                  21     131.38
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and3_1                  63     394.13
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and3b_1                  1       8.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and4_1                  27     236.48
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__and4b_1                  2      20.02
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__buf_4                  113     848.31
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__clkinv_1                10      37.54
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__conb_1                   1       3.75
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__dfxtp_1                317    6346.09
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__edfxtp_1              1280   38436.86
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__ha_1                   199    2489.89
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__inv_1                  212     795.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__inv_2                    2       7.51
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__mux2_2                  60     675.65
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__mux2i_1                 87     870.84
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__mux4_2                 545   12274.27
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand2_1                516    1936.86
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand3_1                 79     395.38
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand3b_1                 3      22.52
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand4_1                 29     181.42
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor2_1                 486    1824.25
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor2b_1                 23     143.89
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor3_1                 128     640.61
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor3b_1                 14     105.10
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor4_1                  27     168.91
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor4_2                   1      12.51
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o211ai_1                25     187.68
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o211ai_2                 1      12.51
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o21a_1                  75     563.04
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o21ai_0                480    2402.30
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o21ai_1                 13      65.06
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o21bai_1                38     285.27
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o221a_2                  5      56.30
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o221ai_1                40     350.34
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o22ai_1                 26     162.66
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o311ai_0                16     140.13
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o311ai_1                 1       8.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o31a_1                   3      26.28
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o31ai_1                 22     165.16
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o32ai_1                 17     148.89
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__o41ai_1                  1       8.76
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__or2_1                   12      75.07
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__or3_1                   17     106.35
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__or4_1                    4      30.03
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__or4b_2                   4      40.04
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         2672    3343.21
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__xnor2_1                 92     805.77
+| INFO     | job0 | place.global         | 0 |   sky130_fd_sc_hd__xor2_1                  22     192.68
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.global         | 0 | # Images
+| INFO     | job0 | place.global         | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | place.global         | 0 | if {
+| INFO     | job0 | place.global         | 0 |     [sc_has_gui] &&
+| INFO     | job0 | place.global         | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | place.global         | 0 | } {
+| INFO     | job0 | place.global         | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | place.global         | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | place.global         | 0 |     } else {
+| INFO     | job0 | place.global         | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | place.global         | 0 |     }
+| INFO     | job0 | place.global         | 0 | }
+| INFO     | job0 | place.global         | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32.placement.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | place.global         | 0 | [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | place.global         | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | place.global         | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | place.global         | 0 | 168: [WARNING FLW-0001] No clocks defined.
+| WARNING  | job0 | place.global         | 0 | 309: [WARNING GPL-0102] Timing-driven: no slacks found. Timing-driven mode disabled.
+| WARNING  | job0 | place.global         | 0 | 886: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| WARNING  | job0 | place.global         | 0 | 890: [WARNING GUI-0097] All pins are unconstrained. Cannot plot histogram. Check if timing data is loaded!
+| INFO     | job0 | place.global         | 0 | Number of errors: 0
+| INFO     | job0 | place.global         | 0 | Number of warnings: 4
+| INFO     | job0 | place.global         | 0 | Finished task in 45.5s
+| INFO     | job0 | place.global         | 0 | Archiving place.global0...
