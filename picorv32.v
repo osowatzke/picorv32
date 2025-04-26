@@ -40,9 +40,9 @@
   `define assert(assert_expr) assert(assert_expr)
 `else
   `ifdef DEBUGNETS
-	`define FORMAL_KEEP (* keep *)
+    `define FORMAL_KEEP (* keep *)
   `else
-	`define FORMAL_KEEP
+    `define FORMAL_KEEP
   `endif
   `define assert(assert_expr) empty_statement
 `endif
