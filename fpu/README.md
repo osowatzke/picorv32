@@ -17,3 +17,7 @@ https://github.com/riscv/riscv-opcodes/blob/7c3db437d8d3b6961f8eb2931792eaea1c46
 Adder and Multiplier Implementations (Source in src/main/resources/vsrc and Testbenches in src/test/resources/vsrc):
 
 https://github.com/osowatzke/cnn-hw-accelerator/tree/main
+
+RISV Floating Point Documentation (Starting on Page 111 \[130 when searching\]):
+
+https://drive.google.com/file/d/1uviu1nH-tScFfgrovvFCrj7Omv8tFtkp/view
