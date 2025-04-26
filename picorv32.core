@@ -3,7 +3,7 @@ name : ::picorv32:0-r1
 
 filesets:
   rtl:
-    files: [picorv32.v]
+    files: [picorv32.v, fpu/fmuls.v, fpu/floating_point_multiply.v]
     file_type : verilogSource
   tb:
     files: [testbench.v]
