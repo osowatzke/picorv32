@@ -26,6 +26,8 @@ Bla Bla Bla !! Done !
    - [PICORV32 Processor SRC](https://github.com/YosysHQ/picorv32)
    - [cnn-hw-accelerator](https://github.com/osowatzke/cnn-hw-accelerator/tree/main)
 
+- ** SRAM MACRO **
+   - [sky130_sram_2kbyte_1rw1r_32x512_8](https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8)
 ---
 
 ## Project Structure
