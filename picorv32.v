@@ -76,6 +76,7 @@ module picorv32 #(
 	parameter [ 0:0] ENABLE_MUL = 0,
 	parameter [ 0:0] ENABLE_FAST_MUL = 0,
 	parameter [ 0:0] ENABLE_DIV = 0,
+    parameter [ 0:0] ENABLE_FPU = 0,
 	parameter [ 0:0] ENABLE_IRQ = 0,
 	parameter [ 0:0] ENABLE_IRQ_QREGS = 1,
 	parameter [ 0:0] ENABLE_IRQ_TIMER = 1,
@@ -166,7 +167,7 @@ module picorv32 #(
 	localparam integer regfile_size = (ENABLE_REGS_16_31 ? 32 : 16) + 4*ENABLE_IRQ*ENABLE_IRQ_QREGS;
 	localparam integer regindex_bits = (ENABLE_REGS_16_31 ? 5 : 4) + ENABLE_IRQ*ENABLE_IRQ_QREGS;
 
-	localparam WITH_PCPI = ENABLE_PCPI || ENABLE_MUL || ENABLE_FAST_MUL || ENABLE_DIV;
+	localparam WITH_PCPI = ENABLE_PCPI || ENABLE_MUL || ENABLE_FAST_MUL || ENABLE_DIV || ENABLE_FPU;
 
 	localparam [35:0] TRACE_BRANCH = {4'b 0001, 32'b 0};
 	localparam [35:0] TRACE_ADDR   = {4'b 0010, 32'b 0};
@@ -268,7 +269,7 @@ module picorv32 #(
 	wire [31:0] pcpi_fpu_rd;
 	wire        pcpi_fpu_wait;
 	wire        pcpi_fpu_ready;
-    
+
 	reg        pcpi_int_wr;
 	reg [31:0] pcpi_int_rd;
 	reg        pcpi_int_wait;
@@ -326,18 +327,18 @@ module picorv32 #(
 		assign pcpi_div_wait = 0;
 		assign pcpi_div_ready = 0;
 	end endgenerate
-    
-    generate if (ENABLE_FPU) 
-        fmuls (
-            .clkIn       (clk            );
-            .rstLowIn    (resetn         );
-            .pcipValidIn (pcpi_valid     );
-            .pcipInstIn  (pcpi_insn      );
-            .pcipRs1In   (pcpi_rs1       );
-            .pcipRs2In   (pcpi_rs2       );
-            .pcipWrIn    (pcpi_fpu_wr    );
-            .pcipRdOut   (pcpi_fpu_rd    );
-            .pcipWaitOut (pcpi_fpu_wait  );
+
+    generate if (ENABLE_FPU) begin
+        fmuls pcpi_fpu(
+            .clkIn       (clk            ),
+            .rstLowIn    (resetn         ),
+            .pcipValidIn (pcpi_valid     ),
+            .pcipInstIn  (pcpi_insn      ),
+            .pcipRs1In   (pcpi_rs1       ),
+            .pcipRs2In   (pcpi_rs2       ),
+            .pcipWrIn    (pcpi_fpu_wr    ),
+            .pcipRdOut   (pcpi_fpu_rd    ),
+            .pcipWaitOut (pcpi_fpu_wait  ),
             .pcipReadyOut(pcpi_fpu_ready )
         );
     end else begin
@@ -2858,6 +2859,7 @@ module picorv32_wb #(
 	parameter [ 0:0] ENABLE_MUL = 0,
 	parameter [ 0:0] ENABLE_FAST_MUL = 0,
 	parameter [ 0:0] ENABLE_DIV = 0,
+    parameter [ 0:0] ENABLE_FPU = 0,
 	parameter [ 0:0] ENABLE_IRQ = 0,
 	parameter [ 0:0] ENABLE_IRQ_QREGS = 1,
 	parameter [ 0:0] ENABLE_IRQ_TIMER = 1,
