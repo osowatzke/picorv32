@@ -17,7 +17,7 @@ RVTEST_CODE_BEGIN
   # Arithmetic tests
   #-------------------------------------------------------------
 
-  TEST_RR_OP( 2,  fmul, 0x4013D70A, 0x3F8CCCCD, 0x40066666 );
+  TEST_FP_OP2_S( 2, fmul.s, 0, 2.0, 1.0, 2.0 );
 
   TEST_PASSFAIL
 

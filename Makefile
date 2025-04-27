@@ -15,7 +15,7 @@ TEST_OBJS = $(addsuffix .o,$(basename $(wildcard tests/*.S)))
 FIRMWARE_OBJS = firmware/start.o firmware/irq.o firmware/print.o firmware/hello.o firmware/sieve.o firmware/multest.o firmware/stats.o
 GCC_WARNS  = -Werror -Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
 GCC_WARNS += -Wredundant-decls -Wstrict-prototypes -Wmissing-prototypes -pedantic # -Wconversion
-TOOLCHAIN_PREFIX = $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)i/bin/riscv32-unknown-elf-
+TOOLCHAIN_PREFIX = $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)gc/bin/riscv32-unknown-elf-
 COMPRESSED_ISA = C
 
 # Add things like "export http_proxy=... https_proxy=..." here
@@ -107,19 +107,19 @@ firmware/firmware.bin: firmware/firmware.elf
 	chmod -x $@
 
 firmware/firmware.elf: $(FIRMWARE_OBJS) $(TEST_OBJS) firmware/sections.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -mabi=ilp32 -march=rv32im$(subst C,c,$(COMPRESSED_ISA)) -ffreestanding -nostdlib -o $@ \
+	$(TOOLCHAIN_PREFIX)gcc -Os -mabi=ilp32d -march=rv32g$(subst C,c,$(COMPRESSED_ISA)) -ffreestanding -nostdlib -o $@ \
 		-Wl,--build-id=none,-Bstatic,-T,firmware/sections.lds,-Map,firmware/firmware.map,--strip-debug \
 		$(FIRMWARE_OBJS) $(TEST_OBJS) -lgcc
 	chmod -x $@
 
 firmware/start.o: firmware/start.S
-	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32 -march=rv32im$(subst C,c,$(COMPRESSED_ISA)) -o $@ $<
+	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32d -march=rv32g$(subst C,c,$(COMPRESSED_ISA)) -o $@ $<
 
 firmware/%.o: firmware/%.c
-	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32 -march=rv32i$(subst C,c,$(COMPRESSED_ISA)) -Os --std=c99 $(GCC_WARNS) -ffreestanding -nostdlib -o $@ $<
+	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32d -march=rv32g$(subst C,c,$(COMPRESSED_ISA)) -Os --std=c99 $(GCC_WARNS) -ffreestanding -nostdlib -o $@ $<
 
 tests/%.o: tests/%.S tests/riscv_test.h tests/test_macros.h
-	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32 -march=rv32im -o $@ -DTEST_FUNC_NAME=$(notdir $(basename $<)) \
+	$(TOOLCHAIN_PREFIX)gcc -c -mabi=ilp32d -march=rv32gc -o $@ -DTEST_FUNC_NAME=$(notdir $(basename $<)) \
 		-DTEST_FUNC_TXT='"$(notdir $(basename $<))"' -DTEST_FUNC_RET=$(notdir $(basename $<))_ret $<
 
 download-tools:
@@ -158,15 +158,17 @@ endef
 $(eval $(call build_tools_template,riscv32i,rv32i))
 $(eval $(call build_tools_template,riscv32ic,rv32ic))
 $(eval $(call build_tools_template,riscv32im,rv32im))
+$(eval $(call build_tools_template,riscv32gc,rv32gc))
 $(eval $(call build_tools_template,riscv32imc,rv32imc))
 
 build-tools:
-	@echo "This will remove all existing data from $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)i, $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)ic, $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)im, and $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)imc."
+	@echo "This will remove all existing data from $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)i, $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)ic, $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)im, $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)imf, and $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)imc."
 	@read -p "Type YES to continue: " reply && [[ "$$reply" == [Yy][Ee][Ss] || "$$reply" == [Yy] ]]
-	sudo bash -c "set -ex; rm -rf $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imc}; mkdir -p $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imc}; chown $${USER}: $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imc}"
+	sudo bash -c "set -ex; rm -rf $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imf,imc}; mkdir -p $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imf,imc}; chown $${USER}: $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX){i,ic,im,imf,imc}"
 	+$(MAKE) build-riscv32i-tools-bh
 	+$(MAKE) build-riscv32ic-tools-bh
 	+$(MAKE) build-riscv32im-tools-bh
+	+$(MAKE) build-riscv32gc-tools-bh
 	+$(MAKE) build-riscv32imc-tools-bh
 
 toc:
@@ -174,7 +176,7 @@ toc:
 
 clean:
 	rm -rf riscv-gnu-toolchain-riscv32i riscv-gnu-toolchain-riscv32ic \
-		riscv-gnu-toolchain-riscv32im riscv-gnu-toolchain-riscv32imc
+		riscv-gnu-toolchain-riscv32im riscv-gnu-toolchain-riscv32gc riscv-gnu-toolchain-riscv32imc
 	rm -vrf $(FIRMWARE_OBJS) $(TEST_OBJS) check.smt2 check.vcd synth.v synth.log \
 		firmware/firmware.elf firmware/firmware.bin firmware/firmware.hex firmware/firmware.map \
 		testbench.vvp testbench_sp.vvp testbench_synth.vvp testbench_ez.vvp \
