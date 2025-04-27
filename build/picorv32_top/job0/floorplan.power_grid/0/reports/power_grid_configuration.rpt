@@ -1,0 +1,31 @@
+Voltage domain: Core
+  Power net: VDD
+  Ground net: VSS
+Grid name: grid
+Type: Core
+Straps:
+  Type: Followpin
+    Layer: met1
+    Width: 0.4800
+    Spacing: 0.0000
+    Pitch: 5.4400
+    Offset: 0.0000
+    Snap to grid: false
+  Type: Strap
+    Layer: met4
+    Width: 1.6000
+    Spacing: 11.9700
+    Pitch: 27.1400
+    Offset: 6.7850
+    Snap to grid: false
+  Type: Strap
+    Layer: met5
+    Width: 1.6000
+    Spacing: 12.0000
+    Pitch: 27.2000
+    Offset: 6.8000
+    Snap to grid: false
+Connect:
+  Connect layers met1 -> met4
+  Connect layers met4 -> met5
+Pin layers: met5

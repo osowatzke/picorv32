@@ -1,0 +1,761 @@
+| INFO     | job0 | place.repair_design  | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | place.repair_design  | 0 | Running in /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/place.repair_design/0
+| INFO     | job0 | place.repair_design  | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_repair_design.tcl
+| INFO     | job0 | place.repair_design  | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | place.repair_design  | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | place.repair_design  | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | place.repair_design  | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | place.repair_design  | 0 | ##############################
+| INFO     | job0 | place.repair_design  | 0 | # Schema Adapter
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | place.repair_design  | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | place.repair_design  | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | place.repair_design  | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | place.repair_design  | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | place.repair_design  | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | place.repair_design  | 0 | ##############################
+| INFO     | job0 | place.repair_design  | 0 | # Setup debugging
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Setup debugging if requested
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | place.repair_design  | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | place.repair_design  | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | place.repair_design  | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | place.repair_design  | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Suppress messages if requested
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | place.repair_design  | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | place.repair_design  | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | place.repair_design  | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | place.repair_design  | 0 |     } else {
+| INFO     | job0 | place.repair_design  | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | place.repair_design  | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | place.repair_design  | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | place.repair_design  | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Setup helper functions
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Design information
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Design
+| INFO     | job0 | place.repair_design  | 0 | set sc_design [sc_top]
+| INFO     | job0 | place.repair_design  | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | place.repair_design  | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | place.repair_design  | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | place.repair_design  | 0 | # APR Parameters
+| INFO     | job0 | place.repair_design  | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | place.repair_design  | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | place.repair_design  | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | place.repair_design  | 0 | # Hard macro libraries
+| INFO     | job0 | place.repair_design  | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | place.repair_design  | 0 | # Threads
+| INFO     | job0 | place.repair_design  | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | place.repair_design  | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Read Files
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | place.repair_design  | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | place.repair_design  | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | place.repair_design  | 0 | # Read Liberty
+| INFO     | job0 | place.repair_design  | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | place.repair_design  | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | place.repair_design  | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | place.repair_design  | 0 |     #Liberty
+| INFO     | job0 | place.repair_design  | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | place.repair_design  | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | place.repair_design  | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | place.repair_design  | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | place.repair_design  | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | place.repair_design  | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | place.repair_design  | 0 |                 }
+| INFO     | job0 | place.repair_design  | 0 |                 break
+| INFO     | job0 | place.repair_design  | 0 |             }
+| INFO     | job0 | place.repair_design  | 0 |         }
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | place.repair_design  | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | place.repair_design  | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | place.repair_design  | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Read design files
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | place.repair_design  | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | place.repair_design  | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | place.repair_design  | 0 |         read_db $odb_file
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | } else {
+| INFO     | job0 | place.repair_design  | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | place.repair_design  | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | place.repair_design  | 0 |     # Read techlef
+| INFO     | job0 | place.repair_design  | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | place.repair_design  | 0 |     read_lef $sc_techlef
+| INFO     | job0 | place.repair_design  | 0 |     # Read Lefs
+| INFO     | job0 | place.repair_design  | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | place.repair_design  | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | place.repair_design  | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | place.repair_design  | 0 |             read_lef $lef_file
+| INFO     | job0 | place.repair_design  | 0 |         }
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | place.repair_design  | 0 |         # Read DEF
+| INFO     | job0 | place.repair_design  | 0 |         # get from previous step
+| INFO     | job0 | place.repair_design  | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | place.repair_design  | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | place.repair_design  | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | place.repair_design  | 0 |         # Read DEF
+| INFO     | job0 | place.repair_design  | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | place.repair_design  | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | place.repair_design  | 0 |         read_def $sc_def
+| INFO     | job0 | place.repair_design  | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | place.repair_design  | 0 |         # Read Verilog
+| INFO     | job0 | place.repair_design  | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | place.repair_design  | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | place.repair_design  | 0 |         link_design $sc_design
+| INFO     | job0 | place.repair_design  | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | place.repair_design  | 0 |         # Read Verilog
+| INFO     | job0 | place.repair_design  | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | place.repair_design  | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | place.repair_design  | 0 |             read_verilog $netlist
+| INFO     | job0 | place.repair_design  | 0 |         }
+| INFO     | job0 | place.repair_design  | 0 |         link_design $sc_design
+| INFO     | job0 | place.repair_design  | 0 |     } else {
+| INFO     | job0 | place.repair_design  | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 |     # Handle global connect setup
+| INFO     | job0 | place.repair_design  | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | place.repair_design  | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | place.repair_design  | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | place.repair_design  | 0 |             source $global_connect
+| INFO     | job0 | place.repair_design  | 0 |         }
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | Reading ODB: inputs/picorv32_top.odb
+| INFO     | job0 | place.repair_design  | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Read timing constraints
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | place.repair_design  | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | place.repair_design  | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | place.repair_design  | 0 |         read_sdc $sdc
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | } else {
+| INFO     | job0 | place.repair_design  | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | place.repair_design  | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | place.repair_design  | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | place.repair_design  | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | place.repair_design  | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | Reading SDC: inputs/picorv32_top.sdc
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Common Setup
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | sc_setup_sta
+| INFO     | job0 | place.repair_design  | 0 | sc_setup_parasitics
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | place.repair_design  | 0 | sc_set_dont_use
+| INFO     | job0 | place.repair_design  | 0 | sc_setup_global_routing
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | place.repair_design  | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | place.repair_design  | 0 | set sc_starting_markers []
+| INFO     | job0 | place.repair_design  | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | place.repair_design  | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Source Step Script
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | report_units_metric
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | place.repair_design  | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | place.repair_design  | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | place.repair_design  | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | place.repair_design  | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | place.repair_design  | 0 | set openroad_dont_touch {}
+| INFO     | job0 | place.repair_design  | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | place.repair_design  | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | place.repair_design  | 0 |     # set don't touch list
+| INFO     | job0 | place.repair_design  | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | place.repair_design  | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | place.repair_design  | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | place.repair_design  | 0 | Global connection rules: 2
+| INFO     | job0 | place.repair_design  | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | place.repair_design  | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | place.repair_design  | 0 | Dont use report: reports/dont_use.repair_drv.rpt
+| INFO     | job0 | place.repair_design  | 0 | repair_design siliconcompiler arguments: -cap_margin 0.0 -slew_margin 0.0
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0058] Using max wire length 4718um.
+| INFO     | job0 | place.repair_design  | 0 | Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
+| INFO     | job0 | place.repair_design  | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |         0 |     +0.0% |       0 |       0 |             0 |      7141
+| INFO     | job0 | place.repair_design  | 0 |      1000 |     +0.0% |     127 |       0 |             0 |      6141
+| INFO     | job0 | place.repair_design  | 0 |      2000 |     +0.3% |     438 |       0 |             0 |      5141
+| INFO     | job0 | place.repair_design  | 0 |      3000 |     +0.5% |     689 |       0 |             0 |      4141
+| INFO     | job0 | place.repair_design  | 0 |      4000 |     +0.7% |     929 |       9 |             5 |      3141
+| INFO     | job0 | place.repair_design  | 0 |      5000 |     +0.9% |    1226 |       9 |             5 |      2141
+| INFO     | job0 | place.repair_design  | 0 |      6000 |     +0.9% |    1523 |       9 |             5 |      1141
+| INFO     | job0 | place.repair_design  | 0 |      7000 |     +0.9% |    1778 |       9 |             5 |       141
+| INFO     | job0 | place.repair_design  | 0 |     final |     +0.9% |    1778 |       9 |             5 |         0
+| INFO     | job0 | place.repair_design  | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0034] Found 5 slew violations.
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0036] Found 5 capacitance violations.
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0039] Resized 1778 instances.
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0038] Inserted 9 buffers in 5 nets.
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0042] Inserted 1 tie sky130_fd_sc_hd__conb_1 instances.
+| INFO     | job0 | place.repair_design  | 0 | [INFO RSZ-0042] Inserted 148 tie sky130_fd_sc_hd__conb_1 instances.
+| INFO     | job0 | place.repair_design  | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | place.repair_design  | 0 |     # unset for next step
+| INFO     | job0 | place.repair_design  | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | place.repair_design  | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | place.repair_design  | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | place.repair_design  | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | place.repair_design  | 0 |         source -echo $sc_post_script
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Write Design Data
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | place.repair_design  | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | # Reporting
+| INFO     | job0 | place.repair_design  | 0 | ###############################
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | place.repair_design  | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | place.repair_design  | 0 | Startpoint: rv32_soc/latched_stalu$_SDFFE_PN0P_
+| INFO     | job0 | place.repair_design  | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | place.repair_design  | 0 | Endpoint: rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_
+| INFO     | job0 | place.repair_design  | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | place.repair_design  | 0 | Path Group: clk0
+| INFO     | job0 | place.repair_design  | 0 | Path Type: max
+| INFO     | job0 | place.repair_design  | 0 | Corner: slow
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                   0.00    0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00    0.00   clock network delay (ideal)
+| INFO     | job0 | place.repair_design  | 0 |                   0.00    0.00    0.00 ^ rv32_soc/latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |     33    0.21    3.79    3.87    3.87 ^ rv32_soc/latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          rv32_soc/latched_stalu (net)
+| INFO     | job0 | place.repair_design  | 0 |                   3.79    0.02    3.89 ^ _5049_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.99    2.48    6.37 ^ _5049_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0610_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.99    0.00    6.37 ^ _5050_/B (sky130_fd_sc_hd__nor2_2)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.37    0.51    6.88 v _5050_/Y (sky130_fd_sc_hd__nor2_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0611_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.37    0.00    6.88 v _5051_/B1 (sky130_fd_sc_hd__a21oi_2)
+| INFO     | job0 | place.repair_design  | 0 |      3    0.01    0.65    0.82    7.70 ^ _5051_/Y (sky130_fd_sc_hd__a21oi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0612_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.65    0.00    7.70 ^ _5052_/A (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.14    0.40    8.10 v _5052_/Y (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4236_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.14    0.00    8.10 v _9467_/A (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.93    9.03 v _9467_/COUT (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4641_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00    9.03 v _7527_/A (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.22    0.30    9.33 ^ _7527_/Y (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4253_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.22    0.00    9.33 ^ _9304_/CIN (sky130_fd_sc_hd__fa_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.35    0.67    9.99 ^ _9304_/COUT (sky130_fd_sc_hd__fa_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4254_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.35    0.00    9.99 ^ _8014_/A (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.11    0.25   10.25 v _8014_/Y (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3200_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.11    0.00   10.25 v _8015_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.48    1.32   11.57 ^ _8015_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3201_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.48    0.00   11.57 ^ _8037_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.15    0.69   12.27 v _8037_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3221_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   12.27 v _8038_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.22    1.15   13.41 ^ _8038_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3222_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.22    0.00   13.41 ^ _8039_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.65   14.06 v _8039_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3223_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   14.06 v _8057_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.37    1.27   15.33 ^ _8057_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3239_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.37    0.00   15.33 ^ _8058_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.66   15.99 v _8058_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3240_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   15.99 v _8081_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.56    1.41   17.40 ^ _8081_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3261_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.56    0.00   17.40 ^ _8082_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.75   18.15 v _8082_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3262_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00   18.15 v _8107_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.38    1.29   19.44 ^ _8107_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3285_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.38    0.00   19.44 ^ _8108_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.69   20.13 v _8108_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3286_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   20.13 v _8131_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.73    1.55   21.68 ^ _8131_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3307_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.73    0.00   21.68 ^ _8132_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.79   22.47 v _8132_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3308_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00   22.47 v _8154_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.62    1.48   23.95 ^ _8154_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3328_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.62    0.00   23.95 ^ _8155_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.76   24.71 v _8155_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3329_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   24.71 v _8176_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.25    1.18   25.90 ^ _8176_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3348_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.25    0.00   25.90 ^ _8177_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.64   26.54 v _8177_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3349_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   26.54 v _8199_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.27    1.19   27.72 ^ _8199_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3369_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.27    0.00   27.72 ^ _8200_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.64   28.36 v _8200_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3370_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   28.36 v _8223_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.51    1.37   29.74 ^ _8223_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3391_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.51    0.00   29.74 ^ _8224_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.25    0.86   30.60 v _8224_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3392_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.25    0.00   30.60 v _8240_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.52    1.44   32.03 ^ _8240_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3406_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.52    0.00   32.03 ^ _8243_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.16    0.71   32.75 v _8243_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3409_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.16    0.00   32.75 v _8266_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      3    0.01    1.79    1.60   34.34 ^ _8266_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3430_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.79    0.00   34.34 ^ _8309_/A2 (sky130_fd_sc_hd__a2111oi_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.29    1.00   35.35 v _8309_/Y (sky130_fd_sc_hd__a2111oi_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3469_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.29    0.00   35.35 v _8313_/A (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.88    1.08   36.42 ^ _8313_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3473_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.88    0.00   36.42 ^ _8318_/A1 (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.59    0.68   37.11 v _8318_/Y (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3478_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.59    0.00   37.11 v _8320_/B1 (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.10    0.99   38.10 v _8320_/X (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0270_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.10    0.00   38.10 v rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                                  38.10   data arrival time
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 |                   0.00   25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00   25.00   clock network delay (ideal)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00   25.00   clock reconvergence pessimism
+| INFO     | job0 | place.repair_design  | 0 |                                  25.00 ^ rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                          -0.84   24.16   library setup time
+| INFO     | job0 | place.repair_design  | 0 |                                  24.16   data required time
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                                  24.16   data required time
+| INFO     | job0 | place.repair_design  | 0 |                                 -38.10   data arrival time
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                                 -13.94   slack (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: setupslack
+| INFO     | job0 | place.repair_design  | 0 | worst slack -13.94
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: tns
+| INFO     | job0 | place.repair_design  | 0 | tns -208.00
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | place.repair_design  | 0 | Startpoint: rv32_soc/latched_stalu$_SDFFE_PN0P_
+| INFO     | job0 | place.repair_design  | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | place.repair_design  | 0 | Endpoint: rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_
+| INFO     | job0 | place.repair_design  | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | place.repair_design  | 0 | Path Group: clk0
+| INFO     | job0 | place.repair_design  | 0 | Path Type: max
+| INFO     | job0 | place.repair_design  | 0 | Corner: slow
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                   0.00    0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00    0.00   clock network delay (ideal)
+| INFO     | job0 | place.repair_design  | 0 |                   0.00    0.00    0.00 ^ rv32_soc/latched_stalu$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |     33    0.21    3.79    3.87    3.87 ^ rv32_soc/latched_stalu$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          rv32_soc/latched_stalu (net)
+| INFO     | job0 | place.repair_design  | 0 |                   3.79    0.02    3.89 ^ _5049_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.99    2.48    6.37 ^ _5049_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0610_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.99    0.00    6.37 ^ _5050_/B (sky130_fd_sc_hd__nor2_2)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.37    0.51    6.88 v _5050_/Y (sky130_fd_sc_hd__nor2_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0611_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.37    0.00    6.88 v _5051_/B1 (sky130_fd_sc_hd__a21oi_2)
+| INFO     | job0 | place.repair_design  | 0 |      3    0.01    0.65    0.82    7.70 ^ _5051_/Y (sky130_fd_sc_hd__a21oi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0612_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.65    0.00    7.70 ^ _5052_/A (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.14    0.40    8.10 v _5052_/Y (sky130_fd_sc_hd__inv_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4236_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.14    0.00    8.10 v _9467_/A (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.93    9.03 v _9467_/COUT (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4641_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00    9.03 v _7527_/A (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.22    0.30    9.33 ^ _7527_/Y (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4253_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.22    0.00    9.33 ^ _9304_/CIN (sky130_fd_sc_hd__fa_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.35    0.67    9.99 ^ _9304_/COUT (sky130_fd_sc_hd__fa_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _4254_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.35    0.00    9.99 ^ _8014_/A (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.11    0.25   10.25 v _8014_/Y (sky130_fd_sc_hd__nor2b_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3200_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.11    0.00   10.25 v _8015_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.48    1.32   11.57 ^ _8015_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3201_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.48    0.00   11.57 ^ _8037_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.15    0.69   12.27 v _8037_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3221_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   12.27 v _8038_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.22    1.15   13.41 ^ _8038_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3222_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.22    0.00   13.41 ^ _8039_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.65   14.06 v _8039_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3223_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   14.06 v _8057_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.37    1.27   15.33 ^ _8057_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3239_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.37    0.00   15.33 ^ _8058_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.66   15.99 v _8058_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3240_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   15.99 v _8081_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.56    1.41   17.40 ^ _8081_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3261_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.56    0.00   17.40 ^ _8082_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.75   18.15 v _8082_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3262_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00   18.15 v _8107_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.38    1.29   19.44 ^ _8107_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3285_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.38    0.00   19.44 ^ _8108_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.69   20.13 v _8108_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3286_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   20.13 v _8131_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.73    1.55   21.68 ^ _8131_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3307_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.73    0.00   21.68 ^ _8132_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.18    0.79   22.47 v _8132_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3308_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.18    0.00   22.47 v _8154_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.62    1.48   23.95 ^ _8154_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3328_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.62    0.00   23.95 ^ _8155_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.17    0.76   24.71 v _8155_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3329_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.17    0.00   24.71 v _8176_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.25    1.18   25.90 ^ _8176_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3348_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.25    0.00   25.90 ^ _8177_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.64   26.54 v _8177_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3349_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   26.54 v _8199_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.27    1.19   27.72 ^ _8199_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3369_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.27    0.00   27.72 ^ _8200_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.15    0.64   28.36 v _8200_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3370_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.15    0.00   28.36 v _8223_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.51    1.37   29.74 ^ _8223_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3391_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.51    0.00   29.74 ^ _8224_/A2 (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.25    0.86   30.60 v _8224_/Y (sky130_fd_sc_hd__a21boi_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3392_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.25    0.00   30.60 v _8240_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    1.52    1.44   32.03 ^ _8240_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3406_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.52    0.00   32.03 ^ _8243_/A2 (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.16    0.71   32.75 v _8243_/Y (sky130_fd_sc_hd__a21boi_2)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3409_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.16    0.00   32.75 v _8266_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |      3    0.01    1.79    1.60   34.34 ^ _8266_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3430_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   1.79    0.00   34.34 ^ _8309_/A2 (sky130_fd_sc_hd__a2111oi_1)
+| INFO     | job0 | place.repair_design  | 0 |      2    0.01    0.29    1.00   35.35 v _8309_/Y (sky130_fd_sc_hd__a2111oi_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3469_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.29    0.00   35.35 v _8313_/A (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.01    0.88    1.08   36.42 ^ _8313_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3473_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.88    0.00   36.42 ^ _8318_/A1 (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.59    0.68   37.11 v _8318_/Y (sky130_fd_sc_hd__o221ai_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _3478_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.59    0.00   37.11 v _8320_/B1 (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | place.repair_design  | 0 |      1    0.00    0.10    0.99   38.10 v _8320_/X (sky130_fd_sc_hd__a22o_1)
+| INFO     | job0 | place.repair_design  | 0 |                                          _0270_ (net)
+| INFO     | job0 | place.repair_design  | 0 |                   0.10    0.00   38.10 v rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                                  38.10   data arrival time
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 |                   0.00   25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00   25.00   clock network delay (ideal)
+| INFO     | job0 | place.repair_design  | 0 |                           0.00   25.00   clock reconvergence pessimism
+| INFO     | job0 | place.repair_design  | 0 |                                  25.00 ^ rv32_soc/reg_next_pc[31]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | place.repair_design  | 0 |                          -0.84   24.16   library setup time
+| INFO     | job0 | place.repair_design  | 0 |                                  24.16   data required time
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                                  24.16   data required time
+| INFO     | job0 | place.repair_design  | 0 |                                 -38.10   data arrival time
+| INFO     | job0 | place.repair_design  | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 |                                 -13.94   slack (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: DRV violators
+| INFO     | job0 | place.repair_design  | 0 | max slew
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | Pin                                    Limit    Slew   Slack
+| INFO     | job0 | place.repair_design  | 0 | ------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | _6683_/Y                                1.48    2.06   -0.58 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | load_slew1/A                            1.50    2.06   -0.56 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _6680_/Y                                1.48    2.05   -0.56 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | load_slew2/A                            1.50    2.05   -0.55 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _8766_/Y                                1.49    1.59   -0.10 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _8673_/Y                                1.49    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | max capacitance
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | Pin                                    Limit     Cap   Slack
+| INFO     | job0 | place.repair_design  | 0 | ------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | _6683_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _6680_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _8766_/Y                                0.07    0.07   -0.01 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | _8673_/Y                                0.07    0.07   -0.00 (VIOLATED)
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: floating nets
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: fmax
+| INFO     | job0 | place.repair_design  | 0 | clk0 fmax = 25.68 MHz
+| INFO     | job0 | place.repair_design  | 0 | Clock                   Period          Waveform
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | clk0                     25.00        0.00     12.50
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: power
+| INFO     | job0 | place.repair_design  | 0 | Power for corner: fast
+| INFO     | job0 | place.repair_design  | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.repair_design  | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Sequential             3.48e-03   7.52e-05   4.74e-05   3.61e-03  79.1%
+| INFO     | job0 | place.repair_design  | 0 | Combinational          4.03e-04   4.96e-04   5.17e-05   9.50e-04  20.9%
+| INFO     | job0 | place.repair_design  | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Total                  3.89e-03   5.71e-04   9.91e-05   4.56e-03 100.0%
+| INFO     | job0 | place.repair_design  | 0 |                           85.3%      12.5%       2.2%
+| INFO     | job0 | place.repair_design  | 0 | Power for corner: slow
+| INFO     | job0 | place.repair_design  | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.repair_design  | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Sequential             1.33e-03   3.56e-05   6.13e-10   1.37e-03  77.6%
+| INFO     | job0 | place.repair_design  | 0 | Combinational          1.60e-04   2.34e-04   1.34e-09   3.94e-04  22.4%
+| INFO     | job0 | place.repair_design  | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Total                  1.49e-03   2.69e-04   1.95e-09   1.76e-03 100.0%
+| INFO     | job0 | place.repair_design  | 0 |                           84.7%      15.3%       0.0%
+| INFO     | job0 | place.repair_design  | 0 | Power for corner: typical
+| INFO     | job0 | place.repair_design  | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | place.repair_design  | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Sequential             2.94e-03   6.28e-05   1.37e-08   3.00e-03  81.1%
+| INFO     | job0 | place.repair_design  | 0 | Combinational          2.85e-04   4.13e-04   1.86e-08   6.98e-04  18.9%
+| INFO     | job0 | place.repair_design  | 0 | Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | place.repair_design  | 0 | ----------------------------------------------------------------
+| INFO     | job0 | place.repair_design  | 0 | Total                  3.22e-03   4.76e-04   3.23e-08   3.70e-03 100.0%
+| INFO     | job0 | place.repair_design  | 0 |                           87.1%      12.9%       0.0%
+| INFO     | job0 | place.repair_design  | 0 | SC_METRIC: cellarea
+| INFO     | job0 | place.repair_design  | 0 | Design area 377210 u^2 39% utilization.
+| INFO     | job0 | place.repair_design  | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | place.repair_design  | 0 |   Macro                                     1  284538.47
+| INFO     | job0 | place.repair_design  | 0 |   Tap cell                               8831   11049.35
+| INFO     | job0 | place.repair_design  | 0 |   Buffer                                  111     993.45
+| INFO     | job0 | place.repair_design  | 0 |   Timing Repair Buffer                    783    7927.60
+| INFO     | job0 | place.repair_design  | 0 |   Inverter                                228    1159.86
+| INFO     | job0 | place.repair_design  | 0 |   Sequential cell                        1574   44418.85
+| INFO     | job0 | place.repair_design  | 0 |   Multi-Input combinational cell         4262   38171.61
+| INFO     | job0 | place.repair_design  | 0 |   Total                                 15790  388259.20
+| INFO     | job0 | place.repair_design  | 0 | 
+| INFO     | job0 | place.repair_design  | 0 | Cell instance report:
+| INFO     | job0 | place.repair_design  | 0 |   sky130_sram_2kbyte_1rw1r_32x512_8         1  284538.47
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a2111oi_0                5      43.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a2111oi_1                1      10.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a211o_1                  5      43.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a211oi_1                22     165.16
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21boi_0                11      82.58
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21boi_1                 1       7.51
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21boi_2                11     123.87
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21boi_4                 1      18.77
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21o_1                  61     457.94
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21o_4                  19     285.27
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21oi_1                265    1326.27
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a21oi_2                153    1340.04
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a221o_1                  7      70.07
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a221o_4                  1      21.27
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a221oi_1                61     534.26
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a222oi_1                37     370.36
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a22o_1                  28     245.24
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a22oi_1                 39     292.78
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a311o_1                  1      10.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a31o_1                   5      43.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a31o_4                   3      52.55
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a31oi_1                 74     462.94
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a32o_1                   8      80.08
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a32oi_1                  5      43.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__a41oi_1                  3      26.28
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and2_0                  33     206.45
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and2_4                  17     148.89
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and3_1                  19     118.86
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and3_4                  38     427.91
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and3b_1                  8      70.07
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and4_1                   3      26.28
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__and4_4                  27     304.04
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_1                  413    1550.24
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_12                  29     580.56
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_16                 102    2807.69
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_4                  107     803.27
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_6                  124    1396.34
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__buf_8                  118    1771.70
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__clkdlybuf4s15_2          1      11.26
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__clkinv_1                44     165.16
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__clkinv_16                8     240.23
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__clkinv_2                 7      35.03
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__conb_1                 149     559.29
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__dfxtp_1                 49     980.94
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__dfxtp_2                269    5721.74
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__edfxtp_1              1256   37716.17
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__ha_1                   169    2114.53
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__ha_2                    18     270.26
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__ha_4                    12     300.29
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_1                  137     514.24
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_12                   2      32.53
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_16                   2      40.04
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_2                   23      86.33
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_4                    2      12.51
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__inv_8                    3      33.78
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__mux2_1                  40     450.43
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__mux2_4                   8     120.12
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__mux2i_1                 76     760.73
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__mux4_2                 543   12229.23
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand2_1                410    1538.98
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand2_4                 89    1002.21
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand3_1                 98     490.47
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand3b_1                11      82.58
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand4_1                 27     168.91
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2_1                 358    1343.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2_2                  52     325.31
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2_4                  36     405.39
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2_8                  30     600.58
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2b_1                 15      93.84
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2b_2                  8      70.07
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor2b_4                  9     123.87
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor3_1                  69     345.33
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor3_2                  13     130.12
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor3_4                   7     113.86
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor3b_1                 30     225.22
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor3b_2                  4      50.05
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor4_1                  21     131.38
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor4_2                  14     175.17
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o2111a_1                 1      11.26
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o2111ai_2                1      15.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o211a_1                  2      20.02
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o211ai_1                17     127.62
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21a_1                  55     412.90
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21ai_0                527    2637.53
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21ai_4                  3      48.80
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21bai_1                21     157.65
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21bai_2                 9     101.35
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o21bai_4                 5      93.84
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o221a_1                  1      11.26
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o221ai_1                18     157.65
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o221ai_2                 4      60.06
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o22ai_1                 28     175.17
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o22ai_2                  6      75.07
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o2bb2ai_1                1       8.76
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o311ai_0                14     122.62
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o31a_1                   1       8.76
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o31ai_1                 41     307.80
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__o32ai_1                  5      43.79
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or2_0                    2      12.51
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or2_4                   14     122.62
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or3_1                   27     168.91
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or3_4                   18     202.69
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or3b_1                   1       8.76
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or3b_4                   4      45.04
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or4_1                    4      30.03
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or4_4                    8      90.09
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__or4bb_4                  1      15.01
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         8831   11049.35
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__xnor2_1                 86     753.22
+| INFO     | job0 | place.repair_design  | 0 |   sky130_fd_sc_hd__xor2_1                  18     157.65
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| INFO     | job0 | place.repair_design  | 0 | # Images
+| INFO     | job0 | place.repair_design  | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | place.repair_design  | 0 | if {
+| INFO     | job0 | place.repair_design  | 0 |     [sc_has_gui] &&
+| INFO     | job0 | place.repair_design  | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | place.repair_design  | 0 | } {
+| INFO     | job0 | place.repair_design  | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | place.repair_design  | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | place.repair_design  | 0 |     } else {
+| INFO     | job0 | place.repair_design  | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | place.repair_design  | 0 |     }
+| INFO     | job0 | place.repair_design  | 0 | }
+| INFO     | job0 | place.repair_design  | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32_top.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32_top.placement.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | place.repair_design  | 0 | [INFO FLW-0001] Saving "optimizer" to reports/images/picorv32_top.optimizer.png
+| INFO     | job0 | place.repair_design  | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | place.repair_design  | 0 | 743: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | place.repair_design  | 0 | Number of errors: 0
+| INFO     | job0 | place.repair_design  | 0 | Number of warnings: 1
+| INFO     | job0 | place.repair_design  | 0 | Finished task in 31.83s
+| INFO     | job0 | place.repair_design  | 0 | Archiving place.repair_design0...

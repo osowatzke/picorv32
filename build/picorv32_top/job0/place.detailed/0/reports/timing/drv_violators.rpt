@@ -1,0 +1,52 @@
+max slew
+
+Pin                                    Limit    Slew   Slack
+------------------------------------------------------------
+_6683_/Y                                1.48    2.05   -0.57 (VIOLATED)
+load_slew1/A                            1.50    2.05   -0.55 (VIOLATED)
+_6680_/Y                                1.48    2.03   -0.55 (VIOLATED)
+load_slew2/A                            1.50    2.03   -0.53 (VIOLATED)
+_8766_/Y                                1.49    1.56   -0.07 (VIOLATED)
+rv32_soc/cpuregs[23][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[19][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[22][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[20][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[21][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[18][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[17][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[16][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[28][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[29][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[5][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[4][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[25][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[0][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[1][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[11][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[13][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[10][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[2][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[12][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[24][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[14][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[9][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[15][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[6][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[8][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[27][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[26][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[7][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[3][11]$_DFFE_PP_/D     1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[31][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+rv32_soc/cpuregs[30][11]$_DFFE_PP_/D    1.50    1.50   -0.00 (VIOLATED)
+
+max capacitance
+
+Pin                                    Limit     Cap   Slack
+------------------------------------------------------------
+_6683_/Y                                0.05    0.07   -0.02 (VIOLATED)
+_6680_/Y                                0.05    0.07   -0.02 (VIOLATED)
+_8766_/Y                                0.07    0.07   -0.00 (VIOLATED)
+_9183_/Y                                0.13    0.13   -0.00 (VIOLATED)
+_9174_/Y                                0.13    0.13   -0.00 (VIOLATED)
+

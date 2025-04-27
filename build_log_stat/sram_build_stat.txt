@@ -1,0 +1,160 @@
+crosswind46@fedora:~/college_work/graduate/ece507_vlsi/proj/fpu_final_prj/picorv32$ python picorv32_top.py 
+| INFO     | picorv32_top.v inferred as rtl/verilog
+| INFO     | picorv32.v inferred as rtl/verilog
+| INFO     | sram/sky130_sram_2k.bb.v inferred as rtl/verilog
+| WARNING  | passing Chip object to sky130_sram_2k (Library) is deprecated
+| WARNING  | Target returned items, which it should not have
+| WARNING  | job0 | -----                | - | Could not find remote server configuration: defaulting to https://server.siliconcompiler.com
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32_top/job0/import.verilog/0                0.7s        104        0   build/picorv32_top/job0/import.verilog/0/import.verilog.log                      
+SUCCESS   picorv32_top/job0/syn/0                          14.2s          3        0   build/picorv32_top/job0/syn/0/syn.log                                            
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32_top/job0/import.verilog/0                0.7s        104        0   build/picorv32_top/job0/import.verilog/0/import.verilog.log                      
+SUCCESS   picorv32_top/job0/syn/0                          14.2s          3        0   build/picorv32_top/job0/syn/0/syn.log                                            
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32_top/job0/import.verilog/0                0.7s        104        0   build/picorv32_top/job0/import.verilog/0/import.verilog.log                      
+SUCCESS   picorv32_top/job0/syn/0                          14.2s          3        0   build/picorv32_top/job0/syn/0/syn.log                                            
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32_top/job0/import.verilog/0                0.7s        104        0   build/picorv32_top/job0/import.verilog/0/import.verilog.log                      
+SUCCESS   picorv32_top/job0/syn/0                          14.2s          3        0   build/picorv32_top/job0/syn/0/syn.log                                            
+SUCCESS   picorv32_top/job0/floorplan.init/0               15.3s          7        0   build/picorv32_top/job0/floorplan.init/0/floorplan.init.log                      
+SUCCESS   picorv32_top/job0/floorplan.macro_placement/0     6.3s          1        0   build/picorv32_top/job0/floorplan.macro_placement/0/floorplan.macro_placement.log
+SUCCESS   picorv32_top/job0/floorplan.tapcell/0             5.0s          1        0   build/picorv32_top/job0/floorplan.tapcell/0/floorplan.tapcell.log                
+SUCCESS   picorv32_top/job0/floorplan.power_grid/0          7.3s          3        0   build/picorv32_top/job0/floorplan.power_grid/0/floorplan.power_grid.log          
+SUCCESS   picorv32_top/job0/floorplan.pin_placement/0      16.1s          3        0   build/picorv32_top/job0/floorplan.pin_placement/0/floorplan.pin_placement.log    
+SUCCESS   picorv32_top/job0/place.global/0                107.5s          1        0   build/picorv32_top/job0/place.global/0/place.global.log                          
+SUCCESS   picorv32_top/job0/place.repair_design/0          31.8s          1        0   build/picorv32_top/job0/place.repair_design/0/place.repair_design.log            
+Status    Node                                              Time   Warnings   Errors   Log                                                                              
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Status    Node                                               Time   Warnings   Errors   Log                                                                              
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32_top/job0/import.verilog/0                 0.7s        104        0   build/picorv32_top/job0/import.verilog/0/import.verilog.log                      
+SUCCESS   picorv32_top/job0/syn/0                           14.2s          3        0   build/picorv32_top/job0/syn/0/syn.log                                            
+SUCCESS   picorv32_top/job0/floorplan.init/0                15.3s          7        0   build/picorv32_top/job0/floorplan.init/0/floorplan.init.log                      
+SUCCESS   picorv32_top/job0/floorplan.macro_placement/0      6.3s          1        0   build/picorv32_top/job0/floorplan.macro_placement/0/floorplan.macro_placement.log
+SUCCESS   picorv32_top/job0/floorplan.tapcell/0              5.0s          1        0   build/picorv32_top/job0/floorplan.tapcell/0/floorplan.tapcell.log                
+SUCCESS   picorv32_top/job0/floorplan.power_grid/0           7.3s          3        0   build/picorv32_top/job0/floorplan.power_grid/0/floorplan.power_grid.log          
+SUCCESS   picorv32_top/job0/floorplan.pin_placement/0       16.1s          3        0   build/picorv32_top/job0/floorplan.pin_placement/0/floorplan.pin_placement.log    
+SUCCESS   picorv32_top/job0/place.global/0                 107.5s          1        0   build/picorv32_top/job0/place.global/0/place.global.log                          
+SUCCESS   picorv32_top/job0/place.repair_design/0           31.8s          1        0   build/picorv32_top/job0/place.repair_design/0/place.repair_design.log            
+SUCCESS   picorv32_top/job0/place.detailed/0                28.6s          1        0   build/picorv32_top/job0/place.detailed/0/place.detailed.log                      
+SUCCESS   picorv32_top/job0/cts.clock_tree_synthesis/0      54.5s          2        0   build/picorv32_top/job0/cts.clock_tree_synthesis/0/cts.clock_tree_synthesis.log  
+SUCCESS   picorv32_top/job0/cts.repair_timing/0             90.3s          2        0   build/picorv32_top/job0/cts.repair_timing/0/cts.repair_timing.log                
+SUCCESS   picorv32_top/job0/cts.fillcell/0                  28.3s          1        0   build/picorv32_top/job0/cts.fillcell/0/cts.fillcell.log                          
+SUCCESS   picorv32_top/job0/route.global/0                  39.1s          1        0   build/picorv32_top/job0/route.global/0/route.global.log                          
+SUCCESS   picorv32_top/job0/route.antenna_repair/0          85.6s          1        0   build/picorv32_top/job0/route.antenna_repair/0/route.antenna_repair.log          
+SUCCESS   picorv32_top/job0/route.detailed/0              1943.6s       1207        0   build/picorv32_top/job0/route.detailed/0/route.detailed.log                      
+SUCCESS   picorv32_top/job0/write.gds/0                     11.9s          0        0   build/picorv32_top/job0/write.gds/0/write.gds.log                                
+SUCCESS   picorv32_top/job0/write.views/0                  133.9s          1        0   build/picorv32_top/job0/write.views/0/write.views.log                            
+                                                                                                                                                                                                            
+Results 2608.12s                                                                                                                                                                                            
+     25 passed                                                                                                                                                                                              
+     0 failed                                                                                                                                                                                               
+                                                                                                                                                                                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SUMMARY:
+
+design : picorv32_top
+params : None
+jobdir : /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu_final_prj/picorv32/build/picorv32_top/job0
+foundry : skywater
+process : skywater130
+targetlibs : sky130hd 
+
+                      import.verilog0         syn0        floorplan.init0   floorplan.m...0   floorplan.t...0   floorplan.p...0   floorplan.p...0    place.global0    place.repai...0  \
+errors                       0                 0                 0                 0                 0                 0                 0                 0                 0          
+warnings                    104                3                 7                 1                 1                 3                 3                 1                 1          
+drvs                        ---               ---                0                 0                 0                 0                 0                 0                 10         
+drcs                        ---               ---               ---               ---               ---               ---               ---               ---               ---         
+unconstrained               ---               ---               301               301               301               301               301               301               301         
+cellarea       um^2         ---            81227.904         364339.000        364339.000        375388.000        375388.000        375388.000        384367.000        388259.000     
+totalarea      um^2         ---               ---           1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000     
+macroarea      um^2         ---               ---            284538.000        284538.000        284538.000        284538.000        284538.000        284538.000        284538.000     
+padcellarea    um^2         ---               ---              0.000             0.000             0.000             0.000             0.000             0.000             0.000        
+stdcellarea    um^2         ---               ---            79800.300         79800.300         90849.600         90849.600         90849.600         99828.200         103721.000     
+utilization       %         ---               ---              38.081            38.081            39.236            39.236            39.236            40.174            40.581       
+logicdepth                  ---               ---                6                 6                 6                 6                 7                 29                35         
+peakpower        mw         ---               ---              3.424              ---               ---               ---               ---              3.646             3.698        
+leakagepower     mw         ---               ---              0.000              ---               ---               ---               ---              0.000             0.000        
+irdrop           mv         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+holdpaths                   ---               ---               ---               ---               ---               ---               ---               ---                0          
+setuppaths                  ---               ---               ---               ---               ---               ---               ---               ---                44         
+holdslack        ns         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+holdwns          ns         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+holdtns          ns         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+holdskew         ns         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+setupslack       ns         ---               ---             -28.590           -28.590             ---               ---             -59.326           -14.324           -13.937       
+setupwns         ns         ---               ---             -28.590           -28.590             ---               ---             -59.326           -14.324           -13.937       
+setuptns         ns         ---               ---            -1872.350         -1872.350            ---               ---            -14503.500         -221.959          -208.000      
+setupskew        ns         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+fmax             Hz         ---               ---               ---               ---               ---               ---               ---             25.430M           25.683M       
+macros                      ---               ---                1                 1                 1                 1                 1                 1                 1          
+cells                       ---               6408              6029              6029             14860             14860             14860             15634             15790        
+registers                   ---               1574              1574              1574              1574              1574              1574              1574              1574        
+buffers                     ---               ---               111               111               111               111               111               885               894         
+inverters                   ---               ---               228               228               228               228               228               228               228         
+pins                        ---               306               306               306               306               308               308               308               308         
+nets                        ---               6712              6335              6335              6335              6335              6335              7109              7265        
+vias                        ---               ---               ---               ---               ---               ---               ---               ---               ---         
+wirelength       um         ---               ---               ---               ---               ---               ---               ---               ---               ---         
+memory            B       202.320M          129.516M          240.160M          230.742M          246.688M          273.840M          363.562M           1.370G            1.361G       
+exetime           s        00.530            11.220            13.480            04.469            04.040            06.250            15.019          01:46.200           29.859       
+tasktime          s        00.740            14.196            15.279            06.325            04.982            07.308            16.134          01:47.493           31.834       
+totaltime         s        00.740            14.937            30.216            36.542            41.525            48.833          01:04.968         02:52.462         03:24.296      
+
+                      place.detailed0   cts.clock_t...0   cts.repair_...0    cts.fillcell0     route.global0    route.anten...0   route.detailed0      write.gds0       write.views0   
+errors                       0                 0                 0                 0                 0                 0                 0                 0                 0         
+warnings                     1                 2                 2                 1                 1                 1                1207               0                 1         
+drvs                         42                8                548               548               1157              1166              172               ---               275        
+drcs                        ---               ---               ---               ---               ---               ---                0                ---               ---        
+unconstrained               301               301               301               301               301               301               301               ---               301        
+cellarea       um^2      388259.000        390441.000        387830.000        387830.000        387830.000        387928.000        387928.000           ---            387928.000    
+totalarea      um^2     1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000       1000000.000    
+macroarea      um^2      284538.000        284538.000        284538.000        284538.000        284538.000        284538.000        284538.000           ---            284538.000    
+padcellarea    um^2        0.000             0.000             0.000             0.000             0.000             0.000             0.000              ---              0.000       
+stdcellarea    um^2      103721.000        105903.000        103292.000        103292.000        103292.000        103389.000        103389.000           ---            103389.000    
+utilization       %        40.581            40.809            40.536            40.536            40.536            40.546            40.546             ---              40.546      
+logicdepth                   27                27                34                34                35                35                33               ---                34        
+peakpower        mw        3.687             4.984             4.955             4.955             5.346             5.348             4.493              ---              4.765       
+leakagepower     mw        0.000             0.000             0.000             0.000             0.000             0.000             0.000              ---              0.000       
+irdrop           mv         ---               ---               ---               ---               ---               ---               ---               ---              0.135       
+holdpaths                    0                 0                 0                 0                 0                 0                 0                ---                0         
+setuppaths                   43                43               100               100               968               969                3                ---                16        
+holdslack        ns         ---              0.280             0.263             0.263             0.284             0.284             0.269              ---              0.258       
+holdwns          ns         ---              0.000             0.000             0.000             0.000             0.000             0.000              ---              0.000       
+holdtns          ns         ---              0.000             0.000             0.000             0.000             0.000             0.000              ---              0.000       
+holdskew         ns         ---              0.140             0.140              ---              0.167             0.167             0.135              ---              0.158       
+setupslack       ns       -13.563           -13.624            -4.712            -4.712            -9.818            -9.818            -2.664             ---              -2.089      
+setupwns         ns       -13.563           -13.624            -4.712            -4.712            -9.818            -9.818            -2.664             ---              -2.089      
+setuptns         ns       -198.490          -205.639          -152.360          -152.360         -3689.750         -3691.900           -4.376             ---             -11.689      
+setupskew        ns         ---              0.140             0.140              ---              0.167             0.167             0.135              ---              0.158       
+fmax             Hz       25.932M           25.891M           33.657M           33.657M           28.721M           28.721M           36.148M             ---             36.915M      
+macros                       1                 1                 1                 1                 1                 1                 1                ---                1         
+cells                      15790             15904             16014             16014             16014             16053             16053              ---              16053       
+registers                   1574              1574              1574              1574              1574              1574              1574              ---               1574       
+buffers                     894               994               1104              1104              1104              1104              1104              ---               1104       
+inverters                   228               242               242               242               242               242               242               ---               242        
+pins                        308               308               308               308               308               308               308               ---               308        
+nets                        7265              7342              7452              7452              7452              7452              7452              ---               7452       
+vias                        ---               ---               ---               ---              63723              1045             60349              ---               ---        
+wirelength       um         ---               ---               ---               ---            500201.000           ---            360491.000           ---               ---        
+memory            B       572.113M           1.603G            1.560G           594.328M          587.953M          690.027M           1.104G           724.016M          888.094M     
+exetime           s        26.460            52.329          01:27.980           26.649            37.399          01:23.840         32:21.859           09.630          02:11.210     
+tasktime          s        28.554            54.453          01:30.314           28.287            39.069          01:25.610         32:23.624           11.942          02:13.907     
+totaltime         s      03:52.851         04:47.304         06:17.619         06:45.906         07:24.976         08:50.586         41:14.210         41:26.153         43:28.117     
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| INFO     | job0 | -----                | - | Dashboard at "sc-dashboard -cfg /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu_final_prj/picorv32/build/picorv32_top/job0/picorv32_top.pkg.json"
+crosswind46@fedora:~/college_work/graduate/ece507_vlsi/proj/fpu_final_prj/picorv32$ 

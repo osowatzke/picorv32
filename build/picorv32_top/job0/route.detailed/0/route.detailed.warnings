@@ -1,0 +1,1207 @@
+ 213: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer mcon
+ 214: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer mcon
+ 215: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via
+ 216: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via
+ 217: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via2
+ 218: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via2
+ 219: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via3
+ 220: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via3
+ 221: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via4
+ 222: [WARNING DRT-0349] LEF58_ENCLOSURE with no CUTCLASS is not supported. Skipping for layer via4
+ 241: [WARNING DRT-0422] No routing tracks pass through the center of Term VSS.
+ 242: [WARNING DRT-0422] No routing tracks pass through the center of Term VDD.
+ 283: [WARNING DRT-0088] Exhaustive access point generation for _4785_/A (sky130_fd_sc_hd__nand2_1) is unsatisfactory.
+ 284: [WARNING DRT-0088] Exhaustive access point generation for _4795_/A (sky130_fd_sc_hd__inv_1) is unsatisfactory.
+ 285: [WARNING DRT-0088] Exhaustive access point generation for _4796_/A (sky130_fd_sc_hd__clkinv_1) is unsatisfactory.
+ 286: [WARNING DRT-0088] Exhaustive access point generation for _4797_/A2 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+ 287: [WARNING DRT-0088] Exhaustive access point generation for _4798_/A (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+ 288: [WARNING DRT-0088] Exhaustive access point generation for _4797_/B1 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+ 289: [WARNING DRT-0088] Exhaustive access point generation for _4798_/C (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+ 290: [WARNING DRT-0088] Exhaustive access point generation for _4807_/B_N (sky130_fd_sc_hd__nor2b_1) is unsatisfactory.
+ 291: [WARNING DRT-0088] Exhaustive access point generation for _4808_/C (sky130_fd_sc_hd__or3_4) is unsatisfactory.
+ 292: [WARNING DRT-0088] Exhaustive access point generation for _4814_/A (sky130_fd_sc_hd__nor3_1) is unsatisfactory.
+ 293: [WARNING DRT-0088] Exhaustive access point generation for _4809_/X (sky130_fd_sc_hd__or3_1) is unsatisfactory.
+ 294: [WARNING DRT-0088] Exhaustive access point generation for _4815_/A (sky130_fd_sc_hd__nand2_1) is unsatisfactory.
+ 295: [WARNING DRT-0088] Exhaustive access point generation for _4818_/B1 (sky130_fd_sc_hd__a21oi_2) is unsatisfactory.
+ 296: [WARNING DRT-0088] Exhaustive access point generation for _4820_/A1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+ 297: [WARNING DRT-0088] Exhaustive access point generation for _4820_/B1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+ 298: [WARNING DRT-0088] Exhaustive access point generation for _4825_/A (sky130_fd_sc_hd__clkinv_1) is unsatisfactory.
+ 299: [WARNING DRT-0088] Exhaustive access point generation for _4829_/A (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+ 300: [WARNING DRT-0088] Exhaustive access point generation for _4829_/C (sky130_fd_sc_hd__nand3_1) is unsatisfactory.
+ 301: [WARNING DRT-0088] Exhaustive access point generation for _4830_/C (sky130_fd_sc_hd__or3_4) is unsatisfactory.
+ 302: [WARNING DRT-0088] Exhaustive access point generation for _4831_/A (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+ 303: [WARNING DRT-0088] Exhaustive access point generation for _4831_/D (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+ 304: [WARNING DRT-0088] Exhaustive access point generation for _4832_/A3 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+ 305: [WARNING DRT-0088] Exhaustive access point generation for _4832_/B1 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+ 306: [WARNING DRT-0088] Exhaustive access point generation for _4845_/A (sky130_fd_sc_hd__nor3_1) is unsatisfactory.
+ 307: [WARNING DRT-0088] Exhaustive access point generation for _4846_/A (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+ 308: [WARNING DRT-0088] Exhaustive access point generation for _4846_/D (sky130_fd_sc_hd__nor4_1) is unsatisfactory.
+ 309: [WARNING DRT-0088] Exhaustive access point generation for _4850_/A (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+ 310: [WARNING DRT-0088] Exhaustive access point generation for _4854_/B (sky130_fd_sc_hd__or2_4) is unsatisfactory.
+ 311: [WARNING DRT-0088] Exhaustive access point generation for _4850_/D (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+ 312: [WARNING DRT-0088] Exhaustive access point generation for _4859_/A (sky130_fd_sc_hd__inv_2) is unsatisfactory.
+ 313: [WARNING DRT-0088] Exhaustive access point generation for _4858_/A (sky130_fd_sc_hd__and4_2) is unsatisfactory.
+ 314: [WARNING DRT-0088] Exhaustive access point generation for _4868_/C_N (sky130_fd_sc_hd__or3b_1) is unsatisfactory.
+ 315: [WARNING DRT-0088] Exhaustive access point generation for _4870_/A3 (sky130_fd_sc_hd__a32o_1) is unsatisfactory.
+ 316: [WARNING DRT-0088] Exhaustive access point generation for _4868_/X (sky130_fd_sc_hd__or3b_1) is unsatisfactory.
+ 317: [WARNING DRT-0088] Exhaustive access point generation for _4882_/A1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+ 318: [WARNING DRT-0088] Exhaustive access point generation for _4880_/A (sky130_fd_sc_hd__and4_2) is unsatisfactory.
+ 319: [WARNING DRT-0088] Exhaustive access point generation for _4882_/B1 (sky130_fd_sc_hd__o21ai_0) is unsatisfactory.
+ 320: [WARNING DRT-0088] Exhaustive access point generation for _4904_/X (sky130_fd_sc_hd__or4_1) is unsatisfactory.
+ 321: [WARNING DRT-0088] Exhaustive access point generation for _4911_/A (sky130_fd_sc_hd__inv_1) is unsatisfactory.
+ 322: [WARNING DRT-0088] Exhaustive access point generation for _4927_/B (sky130_fd_sc_hd__or2_4) is unsatisfactory.
+ 323: [WARNING DRT-0088] Exhaustive access point generation for _4908_/X (sky130_fd_sc_hd__a22o_1) is unsatisfactory.
+ 324: [WARNING DRT-0088] Exhaustive access point generation for _4931_/A1 (sky130_fd_sc_hd__o211ai_1) is unsatisfactory.
+ 325: [WARNING DRT-0088] Exhaustive access point generation for _4937_/A (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+ 326: [WARNING DRT-0088] Exhaustive access point generation for _4937_/D (sky130_fd_sc_hd__nand4_1) is unsatisfactory.
+ 327: [WARNING DRT-0088] Exhaustive access point generation for _4958_/B1 (sky130_fd_sc_hd__o32ai_1) is unsatisfactory.
+ 328: [WARNING DRT-0088] Exhaustive access point generation for _4960_/A2 (sky130_fd_sc_hd__a21boi_0) is unsatisfactory.
+ 329: [WARNING DRT-0088] Exhaustive access point generation for _4961_/A0 (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+ 330: [WARNING DRT-0088] Exhaustive access point generation for _4963_/A0 (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+ 331: [WARNING DRT-0088] Exhaustive access point generation for _4961_/S (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+ 332: [WARNING DRT-0088] Exhaustive access point generation for _4963_/S (sky130_fd_sc_hd__mux2i_1) is unsatisfactory.
+ 333: [WARNING DRT-0088] Exhaustive access point generation for _4968_/A2 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+ 334: [WARNING DRT-0088] Exhaustive access point generation for _4965_/X (sky130_fd_sc_hd__or3_1) is unsatisfactory.
+ 335: [WARNING DRT-0088] Exhaustive access point generation for _4968_/B1 (sky130_fd_sc_hd__a21oi_1) is unsatisfactory.
+ 336: [WARNING DRT-0088] Exhaustive access point generation for _4988_/B (sky130_fd_sc_hd__or2_2) is unsatisfactory.
+ 337: [WARNING DRT-0088] Exhaustive access point generation for _4995_/A2 (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+ 338: [WARNING DRT-0088] Exhaustive access point generation for _4996_/B (sky130_fd_sc_hd__and2_2) is unsatisfactory.
+ 339: [WARNING DRT-0088] Exhaustive access point generation for _4995_/X (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+ 340: [WARNING DRT-0088] Exhaustive access point generation for _5005_/C_N (sky130_fd_sc_hd__or3b_1) is unsatisfactory.
+ 341: [WARNING DRT-0088] Exhaustive access point generation for _5005_/X (sky130_fd_sc_hd__or3b_1) is unsatisfactory.
+ 342: [WARNING DRT-0088] Exhaustive access point generation for _5027_/X (sky130_fd_sc_hd__and3_1) is unsatisfactory.
+ 343: [WARNING DRT-0088] Exhaustive access point generation for _5029_/X (sky130_fd_sc_hd__and3_1) is unsatisfactory.
+ 344: [WARNING DRT-0088] Exhaustive access point generation for _5055_/A1 (sky130_fd_sc_hd__o21a_1) is unsatisfactory.
+ 345: [WARNING DRT-0088] Exhaustive access point generation for _5068_/A1 (sky130_fd_sc_hd__o21a_1) is unsatisfactory.
+ 346: [WARNING DRT-0088] Exhaustive access point generation for _5144_/A (sky130_fd_sc_hd__inv_2) is unsatisfactory.
+ 347: [WARNING DRT-0088] Exhaustive access point generation for _5177_/X (sky130_fd_sc_hd__a22o_1) is unsatisfactory.
+ 348: [WARNING DRT-0088] Exhaustive access point generation for _5189_/B1 (sky130_fd_sc_hd__a21oi_2) is unsatisfactory.
+ 349: [WARNING DRT-0088] Exhaustive access point generation for _5193_/A3 (sky130_fd_sc_hd__a32o_1) is unsatisfactory.
+ 350: [WARNING DRT-0088] Exhaustive access point generation for _5235_/A2 (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+ 351: [WARNING DRT-0088] Exhaustive access point generation for _5251_/B2 (sky130_fd_sc_hd__a32oi_1) is unsatisfactory.
+ 352: [WARNING DRT-0088] Exhaustive access point generation for _5235_/X (sky130_fd_sc_hd__a21o_1) is unsatisfactory.
+ 353: [WARNING DRT-0088] Exhaustive access point generation for _5395_/C1 (sky130_fd_sc_hd__o311ai_0) is unsatisfactory.
+ 354: [WARNING DRT-0088] Exhaustive access point generation for _5408_/C1 (sky130_fd_sc_hd__o311ai_0) is unsatisfactory.
+ 355: [WARNING DRT-0088] Exhaustive access point generation for _5415_/A2 (sky130_fd_sc_hd__a21boi_0) is unsatisfactory.
+ 356: [WARNING DRT-0088] Exhaustive access point generation for _5526_/A1 (sky130_fd_sc_hd__o211ai_1) is unsatisfactory.
+ 357: [WARNING DRT-0088] Exhaustive access point generation for _5552_/X (sky130_fd_sc_hd__o2111a_1) is unsatisfactory.
+ 358: [WARNING DRT-0088] Exhaustive access point generation for _5560_/C1 (sky130_fd_sc_hd__o311ai_1) is unsatisfactory.
+ 359: [WARNING DRT-0088] Exhaustive access point generation for _5557_/X (sky130_fd_sc_hd__or4_1) is unsatisfactory.
+ 360: [WARNING DRT-0088] Exhaustive access point generation for _5586_/S0 (sky130_fd_sc_hd__mux4_2) is unsatisfactory.
+ 361: [WARNING DRT-0088] Exhaustive access point generation for _5592_/S0 (sky130_fd_sc_hd__mux4_2) is unsatisfactory.
+ 362: [WARNING DRT-0088] Exhaustive access point generation for _5611_/B1 (sky130_fd_sc_hd__o22ai_1) is unsatisfactory.
+ 363: [WARNING DRT-0088] Exhaustive access point generation for _5642_/B1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+ 364: [WARNING DRT-0088] Exhaustive access point generation for _5642_/C1 (sky130_fd_sc_hd__o221a_1) is unsatisfactory.
+ 365: [WARNING DRT-0088] Exhaustive access point generation for _5666_/A3 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+ 366: [WARNING DRT-0088] Exhaustive access point generation for _5666_/B1 (sky130_fd_sc_hd__a31oi_1) is unsatisfactory.
+ 367: [WARNING DRT-0088] Exhaustive access point generation for _5737_/B1 (sky130_fd_sc_hd__o22ai_1) is unsatisfactory.
+ 368: [WARNING DRT-0088] Exhaustive access point generation for _5668_/X (sky130_fd_sc_hd__a221o_1) is unsatisfactory.
+ 369: [WARNING DRT-0088] Exhaustive access point generation for _5747_/X (sky130_fd_sc_hd__o22a_1) is unsatisfactory.
+ 370: [WARNING DRT-0088] Exhaustive access point generation for _5904_/C1 (sky130_fd_sc_hd__a211o_1) is unsatisfactory.
+ 371: [WARNING DRT-0088] Exhaustive access point generation for _5791_/X (sky130_fd_sc_hd__a221o_1) is unsatisfactory.
+ 372: [WARNING DRT-0088] Exhaustive access point generation for _6343_/B1 (sky130_fd_sc_hd__o32ai_1) is unsatisfactory.
+ 373: [WARNING DRT-0088] Exhaustive access point generation for _6168_/C1 (sky130_fd_sc_hd__a211o_1) is unsatisfactory.
+ 374: [WARNING DRT-0088] Exhaustive access point generation for _6590_/X (sky130_fd_sc_hd__and3b_1) is unsatisfactory.
+ 375: [WARNING DRT-0088] Exhaustive access point generation for _6807_/B_N (sky130_fd_sc_hd__nor2b_1) is unsatisfactory.
+ 376: [WARNING DRT-0088] Exhaustive access point generation for _7014_/B2 (sky130_fd_sc_hd__a32oi_1) is unsatisfactory.
+ 378: [WARNING DRT-0088] Exhaustive access point generation for _7397_/A1 (sky130_fd_sc_hd__o32a_1) is unsatisfactory.
+ 379: [WARNING DRT-0088] Exhaustive access point generation for _7397_/B1 (sky130_fd_sc_hd__o32a_1) is unsatisfactory.
+ 380: [WARNING DRT-0088] Exhaustive access point generation for _7407_/D (sky130_fd_sc_hd__or4_4) is unsatisfactory.
+ 381: [WARNING DRT-0088] Exhaustive access point generation for _7468_/D (sky130_fd_sc_hd__or4_4) is unsatisfactory.
+ 382: [WARNING DRT-0088] Exhaustive access point generation for _7477_/C1 (sky130_fd_sc_hd__a311o_1) is unsatisfactory.
+ 383: [WARNING DRT-0088] Exhaustive access point generation for _7717_/A (sky130_fd_sc_hd__and4_1) is unsatisfactory.
+ 384: [WARNING DRT-0088] Exhaustive access point generation for _7732_/A (sky130_fd_sc_hd__and4_4) is unsatisfactory.
+ 385: [WARNING DRT-0088] Exhaustive access point generation for _7731_/A (sky130_fd_sc_hd__and4_1) is unsatisfactory.
+ 386: [WARNING DRT-0088] Exhaustive access point generation for _7797_/A2 (sky130_fd_sc_hd__o211a_1) is unsatisfactory.
+ 387: [WARNING DRT-0088] Exhaustive access point generation for _7797_/B1 (sky130_fd_sc_hd__o211a_1) is unsatisfactory.
+ 388: [WARNING DRT-0088] Exhaustive access point generation for _7858_/X (sky130_fd_sc_hd__and3b_1) is unsatisfactory.
+ 389: [WARNING DRT-0088] Exhaustive access point generation for _8431_/A (sky130_fd_sc_hd__and4_4) is unsatisfactory.
+ 390: [WARNING DRT-0088] Exhaustive access point generation for _8534_/C1 (sky130_fd_sc_hd__o311a_1) is unsatisfactory.
+ 391: [WARNING DRT-0088] Exhaustive access point generation for _9301_/A (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+ 392: [WARNING DRT-0088] Exhaustive access point generation for _9300_/B (sky130_fd_sc_hd__fa_2) is unsatisfactory.
+ 393: [WARNING DRT-0088] Exhaustive access point generation for _9301_/CIN (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+ 394: [WARNING DRT-0088] Exhaustive access point generation for _9301_/COUT (sky130_fd_sc_hd__fa_1) is unsatisfactory.
+ 395: [WARNING DRT-0088] Exhaustive access point generation for _9303_/B (sky130_fd_sc_hd__fa_2) is unsatisfactory.
+ 396: [WARNING DRT-0088] Exhaustive access point generation for _9300_/CIN (sky130_fd_sc_hd__fa_2) is unsatisfactory.
+ 397: [WARNING DRT-0088] Exhaustive access point generation for clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16) is unsatisfactory.
+ 398: [WARNING DRT-0088] Exhaustive access point generation for _9303_/CIN (sky130_fd_sc_hd__fa_2) is unsatisfactory.
+ 399: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[0] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 400: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[1] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 401: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[2] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 402: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[3] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 403: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[4] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 404: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[5] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 405: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[6] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 406: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[7] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 407: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[8] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 408: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[9] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 409: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[10] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 410: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[11] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 411: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[12] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 412: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[13] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 413: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[14] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 414: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[15] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 415: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[16] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 416: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[17] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 417: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[18] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 418: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[19] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 419: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[20] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 420: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[21] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 421: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[22] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 422: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[23] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 423: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[24] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 424: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[25] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 425: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[26] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 426: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[27] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 427: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[28] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 428: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[29] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 429: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[30] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 430: [WARNING DRT-0088] Exhaustive access point generation for sram/din0[31] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 431: [WARNING DRT-0088] Exhaustive access point generation for sram/addr0[0] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 432: [WARNING DRT-0088] Exhaustive access point generation for sram/addr0[1] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 433: [WARNING DRT-0088] Exhaustive access point generation for sram/addr1[0] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 434: [WARNING DRT-0088] Exhaustive access point generation for sram/addr1[1] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 435: [WARNING DRT-0088] Exhaustive access point generation for sram/addr1[7] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 436: [WARNING DRT-0088] Exhaustive access point generation for sram/addr1[8] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 437: [WARNING DRT-0088] Exhaustive access point generation for sram/clk1 (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 438: [WARNING DRT-0088] Exhaustive access point generation for sram/wmask0[0] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 439: [WARNING DRT-0088] Exhaustive access point generation for sram/wmask0[1] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 440: [WARNING DRT-0088] Exhaustive access point generation for sram/wmask0[2] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 441: [WARNING DRT-0088] Exhaustive access point generation for sram/wmask0[3] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 442: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[0] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 443: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[1] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 444: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[2] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 445: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[3] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 446: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[4] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 447: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[5] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 448: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[6] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 449: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[7] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 450: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[8] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 451: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[9] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 452: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[10] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 453: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[11] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 454: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[12] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 455: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[13] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 456: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[14] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 457: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[15] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 458: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[16] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 459: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[17] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 460: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[18] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 461: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[19] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 462: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[20] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 463: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[21] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 464: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[22] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 465: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[23] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 466: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[24] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 467: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[25] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 468: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[26] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 469: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[27] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 470: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[28] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 471: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[29] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 472: [WARNING DRT-0088] Exhaustive access point generation for load_slew1105/X (sky130_fd_sc_hd__buf_1) is unsatisfactory.
+ 473: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[30] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 474: [WARNING DRT-0088] Exhaustive access point generation for sram/dout0[31] (sky130_sram_2kbyte_1rw1r_32x512_8) is unsatisfactory.
+ 475: [WARNING DRT-0088] Exhaustive access point generation for load_slew1106/X (sky130_fd_sc_hd__buf_1) is unsatisfactory.
+ 476: [WARNING DRT-0088] Exhaustive access point generation for clkbuf_0_clk/A (sky130_fd_sc_hd__clkbuf_16) is unsatisfactory.
+ 915: [WARNING GRT-0026] Missing route to pin _6712_/A1 in net _0001_.
+ 916: [WARNING GRT-0026] Missing route to pin _6712_/A1 in net _0001_.
+ 917: [WARNING GRT-0026] Missing route to pin _6712_/A1 in net _0001_.
+ 918: [WARNING GRT-0026] Missing route to pin load_slew1728/A in net _0002_.
+ 919: [WARNING GRT-0026] Missing route to pin load_slew1728/A in net _0002_.
+ 920: [WARNING GRT-0026] Missing route to pin load_slew1728/A in net _0002_.
+ 921: [WARNING GRT-0026] Missing route to pin _5679_/S0 in net _0008_.
+ 922: [WARNING GRT-0026] Missing route to pin _5679_/S0 in net _0008_.
+ 923: [WARNING GRT-0026] Missing route to pin _5679_/S0 in net _0008_.
+ 924: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[4\]$_DFF_P_/D in net _0014_.
+ 925: [WARNING GRT-0026] Missing route to pin _4917_/Y in net _0014_.
+ 926: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[4\]$_DFF_P_/D in net _0014_.
+ 927: [WARNING GRT-0026] Missing route to pin _4917_/Y in net _0014_.
+ 928: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[4\]$_DFF_P_/D in net _0014_.
+ 929: [WARNING GRT-0026] Missing route to pin _4917_/Y in net _0014_.
+ 930: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[5\]$_DFF_P_/D in net _0015_.
+ 931: [WARNING GRT-0026] Missing route to pin _4908_/X in net _0015_.
+ 932: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[5\]$_DFF_P_/D in net _0015_.
+ 933: [WARNING GRT-0026] Missing route to pin _4908_/X in net _0015_.
+ 934: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[5\]$_DFF_P_/D in net _0015_.
+ 935: [WARNING GRT-0026] Missing route to pin _4908_/X in net _0015_.
+ 936: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[6\]$_DFF_P_/D in net _0016_.
+ 937: [WARNING GRT-0026] Missing route to pin _4902_/Y in net _0016_.
+ 938: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[6\]$_DFF_P_/D in net _0016_.
+ 939: [WARNING GRT-0026] Missing route to pin _4902_/Y in net _0016_.
+ 940: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpu_state\[6\]$_DFF_P_/D in net _0016_.
+ 941: [WARNING GRT-0026] Missing route to pin _4902_/Y in net _0016_.
+ 942: [WARNING GRT-0026] Missing route to pin mem_addr\[8\]$_DFFE_PP_/DE in net _0023_.
+ 943: [WARNING GRT-0026] Missing route to pin mem_addr\[7\]$_DFFE_PP_/DE in net _0023_.
+ 944: [WARNING GRT-0026] Missing route to pin mem_addr\[6\]$_DFFE_PP_/DE in net _0023_.
+ 945: [WARNING GRT-0026] Missing route to pin mem_addr\[8\]$_DFFE_PP_/DE in net _0023_.
+ 946: [WARNING GRT-0026] Missing route to pin mem_addr\[7\]$_DFFE_PP_/DE in net _0023_.
+ 947: [WARNING GRT-0026] Missing route to pin mem_addr\[6\]$_DFFE_PP_/DE in net _0023_.
+ 948: [WARNING GRT-0026] Missing route to pin mem_addr\[8\]$_DFFE_PP_/DE in net _0023_.
+ 949: [WARNING GRT-0026] Missing route to pin mem_addr\[7\]$_DFFE_PP_/DE in net _0023_.
+ 950: [WARNING GRT-0026] Missing route to pin mem_addr\[6\]$_DFFE_PP_/DE in net _0023_.
+ 951: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[31\]$_DFFE_PP_/DE in net _0026_.
+ 952: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[28\]$_DFFE_PP_/DE in net _0026_.
+ 953: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/DE in net _0026_.
+ 954: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[5\]$_DFFE_PP_/DE in net _0026_.
+ 955: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[31\]$_DFFE_PP_/DE in net _0026_.
+ 956: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[28\]$_DFFE_PP_/DE in net _0026_.
+ 957: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/DE in net _0026_.
+ 958: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[5\]$_DFFE_PP_/DE in net _0026_.
+ 959: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[31\]$_DFFE_PP_/DE in net _0026_.
+ 960: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[28\]$_DFFE_PP_/DE in net _0026_.
+ 961: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/DE in net _0026_.
+ 962: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[5\]$_DFFE_PP_/DE in net _0026_.
+ 963: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoder_trigger$_DFF_P_/D in net _0039_.
+ 964: [WARNING GRT-0026] Missing route to pin _7477_/X in net _0039_.
+ 965: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoder_trigger$_DFF_P_/D in net _0039_.
+ 966: [WARNING GRT-0026] Missing route to pin _7477_/X in net _0039_.
+ 967: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoder_trigger$_DFF_P_/D in net _0039_.
+ 968: [WARNING GRT-0026] Missing route to pin _7477_/X in net _0039_.
+ 969: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_sh\[2\]$_DFF_P_/D in net _0045_.
+ 970: [WARNING GRT-0026] Missing route to pin _7394_/Y in net _0045_.
+ 971: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_sh\[2\]$_DFF_P_/D in net _0045_.
+ 972: [WARNING GRT-0026] Missing route to pin _7394_/Y in net _0045_.
+ 973: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_sh\[2\]$_DFF_P_/D in net _0045_.
+ 974: [WARNING GRT-0026] Missing route to pin _7394_/Y in net _0045_.
+ 975: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_alu_reg_imm$_DFFE_PP_/D in net _0053_.
+ 976: [WARNING GRT-0026] Missing route to pin _4975_/Y in net _0053_.
+ 977: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_alu_reg_imm$_DFFE_PP_/D in net _0053_.
+ 978: [WARNING GRT-0026] Missing route to pin _4975_/Y in net _0053_.
+ 979: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_alu_reg_imm$_DFFE_PP_/D in net _0053_.
+ 980: [WARNING GRT-0026] Missing route to pin _4975_/Y in net _0053_.
+ 981: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_rdinstrh$_DFFE_PP_/DE in net _0056_.
+ 982: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_rdinstrh$_DFFE_PP_/DE in net _0056_.
+ 983: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_rdinstrh$_DFFE_PP_/DE in net _0056_.
+ 984: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lb$_DFFE_PP_/D in net _0057_.
+ 985: [WARNING GRT-0026] Missing route to pin _5032_/X in net _0057_.
+ 986: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lb$_DFFE_PP_/D in net _0057_.
+ 987: [WARNING GRT-0026] Missing route to pin _5032_/X in net _0057_.
+ 988: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lb$_DFFE_PP_/D in net _0057_.
+ 989: [WARNING GRT-0026] Missing route to pin _5032_/X in net _0057_.
+ 990: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lbu$_DFFE_PP_/D in net _0060_.
+ 991: [WARNING GRT-0026] Missing route to pin _5029_/X in net _0060_.
+ 992: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lbu$_DFFE_PP_/D in net _0060_.
+ 993: [WARNING GRT-0026] Missing route to pin _5029_/X in net _0060_.
+ 994: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_lbu$_DFFE_PP_/D in net _0060_.
+ 995: [WARNING GRT-0026] Missing route to pin _5029_/X in net _0060_.
+ 996: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sh$_DFFE_PP_/D in net _0063_.
+ 997: [WARNING GRT-0026] Missing route to pin _5024_/X in net _0063_.
+ 998: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sh$_DFFE_PP_/D in net _0063_.
+ 999: [WARNING GRT-0026] Missing route to pin _5024_/X in net _0063_.
+1000: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sh$_DFFE_PP_/D in net _0063_.
+1001: [WARNING GRT-0026] Missing route to pin _5024_/X in net _0063_.
+1002: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sw$_DFFE_PP_/D in net _0064_.
+1003: [WARNING GRT-0026] Missing route to pin _5022_/X in net _0064_.
+1004: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sw$_DFFE_PP_/D in net _0064_.
+1005: [WARNING GRT-0026] Missing route to pin _5022_/X in net _0064_.
+1006: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sw$_DFFE_PP_/D in net _0064_.
+1007: [WARNING GRT-0026] Missing route to pin _5022_/X in net _0064_.
+1008: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srai$_DFFE_PP_/D in net _0067_.
+1009: [WARNING GRT-0026] Missing route to pin _5016_/X in net _0067_.
+1010: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srai$_DFFE_PP_/D in net _0067_.
+1011: [WARNING GRT-0026] Missing route to pin _5016_/X in net _0067_.
+1012: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srai$_DFFE_PP_/D in net _0067_.
+1013: [WARNING GRT-0026] Missing route to pin _5016_/X in net _0067_.
+1014: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/D in net _0076_.
+1015: [WARNING GRT-0026] Missing route to pin _7002_/Y in net _0076_.
+1016: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/D in net _0076_.
+1017: [WARNING GRT-0026] Missing route to pin _7002_/Y in net _0076_.
+1018: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[10\]$_DFFE_PP_/D in net _0076_.
+1019: [WARNING GRT-0026] Missing route to pin _7002_/Y in net _0076_.
+1020: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[26\]$_DFFE_PP_/D in net _0093_.
+1021: [WARNING GRT-0026] Missing route to pin _7301_/Y in net _0093_.
+1022: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[26\]$_DFFE_PP_/D in net _0093_.
+1023: [WARNING GRT-0026] Missing route to pin _7301_/Y in net _0093_.
+1024: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[26\]$_DFFE_PP_/D in net _0093_.
+1025: [WARNING GRT-0026] Missing route to pin _7301_/Y in net _0093_.
+1026: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[29\]$_DFFE_PP_/D in net _0096_.
+1027: [WARNING GRT-0026] Missing route to pin _7350_/Y in net _0096_.
+1028: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[29\]$_DFFE_PP_/D in net _0096_.
+1029: [WARNING GRT-0026] Missing route to pin _7350_/Y in net _0096_.
+1030: [WARNING GRT-0026] Missing route to pin pcpi_rs2\[29\]$_DFFE_PP_/D in net _0096_.
+1031: [WARNING GRT-0026] Missing route to pin _7350_/Y in net _0096_.
+1032: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[3\]$_DFFE_PP_/D in net _0100_.
+1033: [WARNING GRT-0026] Missing route to pin _6801_/Y in net _0100_.
+1034: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[3\]$_DFFE_PP_/D in net _0100_.
+1035: [WARNING GRT-0026] Missing route to pin _6801_/Y in net _0100_.
+1036: [WARNING GRT-0026] Missing route to pin mem_la_wdata\[3\]$_DFFE_PP_/D in net _0100_.
+1037: [WARNING GRT-0026] Missing route to pin _6801_/Y in net _0100_.
+1038: [WARNING GRT-0026] Missing route to pin mem_wstrb\[3\]$_DFFE_PN_/D in net _0110_.
+1039: [WARNING GRT-0026] Missing route to pin _6685_/Y in net _0110_.
+1040: [WARNING GRT-0026] Missing route to pin mem_wstrb\[3\]$_DFFE_PN_/D in net _0110_.
+1041: [WARNING GRT-0026] Missing route to pin _6685_/Y in net _0110_.
+1042: [WARNING GRT-0026] Missing route to pin mem_wstrb\[3\]$_DFFE_PN_/D in net _0110_.
+1043: [WARNING GRT-0026] Missing route to pin _6685_/Y in net _0110_.
+1044: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[3\]$_DFFE_PP_/DE in net _0112_.
+1045: [WARNING GRT-0026] Missing route to pin _7508_/Y in net _0112_.
+1046: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[3\]$_DFFE_PP_/DE in net _0112_.
+1047: [WARNING GRT-0026] Missing route to pin _7508_/Y in net _0112_.
+1048: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[3\]$_DFFE_PP_/DE in net _0112_.
+1049: [WARNING GRT-0026] Missing route to pin _7508_/Y in net _0112_.
+1050: [WARNING GRT-0026] Missing route to pin _7503_/Y in net _0116_.
+1051: [WARNING GRT-0026] Missing route to pin _7503_/Y in net _0116_.
+1052: [WARNING GRT-0026] Missing route to pin _7503_/Y in net _0116_.
+1053: [WARNING GRT-0026] Missing route to pin _7502_/Y in net _0117_.
+1054: [WARNING GRT-0026] Missing route to pin _7502_/Y in net _0117_.
+1055: [WARNING GRT-0026] Missing route to pin _7502_/Y in net _0117_.
+1056: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[16\]\[1\]$_DFFE_PP_/DE in net _0118_.
+1057: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[16\]\[1\]$_DFFE_PP_/DE in net _0118_.
+1058: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[16\]\[1\]$_DFFE_PP_/DE in net _0118_.
+1059: [WARNING GRT-0026] Missing route to pin load_slew1452/A in net _0125_.
+1060: [WARNING GRT-0026] Missing route to pin load_slew1452/A in net _0125_.
+1061: [WARNING GRT-0026] Missing route to pin load_slew1452/A in net _0125_.
+1062: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[27\]\[2\]$_DFFE_PP_/DE in net _0130_.
+1063: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[27\]\[2\]$_DFFE_PP_/DE in net _0130_.
+1064: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[27\]\[2\]$_DFFE_PP_/DE in net _0130_.
+1065: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[7\]\[2\]$_DFFE_PP_/DE in net _0140_.
+1066: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[7\]\[2\]$_DFFE_PP_/DE in net _0140_.
+1067: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[7\]\[2\]$_DFFE_PP_/DE in net _0140_.
+1068: [WARNING GRT-0026] Missing route to pin mem_wstrb\[2\]$_DFFE_PN_/DE in net _0143_.
+1069: [WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PN_/DE in net _0143_.
+1070: [WARNING GRT-0026] Missing route to pin mem_wstrb\[2\]$_DFFE_PN_/DE in net _0143_.
+1071: [WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PN_/DE in net _0143_.
+1072: [WARNING GRT-0026] Missing route to pin mem_wstrb\[2\]$_DFFE_PN_/DE in net _0143_.
+1073: [WARNING GRT-0026] Missing route to pin mem_wstrb\[1\]$_DFFE_PN_/DE in net _0143_.
+1074: [WARNING GRT-0026] Missing route to pin trap$_SDFF_PN0_/D in net _0144_.
+1075: [WARNING GRT-0026] Missing route to pin _7606_/X in net _0144_.
+1076: [WARNING GRT-0026] Missing route to pin trap$_SDFF_PN0_/D in net _0144_.
+1077: [WARNING GRT-0026] Missing route to pin _7606_/X in net _0144_.
+1078: [WARNING GRT-0026] Missing route to pin trap$_SDFF_PN0_/D in net _0144_.
+1079: [WARNING GRT-0026] Missing route to pin _7606_/X in net _0144_.
+1080: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[0\]$_SDFFE_PN0P_/D in net _0145_.
+1081: [WARNING GRT-0026] Missing route to pin _7610_/Y in net _0145_.
+1082: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[0\]$_SDFFE_PN0P_/D in net _0145_.
+1083: [WARNING GRT-0026] Missing route to pin _7610_/Y in net _0145_.
+1084: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[0\]$_SDFFE_PN0P_/D in net _0145_.
+1085: [WARNING GRT-0026] Missing route to pin _7610_/Y in net _0145_.
+1086: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+1087: [WARNING GRT-0026] Missing route to pin _7616_/Y in net _0146_.
+1088: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+1089: [WARNING GRT-0026] Missing route to pin _7616_/Y in net _0146_.
+1090: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[1\]$_SDFFE_PN0P_/D in net _0146_.
+1091: [WARNING GRT-0026] Missing route to pin _7616_/Y in net _0146_.
+1092: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+1093: [WARNING GRT-0026] Missing route to pin _7626_/Y in net _0148_.
+1094: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+1095: [WARNING GRT-0026] Missing route to pin _7626_/Y in net _0148_.
+1096: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[3\]$_SDFFE_PN0P_/D in net _0148_.
+1097: [WARNING GRT-0026] Missing route to pin _7626_/Y in net _0148_.
+1098: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[6\]$_SDFFE_PN0P_/D in net _0151_.
+1099: [WARNING GRT-0026] Missing route to pin _7640_/Y in net _0151_.
+1100: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[6\]$_SDFFE_PN0P_/D in net _0151_.
+1101: [WARNING GRT-0026] Missing route to pin _7640_/Y in net _0151_.
+1102: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[6\]$_SDFFE_PN0P_/D in net _0151_.
+1103: [WARNING GRT-0026] Missing route to pin _7640_/Y in net _0151_.
+1104: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+1105: [WARNING GRT-0026] Missing route to pin _7644_/Y in net _0152_.
+1106: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+1107: [WARNING GRT-0026] Missing route to pin _7644_/Y in net _0152_.
+1108: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[7\]$_SDFFE_PN0P_/D in net _0152_.
+1109: [WARNING GRT-0026] Missing route to pin _7644_/Y in net _0152_.
+1110: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+1111: [WARNING GRT-0026] Missing route to pin _7655_/Y in net _0154_.
+1112: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+1113: [WARNING GRT-0026] Missing route to pin _7655_/Y in net _0154_.
+1114: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[9\]$_SDFFE_PN0P_/D in net _0154_.
+1115: [WARNING GRT-0026] Missing route to pin _7655_/Y in net _0154_.
+1116: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+1117: [WARNING GRT-0026] Missing route to pin _7658_/Y in net _0155_.
+1118: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+1119: [WARNING GRT-0026] Missing route to pin _7658_/Y in net _0155_.
+1120: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[10\]$_SDFFE_PN0P_/D in net _0155_.
+1121: [WARNING GRT-0026] Missing route to pin _7658_/Y in net _0155_.
+1122: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[11\]$_SDFFE_PN0P_/D in net _0156_.
+1123: [WARNING GRT-0026] Missing route to pin _7662_/Y in net _0156_.
+1124: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[11\]$_SDFFE_PN0P_/D in net _0156_.
+1125: [WARNING GRT-0026] Missing route to pin _7662_/Y in net _0156_.
+1126: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[11\]$_SDFFE_PN0P_/D in net _0156_.
+1127: [WARNING GRT-0026] Missing route to pin _7662_/Y in net _0156_.
+1128: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[12\]$_SDFFE_PN0P_/D in net _0157_.
+1129: [WARNING GRT-0026] Missing route to pin _7665_/Y in net _0157_.
+1130: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[12\]$_SDFFE_PN0P_/D in net _0157_.
+1131: [WARNING GRT-0026] Missing route to pin _7665_/Y in net _0157_.
+1132: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[12\]$_SDFFE_PN0P_/D in net _0157_.
+1133: [WARNING GRT-0026] Missing route to pin _7665_/Y in net _0157_.
+1134: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+1135: [WARNING GRT-0026] Missing route to pin _7670_/Y in net _0158_.
+1136: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+1137: [WARNING GRT-0026] Missing route to pin _7670_/Y in net _0158_.
+1138: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[13\]$_SDFFE_PN0P_/D in net _0158_.
+1139: [WARNING GRT-0026] Missing route to pin _7670_/Y in net _0158_.
+1140: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[15\]$_SDFFE_PN0P_/D in net _0160_.
+1141: [WARNING GRT-0026] Missing route to pin _7679_/Y in net _0160_.
+1142: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[15\]$_SDFFE_PN0P_/D in net _0160_.
+1143: [WARNING GRT-0026] Missing route to pin _7679_/Y in net _0160_.
+1144: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[15\]$_SDFFE_PN0P_/D in net _0160_.
+1145: [WARNING GRT-0026] Missing route to pin _7679_/Y in net _0160_.
+1146: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[16\]$_SDFFE_PN0P_/D in net _0161_.
+1147: [WARNING GRT-0026] Missing route to pin _7685_/Y in net _0161_.
+1148: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[16\]$_SDFFE_PN0P_/D in net _0161_.
+1149: [WARNING GRT-0026] Missing route to pin _7685_/Y in net _0161_.
+1150: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[16\]$_SDFFE_PN0P_/D in net _0161_.
+1151: [WARNING GRT-0026] Missing route to pin _7685_/Y in net _0161_.
+1152: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+1153: [WARNING GRT-0026] Missing route to pin _7688_/Y in net _0162_.
+1154: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+1155: [WARNING GRT-0026] Missing route to pin _7688_/Y in net _0162_.
+1156: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[17\]$_SDFFE_PN0P_/D in net _0162_.
+1157: [WARNING GRT-0026] Missing route to pin _7688_/Y in net _0162_.
+1158: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[18\]$_SDFFE_PN0P_/D in net _0163_.
+1159: [WARNING GRT-0026] Missing route to pin _7695_/Y in net _0163_.
+1160: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[18\]$_SDFFE_PN0P_/D in net _0163_.
+1161: [WARNING GRT-0026] Missing route to pin _7695_/Y in net _0163_.
+1162: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[18\]$_SDFFE_PN0P_/D in net _0163_.
+1163: [WARNING GRT-0026] Missing route to pin _7695_/Y in net _0163_.
+1164: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+1165: [WARNING GRT-0026] Missing route to pin _7709_/Y in net _0165_.
+1166: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+1167: [WARNING GRT-0026] Missing route to pin _7709_/Y in net _0165_.
+1168: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[20\]$_SDFFE_PN0P_/D in net _0165_.
+1169: [WARNING GRT-0026] Missing route to pin _7709_/Y in net _0165_.
+1170: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[24\]$_SDFFE_PN0P_/D in net _0169_.
+1171: [WARNING GRT-0026] Missing route to pin _7727_/Y in net _0169_.
+1172: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[24\]$_SDFFE_PN0P_/D in net _0169_.
+1173: [WARNING GRT-0026] Missing route to pin _7727_/Y in net _0169_.
+1174: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[24\]$_SDFFE_PN0P_/D in net _0169_.
+1175: [WARNING GRT-0026] Missing route to pin _7727_/Y in net _0169_.
+1176: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+1177: [WARNING GRT-0026] Missing route to pin _7733_/Y in net _0170_.
+1178: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+1179: [WARNING GRT-0026] Missing route to pin _7733_/Y in net _0170_.
+1180: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[25\]$_SDFFE_PN0P_/D in net _0170_.
+1181: [WARNING GRT-0026] Missing route to pin _7733_/Y in net _0170_.
+1182: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+1183: [WARNING GRT-0026] Missing route to pin _7737_/Y in net _0171_.
+1184: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+1185: [WARNING GRT-0026] Missing route to pin _7737_/Y in net _0171_.
+1186: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[26\]$_SDFFE_PN0P_/D in net _0171_.
+1187: [WARNING GRT-0026] Missing route to pin _7737_/Y in net _0171_.
+1188: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+1189: [WARNING GRT-0026] Missing route to pin _7740_/X in net _0172_.
+1190: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+1191: [WARNING GRT-0026] Missing route to pin _7740_/X in net _0172_.
+1192: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[27\]$_SDFFE_PN0P_/D in net _0172_.
+1193: [WARNING GRT-0026] Missing route to pin _7740_/X in net _0172_.
+1194: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[29\]$_SDFFE_PN0P_/D in net _0174_.
+1195: [WARNING GRT-0026] Missing route to pin _7748_/X in net _0174_.
+1196: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[29\]$_SDFFE_PN0P_/D in net _0174_.
+1197: [WARNING GRT-0026] Missing route to pin _7748_/X in net _0174_.
+1198: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[29\]$_SDFFE_PN0P_/D in net _0174_.
+1199: [WARNING GRT-0026] Missing route to pin _7748_/X in net _0174_.
+1200: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+1201: [WARNING GRT-0026] Missing route to pin _7758_/Y in net _0176_.
+1202: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+1203: [WARNING GRT-0026] Missing route to pin _7758_/Y in net _0176_.
+1204: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[31\]$_SDFFE_PN0P_/D in net _0176_.
+1205: [WARNING GRT-0026] Missing route to pin _7758_/Y in net _0176_.
+1206: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[34\]$_SDFFE_PN0P_/D in net _0179_.
+1207: [WARNING GRT-0026] Missing route to pin _7775_/Y in net _0179_.
+1208: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[34\]$_SDFFE_PN0P_/D in net _0179_.
+1209: [WARNING GRT-0026] Missing route to pin _7775_/Y in net _0179_.
+1210: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[34\]$_SDFFE_PN0P_/D in net _0179_.
+1211: [WARNING GRT-0026] Missing route to pin _7775_/Y in net _0179_.
+1212: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[36\]$_SDFFE_PN0P_/D in net _0181_.
+1213: [WARNING GRT-0026] Missing route to pin _7784_/Y in net _0181_.
+1214: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[36\]$_SDFFE_PN0P_/D in net _0181_.
+1215: [WARNING GRT-0026] Missing route to pin _7784_/Y in net _0181_.
+1216: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[36\]$_SDFFE_PN0P_/D in net _0181_.
+1217: [WARNING GRT-0026] Missing route to pin _7784_/Y in net _0181_.
+1218: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[40\]$_SDFFE_PN0P_/D in net _0185_.
+1219: [WARNING GRT-0026] Missing route to pin _7802_/Y in net _0185_.
+1220: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[40\]$_SDFFE_PN0P_/D in net _0185_.
+1221: [WARNING GRT-0026] Missing route to pin _7802_/Y in net _0185_.
+1222: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[40\]$_SDFFE_PN0P_/D in net _0185_.
+1223: [WARNING GRT-0026] Missing route to pin _7802_/Y in net _0185_.
+1224: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[41\]$_SDFFE_PN0P_/D in net _0186_.
+1225: [WARNING GRT-0026] Missing route to pin _7805_/Y in net _0186_.
+1226: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[41\]$_SDFFE_PN0P_/D in net _0186_.
+1227: [WARNING GRT-0026] Missing route to pin _7805_/Y in net _0186_.
+1228: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[41\]$_SDFFE_PN0P_/D in net _0186_.
+1229: [WARNING GRT-0026] Missing route to pin _7805_/Y in net _0186_.
+1230: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+1231: [WARNING GRT-0026] Missing route to pin _7834_/Y in net _0191_.
+1232: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+1233: [WARNING GRT-0026] Missing route to pin _7834_/Y in net _0191_.
+1234: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[46\]$_SDFFE_PN0P_/D in net _0191_.
+1235: [WARNING GRT-0026] Missing route to pin _7834_/Y in net _0191_.
+1236: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[49\]$_SDFFE_PN0P_/D in net _0194_.
+1237: [WARNING GRT-0026] Missing route to pin _7848_/Y in net _0194_.
+1238: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[49\]$_SDFFE_PN0P_/D in net _0194_.
+1239: [WARNING GRT-0026] Missing route to pin _7848_/Y in net _0194_.
+1240: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[49\]$_SDFFE_PN0P_/D in net _0194_.
+1241: [WARNING GRT-0026] Missing route to pin _7848_/Y in net _0194_.
+1242: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[50\]$_SDFFE_PN0P_/D in net _0195_.
+1243: [WARNING GRT-0026] Missing route to pin _7852_/Y in net _0195_.
+1244: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[50\]$_SDFFE_PN0P_/D in net _0195_.
+1245: [WARNING GRT-0026] Missing route to pin _7852_/Y in net _0195_.
+1246: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[50\]$_SDFFE_PN0P_/D in net _0195_.
+1247: [WARNING GRT-0026] Missing route to pin _7852_/Y in net _0195_.
+1248: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+1249: [WARNING GRT-0026] Missing route to pin _7858_/X in net _0196_.
+1250: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+1251: [WARNING GRT-0026] Missing route to pin _7858_/X in net _0196_.
+1252: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[51\]$_SDFFE_PN0P_/D in net _0196_.
+1253: [WARNING GRT-0026] Missing route to pin _7858_/X in net _0196_.
+1254: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+1255: [WARNING GRT-0026] Missing route to pin _7865_/Y in net _0197_.
+1256: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+1257: [WARNING GRT-0026] Missing route to pin _7865_/Y in net _0197_.
+1258: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[52\]$_SDFFE_PN0P_/D in net _0197_.
+1259: [WARNING GRT-0026] Missing route to pin _7865_/Y in net _0197_.
+1260: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[53\]$_SDFFE_PN0P_/D in net _0198_.
+1261: [WARNING GRT-0026] Missing route to pin _7869_/Y in net _0198_.
+1262: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[53\]$_SDFFE_PN0P_/D in net _0198_.
+1263: [WARNING GRT-0026] Missing route to pin _7869_/Y in net _0198_.
+1264: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[53\]$_SDFFE_PN0P_/D in net _0198_.
+1265: [WARNING GRT-0026] Missing route to pin _7869_/Y in net _0198_.
+1266: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[54\]$_SDFFE_PN0P_/D in net _0199_.
+1267: [WARNING GRT-0026] Missing route to pin _7874_/Y in net _0199_.
+1268: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[54\]$_SDFFE_PN0P_/D in net _0199_.
+1269: [WARNING GRT-0026] Missing route to pin _7874_/Y in net _0199_.
+1270: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[54\]$_SDFFE_PN0P_/D in net _0199_.
+1271: [WARNING GRT-0026] Missing route to pin _7874_/Y in net _0199_.
+1272: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+1273: [WARNING GRT-0026] Missing route to pin _7890_/Y in net _0203_.
+1274: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+1275: [WARNING GRT-0026] Missing route to pin _7890_/Y in net _0203_.
+1276: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[58\]$_SDFFE_PN0P_/D in net _0203_.
+1277: [WARNING GRT-0026] Missing route to pin _7890_/Y in net _0203_.
+1278: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[59\]$_SDFFE_PN0P_/D in net _0204_.
+1279: [WARNING GRT-0026] Missing route to pin _7893_/Y in net _0204_.
+1280: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[59\]$_SDFFE_PN0P_/D in net _0204_.
+1281: [WARNING GRT-0026] Missing route to pin _7893_/Y in net _0204_.
+1282: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_instr\[59\]$_SDFFE_PN0P_/D in net _0204_.
+1283: [WARNING GRT-0026] Missing route to pin _7893_/Y in net _0204_.
+1284: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+1285: [WARNING GRT-0026] Missing route to pin _7917_/Y in net _0210_.
+1286: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+1287: [WARNING GRT-0026] Missing route to pin _7917_/Y in net _0210_.
+1288: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[2\]$_SDFFE_PN0P_/D in net _0210_.
+1289: [WARNING GRT-0026] Missing route to pin _7917_/Y in net _0210_.
+1290: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+1291: [WARNING GRT-0026] Missing route to pin _7919_/Y in net _0211_.
+1292: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+1293: [WARNING GRT-0026] Missing route to pin _7919_/Y in net _0211_.
+1294: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[3\]$_SDFFE_PN0P_/D in net _0211_.
+1295: [WARNING GRT-0026] Missing route to pin _7919_/Y in net _0211_.
+1296: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+1297: [WARNING GRT-0026] Missing route to pin _7921_/Y in net _0212_.
+1298: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+1299: [WARNING GRT-0026] Missing route to pin _7921_/Y in net _0212_.
+1300: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[4\]$_SDFFE_PN0P_/D in net _0212_.
+1301: [WARNING GRT-0026] Missing route to pin _7921_/Y in net _0212_.
+1302: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[7\]$_SDFFE_PN0P_/D in net _0215_.
+1303: [WARNING GRT-0026] Missing route to pin _7930_/X in net _0215_.
+1304: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[7\]$_SDFFE_PN0P_/D in net _0215_.
+1305: [WARNING GRT-0026] Missing route to pin _7930_/X in net _0215_.
+1306: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[7\]$_SDFFE_PN0P_/D in net _0215_.
+1307: [WARNING GRT-0026] Missing route to pin _7930_/X in net _0215_.
+1308: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[8\]$_SDFFE_PN0P_/D in net _0216_.
+1309: [WARNING GRT-0026] Missing route to pin _7932_/X in net _0216_.
+1310: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[8\]$_SDFFE_PN0P_/D in net _0216_.
+1311: [WARNING GRT-0026] Missing route to pin _7932_/X in net _0216_.
+1312: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[8\]$_SDFFE_PN0P_/D in net _0216_.
+1313: [WARNING GRT-0026] Missing route to pin _7932_/X in net _0216_.
+1314: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[9\]$_SDFFE_PN0P_/D in net _0217_.
+1315: [WARNING GRT-0026] Missing route to pin _7934_/X in net _0217_.
+1316: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[9\]$_SDFFE_PN0P_/D in net _0217_.
+1317: [WARNING GRT-0026] Missing route to pin _7934_/X in net _0217_.
+1318: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[9\]$_SDFFE_PN0P_/D in net _0217_.
+1319: [WARNING GRT-0026] Missing route to pin _7934_/X in net _0217_.
+1320: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+1321: [WARNING GRT-0026] Missing route to pin _7936_/X in net _0218_.
+1322: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+1323: [WARNING GRT-0026] Missing route to pin _7936_/X in net _0218_.
+1324: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[10\]$_SDFFE_PN0P_/D in net _0218_.
+1325: [WARNING GRT-0026] Missing route to pin _7936_/X in net _0218_.
+1326: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+1327: [WARNING GRT-0026] Missing route to pin _7938_/X in net _0219_.
+1328: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+1329: [WARNING GRT-0026] Missing route to pin _7938_/X in net _0219_.
+1330: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[11\]$_SDFFE_PN0P_/D in net _0219_.
+1331: [WARNING GRT-0026] Missing route to pin _7938_/X in net _0219_.
+1332: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[12\]$_SDFFE_PN0P_/D in net _0220_.
+1333: [WARNING GRT-0026] Missing route to pin _7941_/X in net _0220_.
+1334: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[12\]$_SDFFE_PN0P_/D in net _0220_.
+1335: [WARNING GRT-0026] Missing route to pin _7941_/X in net _0220_.
+1336: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[12\]$_SDFFE_PN0P_/D in net _0220_.
+1337: [WARNING GRT-0026] Missing route to pin _7941_/X in net _0220_.
+1338: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+1339: [WARNING GRT-0026] Missing route to pin _7945_/X in net _0222_.
+1340: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+1341: [WARNING GRT-0026] Missing route to pin _7945_/X in net _0222_.
+1342: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[14\]$_SDFFE_PN0P_/D in net _0222_.
+1343: [WARNING GRT-0026] Missing route to pin _7945_/X in net _0222_.
+1344: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+1345: [WARNING GRT-0026] Missing route to pin _7957_/X in net _0228_.
+1346: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+1347: [WARNING GRT-0026] Missing route to pin _7957_/X in net _0228_.
+1348: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[20\]$_SDFFE_PN0P_/D in net _0228_.
+1349: [WARNING GRT-0026] Missing route to pin _7957_/X in net _0228_.
+1350: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[23\]$_SDFFE_PN0P_/D in net _0231_.
+1351: [WARNING GRT-0026] Missing route to pin _7964_/X in net _0231_.
+1352: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[23\]$_SDFFE_PN0P_/D in net _0231_.
+1353: [WARNING GRT-0026] Missing route to pin _7964_/X in net _0231_.
+1354: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[23\]$_SDFFE_PN0P_/D in net _0231_.
+1355: [WARNING GRT-0026] Missing route to pin _7964_/X in net _0231_.
+1356: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+1357: [WARNING GRT-0026] Missing route to pin _7973_/Y in net _0235_.
+1358: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+1359: [WARNING GRT-0026] Missing route to pin _7973_/Y in net _0235_.
+1360: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[27\]$_SDFFE_PN0P_/D in net _0235_.
+1361: [WARNING GRT-0026] Missing route to pin _7973_/Y in net _0235_.
+1362: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[28\]$_SDFFE_PN0P_/D in net _0236_.
+1363: [WARNING GRT-0026] Missing route to pin _7974_/X in net _0236_.
+1364: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[28\]$_SDFFE_PN0P_/D in net _0236_.
+1365: [WARNING GRT-0026] Missing route to pin _7974_/X in net _0236_.
+1366: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[28\]$_SDFFE_PN0P_/D in net _0236_.
+1367: [WARNING GRT-0026] Missing route to pin _7974_/X in net _0236_.
+1368: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+1369: [WARNING GRT-0026] Missing route to pin _7976_/X in net _0237_.
+1370: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+1371: [WARNING GRT-0026] Missing route to pin _7976_/X in net _0237_.
+1372: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[29\]$_SDFFE_PN0P_/D in net _0237_.
+1373: [WARNING GRT-0026] Missing route to pin _7976_/X in net _0237_.
+1374: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+1375: [WARNING GRT-0026] Missing route to pin _7978_/X in net _0238_.
+1376: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+1377: [WARNING GRT-0026] Missing route to pin _7978_/X in net _0238_.
+1378: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[30\]$_SDFFE_PN0P_/D in net _0238_.
+1379: [WARNING GRT-0026] Missing route to pin _7978_/X in net _0238_.
+1380: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+1381: [WARNING GRT-0026] Missing route to pin _7983_/Y in net _0239_.
+1382: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+1383: [WARNING GRT-0026] Missing route to pin _7983_/Y in net _0239_.
+1384: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_pc\[31\]$_SDFFE_PN0P_/D in net _0239_.
+1385: [WARNING GRT-0026] Missing route to pin _7983_/Y in net _0239_.
+1386: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[1\]$_SDFFE_PN0P_/D in net _0240_.
+1387: [WARNING GRT-0026] Missing route to pin _7989_/Y in net _0240_.
+1388: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[1\]$_SDFFE_PN0P_/D in net _0240_.
+1389: [WARNING GRT-0026] Missing route to pin _7989_/Y in net _0240_.
+1390: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[1\]$_SDFFE_PN0P_/D in net _0240_.
+1391: [WARNING GRT-0026] Missing route to pin _7989_/Y in net _0240_.
+1392: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+1393: [WARNING GRT-0026] Missing route to pin _8019_/X in net _0244_.
+1394: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+1395: [WARNING GRT-0026] Missing route to pin _8019_/X in net _0244_.
+1396: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[5\]$_SDFFE_PN0P_/D in net _0244_.
+1397: [WARNING GRT-0026] Missing route to pin _8019_/X in net _0244_.
+1398: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+1399: [WARNING GRT-0026] Missing route to pin _8029_/Y in net _0245_.
+1400: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+1401: [WARNING GRT-0026] Missing route to pin _8029_/Y in net _0245_.
+1402: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[6\]$_SDFFE_PN0P_/D in net _0245_.
+1403: [WARNING GRT-0026] Missing route to pin _8029_/Y in net _0245_.
+1404: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+1405: [WARNING GRT-0026] Missing route to pin _8045_/Y in net _0246_.
+1406: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+1407: [WARNING GRT-0026] Missing route to pin _8045_/Y in net _0246_.
+1408: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[7\]$_SDFFE_PN0P_/D in net _0246_.
+1409: [WARNING GRT-0026] Missing route to pin _8045_/Y in net _0246_.
+1410: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+1411: [WARNING GRT-0026] Missing route to pin _8067_/X in net _0248_.
+1412: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+1413: [WARNING GRT-0026] Missing route to pin _8067_/X in net _0248_.
+1414: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[9\]$_SDFFE_PN0P_/D in net _0248_.
+1415: [WARNING GRT-0026] Missing route to pin _8067_/X in net _0248_.
+1416: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[13\]$_SDFFE_PN0P_/D in net _0252_.
+1417: [WARNING GRT-0026] Missing route to pin _8116_/Y in net _0252_.
+1418: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[13\]$_SDFFE_PN0P_/D in net _0252_.
+1419: [WARNING GRT-0026] Missing route to pin _8116_/Y in net _0252_.
+1420: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[13\]$_SDFFE_PN0P_/D in net _0252_.
+1421: [WARNING GRT-0026] Missing route to pin _8116_/Y in net _0252_.
+1422: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[14\]$_SDFFE_PN0P_/D in net _0253_.
+1423: [WARNING GRT-0026] Missing route to pin _8126_/Y in net _0253_.
+1424: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[14\]$_SDFFE_PN0P_/D in net _0253_.
+1425: [WARNING GRT-0026] Missing route to pin _8126_/Y in net _0253_.
+1426: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[14\]$_SDFFE_PN0P_/D in net _0253_.
+1427: [WARNING GRT-0026] Missing route to pin _8126_/Y in net _0253_.
+1428: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[16\]$_SDFFE_PN0P_/D in net _0255_.
+1429: [WARNING GRT-0026] Missing route to pin _8147_/Y in net _0255_.
+1430: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[16\]$_SDFFE_PN0P_/D in net _0255_.
+1431: [WARNING GRT-0026] Missing route to pin _8147_/Y in net _0255_.
+1432: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[16\]$_SDFFE_PN0P_/D in net _0255_.
+1433: [WARNING GRT-0026] Missing route to pin _8147_/Y in net _0255_.
+1434: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+1435: [WARNING GRT-0026] Missing route to pin _8160_/Y in net _0256_.
+1436: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+1437: [WARNING GRT-0026] Missing route to pin _8160_/Y in net _0256_.
+1438: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[17\]$_SDFFE_PN0P_/D in net _0256_.
+1439: [WARNING GRT-0026] Missing route to pin _8160_/Y in net _0256_.
+1440: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[18\]$_SDFFE_PN0P_/D in net _0257_.
+1441: [WARNING GRT-0026] Missing route to pin _8170_/Y in net _0257_.
+1442: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[18\]$_SDFFE_PN0P_/D in net _0257_.
+1443: [WARNING GRT-0026] Missing route to pin _8170_/Y in net _0257_.
+1444: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[18\]$_SDFFE_PN0P_/D in net _0257_.
+1445: [WARNING GRT-0026] Missing route to pin _8170_/Y in net _0257_.
+1446: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[19\]$_SDFFE_PN0P_/D in net _0258_.
+1447: [WARNING GRT-0026] Missing route to pin _8182_/Y in net _0258_.
+1448: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[19\]$_SDFFE_PN0P_/D in net _0258_.
+1449: [WARNING GRT-0026] Missing route to pin _8182_/Y in net _0258_.
+1450: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[19\]$_SDFFE_PN0P_/D in net _0258_.
+1451: [WARNING GRT-0026] Missing route to pin _8182_/Y in net _0258_.
+1452: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+1453: [WARNING GRT-0026] Missing route to pin _8192_/Y in net _0259_.
+1454: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+1455: [WARNING GRT-0026] Missing route to pin _8192_/Y in net _0259_.
+1456: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[20\]$_SDFFE_PN0P_/D in net _0259_.
+1457: [WARNING GRT-0026] Missing route to pin _8192_/Y in net _0259_.
+1458: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+1459: [WARNING GRT-0026] Missing route to pin _8229_/Y in net _0262_.
+1460: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+1461: [WARNING GRT-0026] Missing route to pin _8229_/Y in net _0262_.
+1462: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[23\]$_SDFFE_PN0P_/D in net _0262_.
+1463: [WARNING GRT-0026] Missing route to pin _8229_/Y in net _0262_.
+1464: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+1465: [WARNING GRT-0026] Missing route to pin _8238_/Y in net _0263_.
+1466: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+1467: [WARNING GRT-0026] Missing route to pin _8238_/Y in net _0263_.
+1468: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[24\]$_SDFFE_PN0P_/D in net _0263_.
+1469: [WARNING GRT-0026] Missing route to pin _8238_/Y in net _0263_.
+1470: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+1471: [WARNING GRT-0026] Missing route to pin _8250_/X in net _0264_.
+1472: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+1473: [WARNING GRT-0026] Missing route to pin _8250_/X in net _0264_.
+1474: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[25\]$_SDFFE_PN0P_/D in net _0264_.
+1475: [WARNING GRT-0026] Missing route to pin _8250_/X in net _0264_.
+1476: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[28\]$_SDFFE_PN0P_/D in net _0267_.
+1477: [WARNING GRT-0026] Missing route to pin _8283_/Y in net _0267_.
+1478: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[28\]$_SDFFE_PN0P_/D in net _0267_.
+1479: [WARNING GRT-0026] Missing route to pin _8283_/Y in net _0267_.
+1480: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[28\]$_SDFFE_PN0P_/D in net _0267_.
+1481: [WARNING GRT-0026] Missing route to pin _8283_/Y in net _0267_.
+1482: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[31\]$_SDFFE_PN0P_/D in net _0270_.
+1483: [WARNING GRT-0026] Missing route to pin _8320_/X in net _0270_.
+1484: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[31\]$_SDFFE_PN0P_/D in net _0270_.
+1485: [WARNING GRT-0026] Missing route to pin _8320_/X in net _0270_.
+1486: [WARNING GRT-0026] Missing route to pin rv32_soc\/reg_next_pc\[31\]$_SDFFE_PN0P_/D in net _0270_.
+1487: [WARNING GRT-0026] Missing route to pin _8320_/X in net _0270_.
+1488: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+1489: [WARNING GRT-0026] Missing route to pin _8328_/Y in net _0274_.
+1490: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+1491: [WARNING GRT-0026] Missing route to pin _8328_/Y in net _0274_.
+1492: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[3\]$_SDFF_PN0_/D in net _0274_.
+1493: [WARNING GRT-0026] Missing route to pin _8328_/Y in net _0274_.
+1494: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[4\]$_SDFF_PN0_/D in net _0275_.
+1495: [WARNING GRT-0026] Missing route to pin _8331_/Y in net _0275_.
+1496: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[4\]$_SDFF_PN0_/D in net _0275_.
+1497: [WARNING GRT-0026] Missing route to pin _8331_/Y in net _0275_.
+1498: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[4\]$_SDFF_PN0_/D in net _0275_.
+1499: [WARNING GRT-0026] Missing route to pin _8331_/Y in net _0275_.
+1500: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[6\]$_SDFF_PN0_/D in net _0277_.
+1501: [WARNING GRT-0026] Missing route to pin _8337_/Y in net _0277_.
+1502: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[6\]$_SDFF_PN0_/D in net _0277_.
+1503: [WARNING GRT-0026] Missing route to pin _8337_/Y in net _0277_.
+1504: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[6\]$_SDFF_PN0_/D in net _0277_.
+1505: [WARNING GRT-0026] Missing route to pin _8337_/Y in net _0277_.
+1506: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+1507: [WARNING GRT-0026] Missing route to pin _8346_/Y in net _0280_.
+1508: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+1509: [WARNING GRT-0026] Missing route to pin _8346_/Y in net _0280_.
+1510: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[9\]$_SDFF_PN0_/D in net _0280_.
+1511: [WARNING GRT-0026] Missing route to pin _8346_/Y in net _0280_.
+1512: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[12\]$_SDFF_PN0_/D in net _0283_.
+1513: [WARNING GRT-0026] Missing route to pin _8355_/Y in net _0283_.
+1514: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[12\]$_SDFF_PN0_/D in net _0283_.
+1515: [WARNING GRT-0026] Missing route to pin _8355_/Y in net _0283_.
+1516: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[12\]$_SDFF_PN0_/D in net _0283_.
+1517: [WARNING GRT-0026] Missing route to pin _8355_/Y in net _0283_.
+1518: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+1519: [WARNING GRT-0026] Missing route to pin _8361_/Y in net _0285_.
+1520: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+1521: [WARNING GRT-0026] Missing route to pin _8361_/Y in net _0285_.
+1522: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[14\]$_SDFF_PN0_/D in net _0285_.
+1523: [WARNING GRT-0026] Missing route to pin _8361_/Y in net _0285_.
+1524: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+1525: [WARNING GRT-0026] Missing route to pin _8370_/Y in net _0288_.
+1526: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+1527: [WARNING GRT-0026] Missing route to pin _8370_/Y in net _0288_.
+1528: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[17\]$_SDFF_PN0_/D in net _0288_.
+1529: [WARNING GRT-0026] Missing route to pin _8370_/Y in net _0288_.
+1530: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[20\]$_SDFF_PN0_/D in net _0291_.
+1531: [WARNING GRT-0026] Missing route to pin _8381_/Y in net _0291_.
+1532: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[20\]$_SDFF_PN0_/D in net _0291_.
+1533: [WARNING GRT-0026] Missing route to pin _8381_/Y in net _0291_.
+1534: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[20\]$_SDFF_PN0_/D in net _0291_.
+1535: [WARNING GRT-0026] Missing route to pin _8381_/Y in net _0291_.
+1536: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[21\]$_SDFF_PN0_/D in net _0292_.
+1537: [WARNING GRT-0026] Missing route to pin _8384_/Y in net _0292_.
+1538: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[21\]$_SDFF_PN0_/D in net _0292_.
+1539: [WARNING GRT-0026] Missing route to pin _8384_/Y in net _0292_.
+1540: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[21\]$_SDFF_PN0_/D in net _0292_.
+1541: [WARNING GRT-0026] Missing route to pin _8384_/Y in net _0292_.
+1542: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[27\]$_SDFF_PN0_/D in net _0298_.
+1543: [WARNING GRT-0026] Missing route to pin _8402_/Y in net _0298_.
+1544: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[27\]$_SDFF_PN0_/D in net _0298_.
+1545: [WARNING GRT-0026] Missing route to pin _8402_/Y in net _0298_.
+1546: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[27\]$_SDFF_PN0_/D in net _0298_.
+1547: [WARNING GRT-0026] Missing route to pin _8402_/Y in net _0298_.
+1548: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[35\]$_SDFF_PN0_/D in net _0306_.
+1549: [WARNING GRT-0026] Missing route to pin _8427_/Y in net _0306_.
+1550: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[35\]$_SDFF_PN0_/D in net _0306_.
+1551: [WARNING GRT-0026] Missing route to pin _8427_/Y in net _0306_.
+1552: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[35\]$_SDFF_PN0_/D in net _0306_.
+1553: [WARNING GRT-0026] Missing route to pin _8427_/Y in net _0306_.
+1554: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[36\]$_SDFF_PN0_/D in net _0307_.
+1555: [WARNING GRT-0026] Missing route to pin _8430_/Y in net _0307_.
+1556: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[36\]$_SDFF_PN0_/D in net _0307_.
+1557: [WARNING GRT-0026] Missing route to pin _8430_/Y in net _0307_.
+1558: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[36\]$_SDFF_PN0_/D in net _0307_.
+1559: [WARNING GRT-0026] Missing route to pin _8430_/Y in net _0307_.
+1560: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+1561: [WARNING GRT-0026] Missing route to pin _8433_/Y in net _0308_.
+1562: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+1563: [WARNING GRT-0026] Missing route to pin _8433_/Y in net _0308_.
+1564: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[37\]$_SDFF_PN0_/D in net _0308_.
+1565: [WARNING GRT-0026] Missing route to pin _8433_/Y in net _0308_.
+1566: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+1567: [WARNING GRT-0026] Missing route to pin _8436_/Y in net _0309_.
+1568: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+1569: [WARNING GRT-0026] Missing route to pin _8436_/Y in net _0309_.
+1570: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[38\]$_SDFF_PN0_/D in net _0309_.
+1571: [WARNING GRT-0026] Missing route to pin _8436_/Y in net _0309_.
+1572: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+1573: [WARNING GRT-0026] Missing route to pin _8439_/X in net _0310_.
+1574: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+1575: [WARNING GRT-0026] Missing route to pin _8439_/X in net _0310_.
+1576: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[39\]$_SDFF_PN0_/D in net _0310_.
+1577: [WARNING GRT-0026] Missing route to pin _8439_/X in net _0310_.
+1578: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+1579: [WARNING GRT-0026] Missing route to pin _8450_/Y in net _0313_.
+1580: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+1581: [WARNING GRT-0026] Missing route to pin _8450_/Y in net _0313_.
+1582: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[42\]$_SDFF_PN0_/D in net _0313_.
+1583: [WARNING GRT-0026] Missing route to pin _8450_/Y in net _0313_.
+1584: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+1585: [WARNING GRT-0026] Missing route to pin _8453_/Y in net _0314_.
+1586: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+1587: [WARNING GRT-0026] Missing route to pin _8453_/Y in net _0314_.
+1588: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[43\]$_SDFF_PN0_/D in net _0314_.
+1589: [WARNING GRT-0026] Missing route to pin _8453_/Y in net _0314_.
+1590: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+1591: [WARNING GRT-0026] Missing route to pin _8459_/X in net _0316_.
+1592: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+1593: [WARNING GRT-0026] Missing route to pin _8459_/X in net _0316_.
+1594: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[45\]$_SDFF_PN0_/D in net _0316_.
+1595: [WARNING GRT-0026] Missing route to pin _8459_/X in net _0316_.
+1596: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+1597: [WARNING GRT-0026] Missing route to pin _8462_/X in net _0317_.
+1598: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+1599: [WARNING GRT-0026] Missing route to pin _8462_/X in net _0317_.
+1600: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[46\]$_SDFF_PN0_/D in net _0317_.
+1601: [WARNING GRT-0026] Missing route to pin _8462_/X in net _0317_.
+1602: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[49\]$_SDFF_PN0_/D in net _0320_.
+1603: [WARNING GRT-0026] Missing route to pin _8473_/Y in net _0320_.
+1604: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[49\]$_SDFF_PN0_/D in net _0320_.
+1605: [WARNING GRT-0026] Missing route to pin _8473_/Y in net _0320_.
+1606: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[49\]$_SDFF_PN0_/D in net _0320_.
+1607: [WARNING GRT-0026] Missing route to pin _8473_/Y in net _0320_.
+1608: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+1609: [WARNING GRT-0026] Missing route to pin _8476_/Y in net _0321_.
+1610: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+1611: [WARNING GRT-0026] Missing route to pin _8476_/Y in net _0321_.
+1612: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[50\]$_SDFF_PN0_/D in net _0321_.
+1613: [WARNING GRT-0026] Missing route to pin _8476_/Y in net _0321_.
+1614: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+1615: [WARNING GRT-0026] Missing route to pin _8479_/X in net _0322_.
+1616: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+1617: [WARNING GRT-0026] Missing route to pin _8479_/X in net _0322_.
+1618: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[51\]$_SDFF_PN0_/D in net _0322_.
+1619: [WARNING GRT-0026] Missing route to pin _8479_/X in net _0322_.
+1620: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[52\]$_SDFF_PN0_/D in net _0323_.
+1621: [WARNING GRT-0026] Missing route to pin _8482_/X in net _0323_.
+1622: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[52\]$_SDFF_PN0_/D in net _0323_.
+1623: [WARNING GRT-0026] Missing route to pin _8482_/X in net _0323_.
+1624: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[52\]$_SDFF_PN0_/D in net _0323_.
+1625: [WARNING GRT-0026] Missing route to pin _8482_/X in net _0323_.
+1626: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[53\]$_SDFF_PN0_/D in net _0324_.
+1627: [WARNING GRT-0026] Missing route to pin _8486_/Y in net _0324_.
+1628: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[53\]$_SDFF_PN0_/D in net _0324_.
+1629: [WARNING GRT-0026] Missing route to pin _8486_/Y in net _0324_.
+1630: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[53\]$_SDFF_PN0_/D in net _0324_.
+1631: [WARNING GRT-0026] Missing route to pin _8486_/Y in net _0324_.
+1632: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[59\]$_SDFF_PN0_/D in net _0330_.
+1633: [WARNING GRT-0026] Missing route to pin _8509_/Y in net _0330_.
+1634: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[59\]$_SDFF_PN0_/D in net _0330_.
+1635: [WARNING GRT-0026] Missing route to pin _8509_/Y in net _0330_.
+1636: [WARNING GRT-0026] Missing route to pin rv32_soc\/count_cycle\[59\]$_SDFF_PN0_/D in net _0330_.
+1637: [WARNING GRT-0026] Missing route to pin _8509_/Y in net _0330_.
+1638: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_rdata$_SDFFE_PP1P_/D in net _0337_.
+1639: [WARNING GRT-0026] Missing route to pin _7588_/Y in net _0337_.
+1640: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_rdata$_SDFFE_PP1P_/D in net _0337_.
+1641: [WARNING GRT-0026] Missing route to pin _7588_/Y in net _0337_.
+1642: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_rdata$_SDFFE_PP1P_/D in net _0337_.
+1643: [WARNING GRT-0026] Missing route to pin _7588_/Y in net _0337_.
+1644: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+1645: [WARNING GRT-0026] Missing route to pin _7591_/Y in net _0338_.
+1646: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+1647: [WARNING GRT-0026] Missing route to pin _7591_/Y in net _0338_.
+1648: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_do_wdata$_SDFFE_PP1P_/D in net _0338_.
+1649: [WARNING GRT-0026] Missing route to pin _7591_/Y in net _0338_.
+1650: [WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PP0P_/D in net _0339_.
+1651: [WARNING GRT-0026] Missing route to pin _7592_/Y in net _0339_.
+1652: [WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PP0P_/D in net _0339_.
+1653: [WARNING GRT-0026] Missing route to pin _7592_/Y in net _0339_.
+1654: [WARNING GRT-0026] Missing route to pin mem_valid$_SDFFCE_PP0P_/D in net _0339_.
+1655: [WARNING GRT-0026] Missing route to pin _7592_/Y in net _0339_.
+1656: [WARNING GRT-0026] Missing route to pin rv32_soc\/latched_stalu$_SDFFE_PN0P_/D in net _0341_.
+1657: [WARNING GRT-0026] Missing route to pin _8530_/Y in net _0341_.
+1658: [WARNING GRT-0026] Missing route to pin rv32_soc\/latched_stalu$_SDFFE_PN0P_/D in net _0341_.
+1659: [WARNING GRT-0026] Missing route to pin _8530_/Y in net _0341_.
+1660: [WARNING GRT-0026] Missing route to pin rv32_soc\/latched_stalu$_SDFFE_PN0P_/D in net _0341_.
+1661: [WARNING GRT-0026] Missing route to pin _8530_/Y in net _0341_.
+1662: [WARNING GRT-0026] Missing route to pin _4939_/Y in net _0343_.
+1663: [WARNING GRT-0026] Missing route to pin _4939_/Y in net _0343_.
+1664: [WARNING GRT-0026] Missing route to pin _4939_/Y in net _0343_.
+1665: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bne$_SDFFE_PN0P_/D in net _0347_.
+1666: [WARNING GRT-0026] Missing route to pin _8549_/X in net _0347_.
+1667: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bne$_SDFFE_PN0P_/D in net _0347_.
+1668: [WARNING GRT-0026] Missing route to pin _8549_/X in net _0347_.
+1669: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bne$_SDFFE_PN0P_/D in net _0347_.
+1670: [WARNING GRT-0026] Missing route to pin _8549_/X in net _0347_.
+1671: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_blt$_SDFFE_PN0P_/D in net _0348_.
+1672: [WARNING GRT-0026] Missing route to pin _8552_/Y in net _0348_.
+1673: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_blt$_SDFFE_PN0P_/D in net _0348_.
+1674: [WARNING GRT-0026] Missing route to pin _8552_/Y in net _0348_.
+1675: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_blt$_SDFFE_PN0P_/D in net _0348_.
+1676: [WARNING GRT-0026] Missing route to pin _8552_/Y in net _0348_.
+1677: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_addi$_SDFFE_PN0P_/D in net _0350_.
+1678: [WARNING GRT-0026] Missing route to pin _8558_/Y in net _0350_.
+1679: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_addi$_SDFFE_PN0P_/D in net _0350_.
+1680: [WARNING GRT-0026] Missing route to pin _8558_/Y in net _0350_.
+1681: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_addi$_SDFFE_PN0P_/D in net _0350_.
+1682: [WARNING GRT-0026] Missing route to pin _8558_/Y in net _0350_.
+1683: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sltiu$_SDFFE_PN0P_/D in net _0352_.
+1684: [WARNING GRT-0026] Missing route to pin _8563_/Y in net _0352_.
+1685: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sltiu$_SDFFE_PN0P_/D in net _0352_.
+1686: [WARNING GRT-0026] Missing route to pin _8563_/Y in net _0352_.
+1687: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sltiu$_SDFFE_PN0P_/D in net _0352_.
+1688: [WARNING GRT-0026] Missing route to pin _8563_/Y in net _0352_.
+1689: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xori$_SDFFE_PN0P_/D in net _0353_.
+1690: [WARNING GRT-0026] Missing route to pin _8565_/Y in net _0353_.
+1691: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xori$_SDFFE_PN0P_/D in net _0353_.
+1692: [WARNING GRT-0026] Missing route to pin _8565_/Y in net _0353_.
+1693: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xori$_SDFFE_PN0P_/D in net _0353_.
+1694: [WARNING GRT-0026] Missing route to pin _8565_/Y in net _0353_.
+1695: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_ori$_SDFFE_PN0P_/D in net _0354_.
+1696: [WARNING GRT-0026] Missing route to pin _8568_/Y in net _0354_.
+1697: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_ori$_SDFFE_PN0P_/D in net _0354_.
+1698: [WARNING GRT-0026] Missing route to pin _8568_/Y in net _0354_.
+1699: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_ori$_SDFFE_PN0P_/D in net _0354_.
+1700: [WARNING GRT-0026] Missing route to pin _8568_/Y in net _0354_.
+1701: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sll$_SDFFE_PN0P_/D in net _0358_.
+1702: [WARNING GRT-0026] Missing route to pin _8581_/Y in net _0358_.
+1703: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sll$_SDFFE_PN0P_/D in net _0358_.
+1704: [WARNING GRT-0026] Missing route to pin _8581_/Y in net _0358_.
+1705: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_sll$_SDFFE_PN0P_/D in net _0358_.
+1706: [WARNING GRT-0026] Missing route to pin _8581_/Y in net _0358_.
+1707: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_slt$_SDFFE_PN0P_/D in net _0359_.
+1708: [WARNING GRT-0026] Missing route to pin _8583_/Y in net _0359_.
+1709: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_slt$_SDFFE_PN0P_/D in net _0359_.
+1710: [WARNING GRT-0026] Missing route to pin _8583_/Y in net _0359_.
+1711: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_slt$_SDFFE_PN0P_/D in net _0359_.
+1712: [WARNING GRT-0026] Missing route to pin _8583_/Y in net _0359_.
+1713: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xor$_SDFFE_PN0P_/D in net _0361_.
+1714: [WARNING GRT-0026] Missing route to pin _8587_/Y in net _0361_.
+1715: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xor$_SDFFE_PN0P_/D in net _0361_.
+1716: [WARNING GRT-0026] Missing route to pin _8587_/Y in net _0361_.
+1717: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_xor$_SDFFE_PN0P_/D in net _0361_.
+1718: [WARNING GRT-0026] Missing route to pin _8587_/Y in net _0361_.
+1719: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srl$_SDFFE_PN0P_/D in net _0362_.
+1720: [WARNING GRT-0026] Missing route to pin _8589_/Y in net _0362_.
+1721: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srl$_SDFFE_PN0P_/D in net _0362_.
+1722: [WARNING GRT-0026] Missing route to pin _8589_/Y in net _0362_.
+1723: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_srl$_SDFFE_PN0P_/D in net _0362_.
+1724: [WARNING GRT-0026] Missing route to pin _8589_/Y in net _0362_.
+1725: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_fence$_SDFFE_PN0P_/D in net _0366_.
+1726: [WARNING GRT-0026] Missing route to pin _8599_/Y in net _0366_.
+1727: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_fence$_SDFFE_PN0P_/D in net _0366_.
+1728: [WARNING GRT-0026] Missing route to pin _8599_/Y in net _0366_.
+1729: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_fence$_SDFFE_PN0P_/D in net _0366_.
+1730: [WARNING GRT-0026] Missing route to pin _8599_/Y in net _0366_.
+1731: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_beq_bne_blt_bge_bltu_bgeu$_SDFFE_PN0P_/D in net _0367_.
+1732: [WARNING GRT-0026] Missing route to pin _8601_/Y in net _0367_.
+1733: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_beq_bne_blt_bge_bltu_bgeu$_SDFFE_PN0P_/D in net _0367_.
+1734: [WARNING GRT-0026] Missing route to pin _8601_/Y in net _0367_.
+1735: [WARNING GRT-0026] Missing route to pin rv32_soc\/is_beq_bne_blt_bge_bltu_bgeu$_SDFFE_PN0P_/D in net _0367_.
+1736: [WARNING GRT-0026] Missing route to pin _8601_/Y in net _0367_.
+1737: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[29\]$_SDFFCE_PN0P_/D in net _0376_.
+1738: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[29\]$_SDFFCE_PN0P_/D in net _0376_.
+1739: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[29\]$_SDFFCE_PN0P_/D in net _0376_.
+1740: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[19\]$_SDFFCE_PN0P_/D in net _0386_.
+1741: [WARNING GRT-0026] Missing route to pin _8623_/Y in net _0386_.
+1742: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[19\]$_SDFFCE_PN0P_/D in net _0386_.
+1743: [WARNING GRT-0026] Missing route to pin _8623_/Y in net _0386_.
+1744: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[19\]$_SDFFCE_PN0P_/D in net _0386_.
+1745: [WARNING GRT-0026] Missing route to pin _8623_/Y in net _0386_.
+1746: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0388_.
+1747: [WARNING GRT-0026] Missing route to pin _8627_/Y in net _0388_.
+1748: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0388_.
+1749: [WARNING GRT-0026] Missing route to pin _8627_/Y in net _0388_.
+1750: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[17\]$_SDFFCE_PN0P_/D in net _0388_.
+1751: [WARNING GRT-0026] Missing route to pin _8627_/Y in net _0388_.
+1752: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[13\]$_SDFFCE_PN0P_/D in net _0392_.
+1753: [WARNING GRT-0026] Missing route to pin _8635_/Y in net _0392_.
+1754: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[13\]$_SDFFCE_PN0P_/D in net _0392_.
+1755: [WARNING GRT-0026] Missing route to pin _8635_/Y in net _0392_.
+1756: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[13\]$_SDFFCE_PN0P_/D in net _0392_.
+1757: [WARNING GRT-0026] Missing route to pin _8635_/Y in net _0392_.
+1758: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[11\]$_SDFFCE_PN0P_/D in net _0394_.
+1759: [WARNING GRT-0026] Missing route to pin _8640_/Y in net _0394_.
+1760: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[11\]$_SDFFCE_PN0P_/D in net _0394_.
+1761: [WARNING GRT-0026] Missing route to pin _8640_/Y in net _0394_.
+1762: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[11\]$_SDFFCE_PN0P_/D in net _0394_.
+1763: [WARNING GRT-0026] Missing route to pin _8640_/Y in net _0394_.
+1764: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[6\]$_SDFFCE_PN0P_/D in net _0399_.
+1765: [WARNING GRT-0026] Missing route to pin _8647_/X in net _0399_.
+1766: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[6\]$_SDFFCE_PN0P_/D in net _0399_.
+1767: [WARNING GRT-0026] Missing route to pin _8647_/X in net _0399_.
+1768: [WARNING GRT-0026] Missing route to pin rv32_soc\/decoded_imm\[6\]$_SDFFCE_PN0P_/D in net _0399_.
+1769: [WARNING GRT-0026] Missing route to pin _8647_/X in net _0399_.
+1770: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bltu$_SDFFE_PN0P_/D in net _0406_.
+1771: [WARNING GRT-0026] Missing route to pin _8666_/Y in net _0406_.
+1772: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bltu$_SDFFE_PN0P_/D in net _0406_.
+1773: [WARNING GRT-0026] Missing route to pin _8666_/Y in net _0406_.
+1774: [WARNING GRT-0026] Missing route to pin rv32_soc\/instr_bltu$_SDFFE_PN0P_/D in net _0406_.
+1775: [WARNING GRT-0026] Missing route to pin _8666_/Y in net _0406_.
+1776: [WARNING GRT-0026] Missing route to pin _4963_/S in net _0410_.
+1777: [WARNING GRT-0026] Missing route to pin _4969_/S in net _0410_.
+1778: [WARNING GRT-0026] Missing route to pin _6664_/S in net _0410_.
+1779: [WARNING GRT-0026] Missing route to pin _6666_/S in net _0410_.
+1780: [WARNING GRT-0026] Missing route to pin _6668_/S in net _0410_.
+1781: [WARNING GRT-0026] Missing route to pin _9288_/S in net _0410_.
+1782: [WARNING GRT-0026] Missing route to pin _9294_/S in net _0410_.
+1783: [WARNING GRT-0026] Missing route to pin _9296_/S in net _0410_.
+1784: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[0\]$_DFFE_PP_/DE in net _0410_.
+1785: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0410_.
+1786: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0410_.
+1787: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[14\]$_DFFE_PP_/DE in net _0410_.
+1788: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[15\]$_DFFE_PP_/DE in net _0410_.
+1789: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[28\]$_DFFE_PP_/DE in net _0410_.
+1790: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0410_.
+1791: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[30\]$_DFFE_PP_/DE in net _0410_.
+1792: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[6\]$_DFFE_PP_/DE in net _0410_.
+1793: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0410_.
+1794: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0410_.
+1795: [WARNING GRT-0026] Missing route to pin _6651_/S in net _0410_.
+1796: [WARNING GRT-0026] Missing route to pin _9297_/S in net _0410_.
+1797: [WARNING GRT-0026] Missing route to pin _5034_/S in net _0410_.
+1798: [WARNING GRT-0026] Missing route to pin _4964_/S in net _0410_.
+1799: [WARNING GRT-0026] Missing route to pin _4786_/Y in net _0410_.
+1800: [WARNING GRT-0026] Missing route to pin _4963_/S in net _0410_.
+1801: [WARNING GRT-0026] Missing route to pin _4969_/S in net _0410_.
+1802: [WARNING GRT-0026] Missing route to pin _6664_/S in net _0410_.
+1803: [WARNING GRT-0026] Missing route to pin _6666_/S in net _0410_.
+1804: [WARNING GRT-0026] Missing route to pin _6668_/S in net _0410_.
+1805: [WARNING GRT-0026] Missing route to pin _9288_/S in net _0410_.
+1806: [WARNING GRT-0026] Missing route to pin _9294_/S in net _0410_.
+1807: [WARNING GRT-0026] Missing route to pin _9296_/S in net _0410_.
+1808: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[0\]$_DFFE_PP_/DE in net _0410_.
+1809: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0410_.
+1810: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0410_.
+1811: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[14\]$_DFFE_PP_/DE in net _0410_.
+1812: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[15\]$_DFFE_PP_/DE in net _0410_.
+1813: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[28\]$_DFFE_PP_/DE in net _0410_.
+1814: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0410_.
+1815: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[30\]$_DFFE_PP_/DE in net _0410_.
+1816: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[6\]$_DFFE_PP_/DE in net _0410_.
+1817: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0410_.
+1818: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0410_.
+1819: [WARNING GRT-0026] Missing route to pin _6651_/S in net _0410_.
+1820: [WARNING GRT-0026] Missing route to pin _9297_/S in net _0410_.
+1821: [WARNING GRT-0026] Missing route to pin _5034_/S in net _0410_.
+1822: [WARNING GRT-0026] Missing route to pin _4964_/S in net _0410_.
+1823: [WARNING GRT-0026] Missing route to pin _4786_/Y in net _0410_.
+1824: [WARNING GRT-0026] Missing route to pin _4963_/S in net _0410_.
+1825: [WARNING GRT-0026] Missing route to pin _4969_/S in net _0410_.
+1826: [WARNING GRT-0026] Missing route to pin _6664_/S in net _0410_.
+1827: [WARNING GRT-0026] Missing route to pin _6666_/S in net _0410_.
+1828: [WARNING GRT-0026] Missing route to pin _6668_/S in net _0410_.
+1829: [WARNING GRT-0026] Missing route to pin _9288_/S in net _0410_.
+1830: [WARNING GRT-0026] Missing route to pin _9294_/S in net _0410_.
+1831: [WARNING GRT-0026] Missing route to pin _9296_/S in net _0410_.
+1832: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[0\]$_DFFE_PP_/DE in net _0410_.
+1833: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[11\]$_DFFE_PP_/DE in net _0410_.
+1834: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[12\]$_DFFE_PP_/DE in net _0410_.
+1835: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[14\]$_DFFE_PP_/DE in net _0410_.
+1836: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[15\]$_DFFE_PP_/DE in net _0410_.
+1837: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[28\]$_DFFE_PP_/DE in net _0410_.
+1838: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[29\]$_DFFE_PP_/DE in net _0410_.
+1839: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[30\]$_DFFE_PP_/DE in net _0410_.
+1840: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[6\]$_DFFE_PP_/DE in net _0410_.
+1841: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[7\]$_DFFE_PP_/DE in net _0410_.
+1842: [WARNING GRT-0026] Missing route to pin rv32_soc\/mem_rdata_q\[9\]$_DFFE_PP_/DE in net _0410_.
+1843: [WARNING GRT-0026] Missing route to pin _6651_/S in net _0410_.
+1844: [WARNING GRT-0026] Missing route to pin _9297_/S in net _0410_.
+1845: [WARNING GRT-0026] Missing route to pin _5034_/S in net _0410_.
+1846: [WARNING GRT-0026] Missing route to pin _4964_/S in net _0410_.
+1847: [WARNING GRT-0026] Missing route to pin _4786_/Y in net _0410_.
+1848: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[6\]$_DFFE_PP_/D in net net1480.
+1849: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[6\]$_DFFE_PP_/D in net net1480.
+1850: [WARNING GRT-0026] Missing route to pin rv32_soc\/cpuregs\[10\]\[6\]$_DFFE_PP_/D in net net1480.
+1851: [WARNING GRT-0026] Missing route to pin _4797_/Y in net _0417_.
+1852: [WARNING GRT-0026] Missing route to pin _4797_/Y in net _0417_.
+1853: [WARNING GRT-0026] Missing route to pin _4797_/Y in net _0417_.
+1854: [WARNING GRT-0026] Missing route to pin _5903_/A1 in net _0419_.
+1855: [WARNING GRT-0026] Missing route to pin _5979_/A1 in net _0419_.
+1856: [WARNING GRT-0026] Missing route to pin _6099_/A in net _0419_.
+1857: [WARNING GRT-0026] Missing route to pin _6343_/A1 in net _0419_.
+1858: [WARNING GRT-0026] Missing route to pin _6501_/A1 in net _0419_.
+1859: [WARNING GRT-0026] Missing route to pin _6370_/A in net _0419_.
+1860: [WARNING GRT-0026] Missing route to pin _6318_/A in net _0419_.
+1861: [WARNING GRT-0026] Missing route to pin _5945_/A in net _0419_.
+1862: [WARNING GRT-0026] Missing route to pin _5903_/A1 in net _0419_.
+1863: [WARNING GRT-0026] Missing route to pin _5979_/A1 in net _0419_.
+1864: [WARNING GRT-0026] Missing route to pin _6099_/A in net _0419_.
+1865: [WARNING GRT-0026] Missing route to pin _6343_/A1 in net _0419_.
+1866: [WARNING GRT-0026] Missing route to pin _6501_/A1 in net _0419_.
+1867: [WARNING GRT-0026] Missing route to pin _6370_/A in net _0419_.
+1868: [WARNING GRT-0026] Missing route to pin _6318_/A in net _0419_.
+1869: [WARNING GRT-0026] Missing route to pin _5945_/A in net _0419_.
+1870: [WARNING GRT-0026] Missing route to pin _5903_/A1 in net _0419_.
+1871: [WARNING GRT-0026] Missing route to pin _5979_/A1 in net _0419_.
+1872: [WARNING GRT-0026] Missing route to pin _6099_/A in net _0419_.
+1873: [WARNING GRT-0026] Missing route to pin _6343_/A1 in net _0419_.
+1874: [WARNING GRT-0026] Missing route to pin _6501_/A1 in net _0419_.
+1875: [WARNING GRT-0026] Missing route to pin _6370_/A in net _0419_.
+1876: [WARNING GRT-0026] Missing route to pin _6318_/A in net _0419_.
+1877: [WARNING GRT-0026] Missing route to pin _5945_/A in net _0419_.
+1878: [WARNING GRT-0026] Missing route to pin load_slew1475/X in net net1475.
+1879: [WARNING GRT-0026] Missing route to pin load_slew1475/X in net net1475.
+1880: [WARNING GRT-0026] Missing route to pin load_slew1475/X in net net1475.
+1881: [WARNING GRT-0026] Missing route to pin _4806_/A in net _0422_.
+1882: [WARNING GRT-0026] Missing route to pin _4803_/Y in net _0422_.
+1883: [WARNING GRT-0026] Missing route to pin _4806_/A in net _0422_.
+1884: [WARNING GRT-0026] Missing route to pin _4803_/Y in net _0422_.
+1885: [WARNING GRT-0026] Missing route to pin _4806_/A in net _0422_.
+1886: [WARNING GRT-0026] Missing route to pin _4803_/Y in net _0422_.
+1887: [WARNING GRT-0026] Missing route to pin _5535_/A1 in net _0423_.
+1888: [WARNING GRT-0026] Missing route to pin _5535_/A1 in net _0423_.
+1889: [WARNING GRT-0026] Missing route to pin _5535_/A1 in net _0423_.
+1890: [WARNING GRT-0026] Missing route to pin _4805_/Y in net _0424_.
+1891: [WARNING GRT-0026] Missing route to pin _4805_/Y in net _0424_.
+1892: [WARNING GRT-0026] Missing route to pin _4805_/Y in net _0424_.
+1893: [WARNING GRT-0026] Missing route to pin _4816_/A3 in net _0428_.
+1894: [WARNING GRT-0026] Missing route to pin _4814_/Y in net _0428_.
+1895: [WARNING GRT-0026] Missing route to pin _4816_/A3 in net _0428_.
+1896: [WARNING GRT-0026] Missing route to pin _4814_/Y in net _0428_.
+1897: [WARNING GRT-0026] Missing route to pin _4816_/A3 in net _0428_.
+1898: [WARNING GRT-0026] Missing route to pin _4814_/Y in net _0428_.
+1899: [WARNING GRT-0026] Missing route to pin _4815_/Y in net _0429_.
+1900: [WARNING GRT-0026] Missing route to pin _4815_/Y in net _0429_.
+1901: [WARNING GRT-0026] Missing route to pin _4815_/Y in net _0429_.
+1902: [WARNING GRT-0026] Missing route to pin _4818_/A2 in net _0431_.
+1903: [WARNING GRT-0026] Missing route to pin _4818_/A2 in net _0431_.
+1904: [WARNING GRT-0026] Missing route to pin _4818_/A2 in net _0431_.
+1905: [WARNING GRT-0026] Missing route to pin _4893_/A2 in net _0433_.
+1906: [WARNING GRT-0026] Missing route to pin _4893_/A2 in net _0433_.
+1907: [WARNING GRT-0026] Missing route to pin _4893_/A2 in net _0433_.
+1908: [WARNING GRT-0026] Missing route to pin _5461_/A1 in net _0438_.
+1909: [WARNING GRT-0026] Missing route to pin _5471_/A1 in net _0438_.
+1910: [WARNING GRT-0026] Missing route to pin _5482_/A1 in net _0438_.
+1911: [WARNING GRT-0026] Missing route to pin _5513_/A1 in net _0438_.
+1912: [WARNING GRT-0026] Missing route to pin _5461_/A1 in net _0438_.
+1913: [WARNING GRT-0026] Missing route to pin _5471_/A1 in net _0438_.
+1914: [WARNING GRT-0026] Missing route to pin _5482_/A1 in net _0438_.
+1915: [WARNING GRT-0026] message limit (1000) reached. This message will no longer print.
+2770: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'

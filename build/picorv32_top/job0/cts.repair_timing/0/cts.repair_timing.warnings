@@ -1,0 +1,2 @@
+ 344: [WARNING RSZ-0062] Unable to repair all setup violations.
+1636: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'

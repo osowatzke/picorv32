@@ -1,0 +1,445 @@
+OpenROAD v2.0-20575-ge78e29127 
+Features included (+) or not (-): +GPU +GUI +Python
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+##############################
+# Schema Adapter
+###############################
+set sc_step [sc_cfg_get arg step]
+set sc_index [sc_cfg_get arg index]
+set sc_flow [sc_cfg_get option flow]
+set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+set sc_refdir [sc_cfg_tool_task_get refdir]
+##############################
+# Setup debugging
+###############################
+source -echo "$sc_refdir/common/debugging.tcl"
+###############################
+# Setup debugging if requested
+###############################
+if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+    foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+        lassign [split $debug " "] debug_tool debug_category debug_level
+        utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+        set_debug_level $debug_tool $debug_category $debug_level
+    }
+}
+###############################
+# Suppress messages if requested
+###############################
+foreach msg [sc_cfg_tool_task_get warningoff] {
+    set or_msg [split $msg "-"]
+    if { [llength $or_msg] != 2 } {
+        utl::warn FLW 1 "$msg is not a valid message id"
+    } else {
+        set or_tool [lindex $or_msg 0]
+        set or_msg_id [expr { int([lindex $or_msg 1]) }]
+        utl::info FLW 1 "Suppressing $msg messages"
+        suppress_message $or_tool $or_msg_id
+    }
+}
+###############################
+# Setup helper functions
+###############################
+source "$sc_refdir/common/procs.tcl"
+###############################
+# Design information
+###############################
+# Design
+set sc_design [sc_top]
+set sc_optmode [sc_cfg_get option optmode]
+set sc_pdk [sc_cfg_get option pdk]
+set sc_stackup [sc_cfg_get option stackup]
+# APR Parameters
+set sc_targetlibs [sc_get_asic_libraries logic]
+set sc_mainlib [lindex $sc_targetlibs 0]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Hard macro libraries
+set sc_macrolibs [sc_get_asic_libraries macro]
+# Threads
+set_thread_count [sc_cfg_tool_task_get threads]
+[INFO ORD-0030] Using 2 thread(s).
+###############################
+# Read Files
+###############################
+source -echo "$sc_refdir/common/read_liberty.tcl"
+set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+set sc_delaymodel [sc_cfg_get asic delaymodel]
+# Read Liberty
+utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+[INFO FLW-0001] Defining timing corners: slow fast typical
+define_corners {*}$sc_scenarios
+foreach lib "$sc_targetlibs $sc_macrolibs" {
+    #Liberty
+    foreach corner $sc_scenarios {
+        foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+            if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+                foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+                    puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+                    read_liberty -corner $corner $lib_file
+                }
+                break
+            }
+        }
+    }
+}
+Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+source -echo "$sc_refdir/common/read_input_files.tcl"
+###############################
+# Read design files
+###############################
+if { [sc_has_input_files odb "input layout odb"] } {
+    foreach odb_file [sc_get_input_files odb "input layout odb"] {
+        puts "Reading ODB: ${odb_file}"
+        read_db $odb_file
+    }
+} else {
+    set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+    set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+    # Read techlef
+    puts "Reading techlef: ${sc_techlef}"
+    read_lef $sc_techlef
+    # Read Lefs
+    foreach lib "$sc_targetlibs $sc_macrolibs" {
+        foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+            puts "Reading lef: ${lef_file}"
+            read_lef $lef_file
+        }
+    }
+    if { [file exists "inputs/${sc_design}.def"] } {
+        # Read DEF
+        # get from previous step
+        puts "Reading DEF: inputs/${sc_design}.def"
+        read_def "inputs/${sc_design}.def"
+    } elseif { [sc_cfg_exists input layout def] } {
+        # Read DEF
+        set sc_def [lindex [sc_cfg_get input layout def] 0]
+        puts "Reading DEF: ${sc_def}"
+        read_def $sc_def
+    } elseif { [file exists "inputs/${sc_design}.vg"] } {
+        # Read Verilog
+        puts "Reading netlist verilog: inputs/${sc_design}.vg"
+        read_verilog "inputs/${sc_design}.vg"
+        link_design $sc_design
+    } elseif { [sc_cfg_exists input netlist verilog] } {
+        # Read Verilog
+        foreach netlist [sc_cfg_get input netlist verilog] {
+            puts "Reading netlist verilog: ${netlist}"
+            read_verilog $netlist
+        }
+        link_design $sc_design
+    } else {
+        utl::error FLW 1 "No input files available"
+    }
+    # Handle global connect setup
+    if { [sc_cfg_tool_task_exists {file} global_connect] } {
+        foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+            puts "Loading global connect configuration: ${global_connect}"
+            source $global_connect
+        }
+    }
+    tee -file reports/global_connections.rpt {report_global_connect}
+}
+Reading ODB: inputs/picorv32_top.odb
+source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+###############################
+# Read timing constraints
+###############################
+if { [sc_has_input_files sdc "input constraint sdc"] } {
+    foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+        puts "Reading SDC: ${sdc}"
+        read_sdc $sdc
+    }
+} else {
+    # fall back on default auto generated constraints file
+    set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+    puts "Reading SDC: ${sdc}"
+    utl::warn FLW 1 "Defaulting back to default SDC"
+    read_sdc "${sdc}"
+}
+Reading SDC: inputs/picorv32_top.sdc
+###############################
+# Common Setup
+###############################
+sc_setup_sta
+sc_setup_parasitics
+[INFO FLW-0001] Using met5 for clock parasitics estimation
+[INFO FLW-0001] Using met2 for signal parasitics estimation
+sc_set_dont_use
+sc_setup_global_routing
+[INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+[INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+[INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+[INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+# Store incoming markers to avoid rewriting them
+set sc_starting_markers []
+foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+    lappend sc_starting_markers [$markerdb getName]
+}
+###############################
+# Source Step Script
+###############################
+report_units_metric
+utl::push_metrics_stage "sc__prestep__{}"
+if { [sc_cfg_tool_task_exists prescript] } {
+    foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+        puts "Sourcing pre script: ${sc_pre_script}"
+        source -echo $sc_pre_script
+    }
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__step__{}"
+set openroad_dont_touch {}
+if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+    set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+}
+if { [llength $openroad_dont_touch] > 0 } {
+    # set don't touch list
+    set_dont_touch $openroad_dont_touch
+}
+tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+tee -file reports/global_connections.start.rpt {report_global_connect}
+Global connection rules: 2
+  Instances: ".*" with pins "VPWR" connect to "VDD"
+  Instances: ".*" with pins "VGND" connect to "VSS"
+Macro placement information:
+  sram (sky130_sram_2kbyte_1rw1r_32x512_8): FIRM at (149.96 um, 149.6 um) R180
+if { [llength $openroad_dont_touch] > 0 } {
+    # unset for next step
+    unset_dont_touch $openroad_dont_touch
+}
+utl::pop_metrics_stage
+utl::push_metrics_stage "sc__poststep__{}"
+if { [sc_cfg_tool_task_exists postscript] } {
+    foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+        puts "Sourcing post script: ${sc_post_script}"
+        source -echo $sc_post_script
+    }
+}
+utl::pop_metrics_stage
+###############################
+# Write Design Data
+###############################
+utl::push_metrics_stage "sc__write__{}"
+source "$sc_refdir/common/write_data.tcl"
+utl::pop_metrics_stage
+###############################
+# Reporting
+###############################
+utl::push_metrics_stage "sc__metric__{}"
+source "$sc_refdir/common/reports.tcl"
+SC_METRIC: report_checks -path_delay max
+Startpoint: _9504_ (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: pcpi_rs1[18]$_DFFE_PP_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock clk0 (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ _9504_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   259    1.28   40.50   31.39   31.39 ^ _9504_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0005_ (net)
+                 40.50    0.00   31.39 ^ _6241_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.29   15.46   46.85 v _6241_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1699_ (net)
+                  0.29    0.00   46.85 v _6245_/A0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.26    2.58   49.43 v _6245_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1703_ (net)
+                  0.26    0.00   49.43 v _6254_/A0 (sky130_fd_sc_hd__mux2i_1)
+     1    0.00    0.43    0.52   49.96 ^ _6254_/Y (sky130_fd_sc_hd__mux2i_1)
+                                         _1712_ (net)
+                  0.43    0.00   49.96 ^ _6255_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    0.13    0.23   50.19 v _6255_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _1713_ (net)
+                  0.13    0.00   50.19 v _6260_/B1 (sky130_fd_sc_hd__a2111oi_0)
+     1    0.00    1.03    1.32   51.51 ^ _6260_/Y (sky130_fd_sc_hd__a2111oi_0)
+                                         _1718_ (net)
+                  1.03    0.00   51.51 ^ _6261_/B1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.26    0.59   52.10 v _6261_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _4761_ (net)
+                  0.26    0.00   52.10 v pcpi_rs1[18]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                 52.10   data arrival time
+
+                  0.00   25.00   25.00   clock clk0 (rise edge)
+                          0.00   25.00   clock network delay (ideal)
+                          0.00   25.00   clock reconvergence pessimism
+                                 25.00 ^ pcpi_rs1[18]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+                         -1.49   23.51   library setup time
+                                 23.51   data required time
+-----------------------------------------------------------------------------
+                                 23.51   data required time
+                                -52.10   data arrival time
+-----------------------------------------------------------------------------
+                                -28.59   slack (VIOLATED)
+
+
+SC_METRIC: setupslack
+worst slack -28.59
+SC_METRIC: tns
+tns -1872.35
+SC_METRIC: unconstrained
+Startpoint: _9504_ (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: pcpi_rs1[18]$_DFFE_PP_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: max
+Corner: slow
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock clk0 (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ _9504_/CLK (sky130_fd_sc_hd__dfxtp_1)
+   259    1.28   40.50   31.39   31.39 ^ _9504_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         _0005_ (net)
+                 40.50    0.00   31.39 ^ _6241_/S0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.29   15.46   46.85 v _6241_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1699_ (net)
+                  0.29    0.00   46.85 v _6245_/A0 (sky130_fd_sc_hd__mux4_2)
+     1    0.00    0.26    2.58   49.43 v _6245_/X (sky130_fd_sc_hd__mux4_2)
+                                         _1703_ (net)
+                  0.26    0.00   49.43 v _6254_/A0 (sky130_fd_sc_hd__mux2i_1)
+     1    0.00    0.43    0.52   49.96 ^ _6254_/Y (sky130_fd_sc_hd__mux2i_1)
+                                         _1712_ (net)
+                  0.43    0.00   49.96 ^ _6255_/B (sky130_fd_sc_hd__nor2_1)
+     1    0.00    0.13    0.23   50.19 v _6255_/Y (sky130_fd_sc_hd__nor2_1)
+                                         _1713_ (net)
+                  0.13    0.00   50.19 v _6260_/B1 (sky130_fd_sc_hd__a2111oi_0)
+     1    0.00    1.03    1.32   51.51 ^ _6260_/Y (sky130_fd_sc_hd__a2111oi_0)
+                                         _1718_ (net)
+                  1.03    0.00   51.51 ^ _6261_/B1 (sky130_fd_sc_hd__o21ai_0)
+     1    0.00    0.26    0.59   52.10 v _6261_/Y (sky130_fd_sc_hd__o21ai_0)
+                                         _4761_ (net)
+                  0.26    0.00   52.10 v pcpi_rs1[18]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+                                 52.10   data arrival time
+
+                  0.00   25.00   25.00   clock clk0 (rise edge)
+                          0.00   25.00   clock network delay (ideal)
+                          0.00   25.00   clock reconvergence pessimism
+                                 25.00 ^ pcpi_rs1[18]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+                         -1.49   23.51   library setup time
+                                 23.51   data required time
+-----------------------------------------------------------------------------
+                                 23.51   data required time
+                                -52.10   data arrival time
+-----------------------------------------------------------------------------
+                                -28.59   slack (VIOLATED)
+
+
+SC_METRIC: floating nets
+SC_METRIC: overdriven nets
+Clock                   Period          Waveform
+----------------------------------------------------
+clk0                     25.00        0.00     12.50
+SC_METRIC: cellarea
+Design area 364339 u^2 38% utilization.
+Cell type report:                       Count       Area
+  Macro                                     1  284538.47
+  Buffer                                  111     833.30
+  Inverter                                228     855.82
+  Sequential cell                        1574   44082.28
+  Multi-Input combinational cell         4115   34028.89
+  Total                                  6029  364338.76
+
+Cell instance report:
+  sky130_sram_2kbyte_1rw1r_32x512_8         1  284538.47
+  sky130_fd_sc_hd__a2111oi_0                6      52.55
+  sky130_fd_sc_hd__a211o_1                  5      43.79
+  sky130_fd_sc_hd__a211oi_1                22     165.16
+  sky130_fd_sc_hd__a21boi_0                24     180.17
+  sky130_fd_sc_hd__a21o_1                  80     600.58
+  sky130_fd_sc_hd__a21oi_1                418    2092.01
+  sky130_fd_sc_hd__a221o_1                  8      80.08
+  sky130_fd_sc_hd__a221oi_1                61     534.26
+  sky130_fd_sc_hd__a222oi_1                37     370.36
+  sky130_fd_sc_hd__a22o_1                  28     245.24
+  sky130_fd_sc_hd__a22oi_1                 39     292.78
+  sky130_fd_sc_hd__a311o_1                  1      10.01
+  sky130_fd_sc_hd__a31o_1                   8      70.07
+  sky130_fd_sc_hd__a31oi_1                 74     462.94
+  sky130_fd_sc_hd__a32o_1                   8      80.08
+  sky130_fd_sc_hd__a32oi_1                  5      43.79
+  sky130_fd_sc_hd__a41oi_1                  3      26.28
+  sky130_fd_sc_hd__and2_0                  14      87.58
+  sky130_fd_sc_hd__and2_1                  36     225.22
+  sky130_fd_sc_hd__and3_1                  57     356.59
+  sky130_fd_sc_hd__and3b_1                  8      70.07
+  sky130_fd_sc_hd__and4_1                  30     262.75
+  sky130_fd_sc_hd__buf_4                  111     833.30
+  sky130_fd_sc_hd__clkinv_1                 5      18.77
+  sky130_fd_sc_hd__conb_1                   2       7.51
+  sky130_fd_sc_hd__dfxtp_1                318    6366.11
+  sky130_fd_sc_hd__edfxtp_1              1256   37716.17
+  sky130_fd_sc_hd__fa_1                     5     100.10
+  sky130_fd_sc_hd__ha_1                   199    2489.89
+  sky130_fd_sc_hd__inv_1                  219     822.04
+  sky130_fd_sc_hd__inv_2                    4      15.01
+  sky130_fd_sc_hd__mux2_2                  48     540.52
+  sky130_fd_sc_hd__mux2i_1                 76     760.73
+  sky130_fd_sc_hd__mux4_2                 543   12229.23
+  sky130_fd_sc_hd__nand2_1                499    1873.05
+  sky130_fd_sc_hd__nand2b_1                18     112.61
+  sky130_fd_sc_hd__nand3_1                 98     490.47
+  sky130_fd_sc_hd__nand3b_1                11      82.58
+  sky130_fd_sc_hd__nand4_1                 27     168.91
+  sky130_fd_sc_hd__nand4b_1                 1       8.76
+  sky130_fd_sc_hd__nor2_1                 476    1786.71
+  sky130_fd_sc_hd__nor2b_1                 32     200.19
+  sky130_fd_sc_hd__nor3_1                  89     445.43
+  sky130_fd_sc_hd__nor3b_1                 34     255.24
+  sky130_fd_sc_hd__nor4_1                  35     218.96
+  sky130_fd_sc_hd__nor4b_1                  3      26.28
+  sky130_fd_sc_hd__o2111a_1                 1      11.26
+  sky130_fd_sc_hd__o2111ai_1                1       8.76
+  sky130_fd_sc_hd__o211a_1                  2      20.02
+  sky130_fd_sc_hd__o211ai_1                17     127.62
+  sky130_fd_sc_hd__o21a_1                  55     412.90
+  sky130_fd_sc_hd__o21ai_0                527    2637.53
+  sky130_fd_sc_hd__o21ai_1                  3      15.01
+  sky130_fd_sc_hd__o21bai_1                35     262.75
+  sky130_fd_sc_hd__o221a_2                  1      11.26
+  sky130_fd_sc_hd__o221ai_1                22     192.68
+  sky130_fd_sc_hd__o22a_1                   2      17.52
+  sky130_fd_sc_hd__o22ai_1                 34     212.70
+  sky130_fd_sc_hd__o2bb2ai_1                1       8.76
+  sky130_fd_sc_hd__o311a_1                  1      10.01
+  sky130_fd_sc_hd__o311ai_0                14     122.62
+  sky130_fd_sc_hd__o31a_1                   1       8.76
+  sky130_fd_sc_hd__o31ai_1                 41     307.80
+  sky130_fd_sc_hd__o32a_1                   1      10.01
+  sky130_fd_sc_hd__o32ai_1                  5      43.79
+  sky130_fd_sc_hd__or2_1                   16     100.10
+  sky130_fd_sc_hd__or3_1                   45     281.52
+  sky130_fd_sc_hd__or3b_2                   5      43.79
+  sky130_fd_sc_hd__or4_1                   12      90.09
+  sky130_fd_sc_hd__or4bb_1                  1      11.26
+  sky130_fd_sc_hd__xnor2_1                 86     753.22
+  sky130_fd_sc_hd__xor2_1                  18     157.65
+utl::pop_metrics_stage
+# Images
+utl::push_metrics_stage "sc__image__{}"
+if {
+    [sc_has_gui] &&
+    [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+} {
+    if { [gui::enabled] } {
+        source "$sc_refdir/common/write_images.tcl"
+    } else {
+        gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+    }
+}
+[WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+[INFO FLW-0001] Saving "snapshot" to reports/images/picorv32_top.png
+[INFO FLW-0001] Saving "placement" to reports/images/picorv32_top.placement.png
+[INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+utl::pop_metrics_stage

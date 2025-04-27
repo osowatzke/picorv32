@@ -1,0 +1,453 @@
+| INFO     | job0 | floorplan.macro_p... | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | floorplan.macro_p... | 0 | Running in /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/floorplan.macro_placement/0
+| INFO     | job0 | floorplan.macro_p... | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_macro_placement.tcl
+| INFO     | job0 | floorplan.macro_p... | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | floorplan.macro_p... | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | floorplan.macro_p... | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | floorplan.macro_p... | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | floorplan.macro_p... | 0 | ##############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Schema Adapter
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | floorplan.macro_p... | 0 | ##############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Setup debugging
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Setup debugging if requested
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | floorplan.macro_p... | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | floorplan.macro_p... | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | floorplan.macro_p... | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Suppress messages if requested
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | floorplan.macro_p... | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | floorplan.macro_p... | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | floorplan.macro_p... | 0 |     } else {
+| INFO     | job0 | floorplan.macro_p... | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | floorplan.macro_p... | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | floorplan.macro_p... | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | floorplan.macro_p... | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Setup helper functions
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Design information
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Design
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_design [sc_top]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | floorplan.macro_p... | 0 | # APR Parameters
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | floorplan.macro_p... | 0 | # Hard macro libraries
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | floorplan.macro_p... | 0 | # Threads
+| INFO     | job0 | floorplan.macro_p... | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Read Files
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | floorplan.macro_p... | 0 | # Read Liberty
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | floorplan.macro_p... | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | floorplan.macro_p... | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | floorplan.macro_p... | 0 |     #Liberty
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | floorplan.macro_p... | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | floorplan.macro_p... | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | floorplan.macro_p... | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | floorplan.macro_p... | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | floorplan.macro_p... | 0 |                 }
+| INFO     | job0 | floorplan.macro_p... | 0 |                 break
+| INFO     | job0 | floorplan.macro_p... | 0 |             }
+| INFO     | job0 | floorplan.macro_p... | 0 |         }
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | floorplan.macro_p... | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | floorplan.macro_p... | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | floorplan.macro_p... | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Read design files
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | floorplan.macro_p... | 0 |         read_db $odb_file
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | } else {
+| INFO     | job0 | floorplan.macro_p... | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | floorplan.macro_p... | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | floorplan.macro_p... | 0 |     # Read techlef
+| INFO     | job0 | floorplan.macro_p... | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | floorplan.macro_p... | 0 |     read_lef $sc_techlef
+| INFO     | job0 | floorplan.macro_p... | 0 |     # Read Lefs
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | floorplan.macro_p... | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | floorplan.macro_p... | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | floorplan.macro_p... | 0 |             read_lef $lef_file
+| INFO     | job0 | floorplan.macro_p... | 0 |         }
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         # Read DEF
+| INFO     | job0 | floorplan.macro_p... | 0 |         # get from previous step
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | floorplan.macro_p... | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | floorplan.macro_p... | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         # Read DEF
+| INFO     | job0 | floorplan.macro_p... | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | floorplan.macro_p... | 0 |         read_def $sc_def
+| INFO     | job0 | floorplan.macro_p... | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         # Read Verilog
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | floorplan.macro_p... | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | floorplan.macro_p... | 0 |         link_design $sc_design
+| INFO     | job0 | floorplan.macro_p... | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         # Read Verilog
+| INFO     | job0 | floorplan.macro_p... | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | floorplan.macro_p... | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | floorplan.macro_p... | 0 |             read_verilog $netlist
+| INFO     | job0 | floorplan.macro_p... | 0 |         }
+| INFO     | job0 | floorplan.macro_p... | 0 |         link_design $sc_design
+| INFO     | job0 | floorplan.macro_p... | 0 |     } else {
+| INFO     | job0 | floorplan.macro_p... | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 |     # Handle global connect setup
+| INFO     | job0 | floorplan.macro_p... | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | floorplan.macro_p... | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | floorplan.macro_p... | 0 |             source $global_connect
+| INFO     | job0 | floorplan.macro_p... | 0 |         }
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | Reading ODB: inputs/picorv32_top.odb
+| INFO     | job0 | floorplan.macro_p... | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Read timing constraints
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | floorplan.macro_p... | 0 |         read_sdc $sdc
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | } else {
+| INFO     | job0 | floorplan.macro_p... | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | floorplan.macro_p... | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | floorplan.macro_p... | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | floorplan.macro_p... | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | floorplan.macro_p... | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | Reading SDC: inputs/picorv32_top.sdc
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Common Setup
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | sc_setup_sta
+| INFO     | job0 | floorplan.macro_p... | 0 | sc_setup_parasitics
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | floorplan.macro_p... | 0 | sc_set_dont_use
+| INFO     | job0 | floorplan.macro_p... | 0 | sc_setup_global_routing
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | floorplan.macro_p... | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | floorplan.macro_p... | 0 | set sc_starting_markers []
+| INFO     | job0 | floorplan.macro_p... | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | floorplan.macro_p... | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Source Step Script
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | report_units_metric
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | floorplan.macro_p... | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | set openroad_dont_touch {}
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     # set don't touch list
+| INFO     | job0 | floorplan.macro_p... | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | floorplan.macro_p... | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | floorplan.macro_p... | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | floorplan.macro_p... | 0 | Global connection rules: 2
+| INFO     | job0 | floorplan.macro_p... | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | floorplan.macro_p... | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | floorplan.macro_p... | 0 | Macro placement information:
+| INFO     | job0 | floorplan.macro_p... | 0 |   sram (sky130_sram_2kbyte_1rw1r_32x512_8): FIRM at (149.96 um, 149.6 um) R180
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     # unset for next step
+| INFO     | job0 | floorplan.macro_p... | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | floorplan.macro_p... | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | floorplan.macro_p... | 0 |         source -echo $sc_post_script
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Write Design Data
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | # Reporting
+| INFO     | job0 | floorplan.macro_p... | 0 | ###############################
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | floorplan.macro_p... | 0 | Startpoint: _9504_ (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | floorplan.macro_p... | 0 | Endpoint: pcpi_rs1[18]$_DFFE_PP_
+| INFO     | job0 | floorplan.macro_p... | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | floorplan.macro_p... | 0 | Path Group: clk0
+| INFO     | job0 | floorplan.macro_p... | 0 | Path Type: max
+| INFO     | job0 | floorplan.macro_p... | 0 | Corner: slow
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00    0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00    0.00   clock network delay (ideal)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00    0.00    0.00 ^ _9504_/CLK (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |    259    1.28   40.50   31.39   31.39 ^ _9504_/Q (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _0005_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                  40.50    0.00   31.39 ^ _6241_/S0 (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.29   15.46   46.85 v _6241_/X (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1699_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.29    0.00   46.85 v _6245_/A0 (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.26    2.58   49.43 v _6245_/X (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1703_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.26    0.00   49.43 v _6254_/A0 (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.43    0.52   49.96 ^ _6254_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1712_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.43    0.00   49.96 ^ _6255_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.13    0.23   50.19 v _6255_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1713_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.13    0.00   50.19 v _6260_/B1 (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    1.03    1.32   51.51 ^ _6260_/Y (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1718_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   1.03    0.00   51.51 ^ _6261_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.26    0.59   52.10 v _6261_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _4761_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.26    0.00   52.10 v pcpi_rs1[18]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  52.10   data arrival time
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00   25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00   25.00   clock network delay (ideal)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00   25.00   clock reconvergence pessimism
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  25.00 ^ pcpi_rs1[18]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                          -1.49   23.51   library setup time
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  23.51   data required time
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  23.51   data required time
+| INFO     | job0 | floorplan.macro_p... | 0 |                                 -52.10   data arrival time
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                                 -28.59   slack (VIOLATED)
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: setupslack
+| INFO     | job0 | floorplan.macro_p... | 0 | worst slack -28.59
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: tns
+| INFO     | job0 | floorplan.macro_p... | 0 | tns -1872.35
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | floorplan.macro_p... | 0 | Startpoint: _9504_ (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | floorplan.macro_p... | 0 | Endpoint: pcpi_rs1[18]$_DFFE_PP_
+| INFO     | job0 | floorplan.macro_p... | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | floorplan.macro_p... | 0 | Path Group: clk0
+| INFO     | job0 | floorplan.macro_p... | 0 | Path Type: max
+| INFO     | job0 | floorplan.macro_p... | 0 | Corner: slow
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00    0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00    0.00   clock network delay (ideal)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00    0.00    0.00 ^ _9504_/CLK (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |    259    1.28   40.50   31.39   31.39 ^ _9504_/Q (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _0005_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                  40.50    0.00   31.39 ^ _6241_/S0 (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.29   15.46   46.85 v _6241_/X (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1699_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.29    0.00   46.85 v _6245_/A0 (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.26    2.58   49.43 v _6245_/X (sky130_fd_sc_hd__mux4_2)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1703_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.26    0.00   49.43 v _6254_/A0 (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.43    0.52   49.96 ^ _6254_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1712_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.43    0.00   49.96 ^ _6255_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.13    0.23   50.19 v _6255_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1713_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.13    0.00   50.19 v _6260_/B1 (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    1.03    1.32   51.51 ^ _6260_/Y (sky130_fd_sc_hd__a2111oi_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _1718_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   1.03    0.00   51.51 ^ _6261_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |      1    0.00    0.26    0.59   52.10 v _6261_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                          _4761_ (net)
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.26    0.00   52.10 v pcpi_rs1[18]$_DFFE_PP_/D (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  52.10   data arrival time
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 |                   0.00   25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00   25.00   clock network delay (ideal)
+| INFO     | job0 | floorplan.macro_p... | 0 |                           0.00   25.00   clock reconvergence pessimism
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  25.00 ^ pcpi_rs1[18]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | floorplan.macro_p... | 0 |                          -1.49   23.51   library setup time
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  23.51   data required time
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                                  23.51   data required time
+| INFO     | job0 | floorplan.macro_p... | 0 |                                 -52.10   data arrival time
+| INFO     | job0 | floorplan.macro_p... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 |                                 -28.59   slack (VIOLATED)
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: floating nets
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | floorplan.macro_p... | 0 | Clock                   Period          Waveform
+| INFO     | job0 | floorplan.macro_p... | 0 | ----------------------------------------------------
+| INFO     | job0 | floorplan.macro_p... | 0 | clk0                     25.00        0.00     12.50
+| INFO     | job0 | floorplan.macro_p... | 0 | SC_METRIC: cellarea
+| INFO     | job0 | floorplan.macro_p... | 0 | Design area 364339 u^2 38% utilization.
+| INFO     | job0 | floorplan.macro_p... | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | floorplan.macro_p... | 0 |   Macro                                     1  284538.47
+| INFO     | job0 | floorplan.macro_p... | 0 |   Buffer                                  111     833.30
+| INFO     | job0 | floorplan.macro_p... | 0 |   Inverter                                228     855.82
+| INFO     | job0 | floorplan.macro_p... | 0 |   Sequential cell                        1574   44082.28
+| INFO     | job0 | floorplan.macro_p... | 0 |   Multi-Input combinational cell         4115   34028.89
+| INFO     | job0 | floorplan.macro_p... | 0 |   Total                                  6029  364338.76
+| INFO     | job0 | floorplan.macro_p... | 0 | 
+| INFO     | job0 | floorplan.macro_p... | 0 | Cell instance report:
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_sram_2kbyte_1rw1r_32x512_8         1  284538.47
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a2111oi_0                6      52.55
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a211o_1                  5      43.79
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a211oi_1                22     165.16
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a21boi_0                24     180.17
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a21o_1                  80     600.58
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a21oi_1                418    2092.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a221o_1                  8      80.08
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a221oi_1                61     534.26
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a222oi_1                37     370.36
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a22o_1                  28     245.24
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a22oi_1                 39     292.78
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a311o_1                  1      10.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a31o_1                   8      70.07
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a31oi_1                 74     462.94
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a32o_1                   8      80.08
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a32oi_1                  5      43.79
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__a41oi_1                  3      26.28
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__and2_0                  14      87.58
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__and2_1                  36     225.22
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__and3_1                  57     356.59
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__and3b_1                  8      70.07
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__and4_1                  30     262.75
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__buf_4                  111     833.30
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__clkinv_1                 5      18.77
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__conb_1                   2       7.51
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__dfxtp_1                318    6366.11
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__edfxtp_1              1256   37716.17
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__ha_1                   199    2489.89
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__inv_1                  219     822.04
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__inv_2                    4      15.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__mux2_2                  48     540.52
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__mux2i_1                 76     760.73
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__mux4_2                 543   12229.23
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand2_1                499    1873.05
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand3_1                 98     490.47
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand3b_1                11      82.58
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand4_1                 27     168.91
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor2_1                 476    1786.71
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor2b_1                 32     200.19
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor3_1                  89     445.43
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor3b_1                 34     255.24
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor4_1                  35     218.96
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o2111a_1                 1      11.26
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o211a_1                  2      20.02
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o211ai_1                17     127.62
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o21a_1                  55     412.90
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o21ai_0                527    2637.53
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o21ai_1                  3      15.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o21bai_1                35     262.75
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o221a_2                  1      11.26
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o221ai_1                22     192.68
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o22ai_1                 34     212.70
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o2bb2ai_1                1       8.76
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o311ai_0                14     122.62
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o31a_1                   1       8.76
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o31ai_1                 41     307.80
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__o32ai_1                  5      43.79
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__or2_1                   16     100.10
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__or3_1                   45     281.52
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__or3b_2                   5      43.79
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__or4_1                   12      90.09
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__or4bb_1                  1      11.26
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__xnor2_1                 86     753.22
+| INFO     | job0 | floorplan.macro_p... | 0 |   sky130_fd_sc_hd__xor2_1                  18     157.65
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | floorplan.macro_p... | 0 | # Images
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | floorplan.macro_p... | 0 | if {
+| INFO     | job0 | floorplan.macro_p... | 0 |     [sc_has_gui] &&
+| INFO     | job0 | floorplan.macro_p... | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | floorplan.macro_p... | 0 | } {
+| INFO     | job0 | floorplan.macro_p... | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | floorplan.macro_p... | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | floorplan.macro_p... | 0 |     } else {
+| INFO     | job0 | floorplan.macro_p... | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | floorplan.macro_p... | 0 |     }
+| INFO     | job0 | floorplan.macro_p... | 0 | }
+| INFO     | job0 | floorplan.macro_p... | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32_top.png
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32_top.placement.png
+| INFO     | job0 | floorplan.macro_p... | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | floorplan.macro_p... | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | floorplan.macro_p... | 0 | 441: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | floorplan.macro_p... | 0 | Number of errors: 0
+| INFO     | job0 | floorplan.macro_p... | 0 | Number of warnings: 1
+| INFO     | job0 | floorplan.macro_p... | 0 | Finished task in 6.33s
+| INFO     | job0 | floorplan.macro_p... | 0 | Archiving floorplan.macro_placement0...

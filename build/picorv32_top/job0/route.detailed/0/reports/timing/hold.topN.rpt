@@ -1,0 +1,346 @@
+[WARNING STA-0503] report_checks -group_count is deprecated. Use -group_path_count instead.
+Startpoint: rv32_soc/count_cycle[63]$_SDFF_PN0_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/count_cycle[63]$_SDFF_PN0_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     3    0.01    0.04    0.21    1.15 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/count_cycle[63] (net)
+                  0.04    0.00    1.15 ^ _8522_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.02    0.04    1.19 v _8522_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _0334_ (net)
+                  0.02    0.00    1.19 v rv32_soc/count_cycle[63]$_SDFF_PN0_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.19   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.19   data arrival time
+-----------------------------------------------------------------------------
+                                  0.27   slack (MET)
+
+
+Startpoint: rv32_soc/reg_sh[2]$_DFF_P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/reg_sh[2]$_DFF_P_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/reg_sh[2]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     3    0.01    0.04    0.22    1.16 ^ rv32_soc/reg_sh[2]$_DFF_P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/reg_sh[2] (net)
+                  0.04    0.00    1.16 ^ _7394_/B2 (sky130_fd_sc_hd__o2bb2ai_1)
+     1    0.00    0.02    0.03    1.20 v _7394_/Y (sky130_fd_sc_hd__o2bb2ai_1)
+                                         _0045_ (net)
+                  0.02    0.00    1.20 v rv32_soc/reg_sh[2]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/reg_sh[2]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.93   library hold time
+                                  0.93   data required time
+-----------------------------------------------------------------------------
+                                  0.93   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.27   slack (MET)
+
+
+Startpoint: mem_valid$_SDFFCE_PP0P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: mem_ready$_DFF_P_ (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ mem_valid$_SDFFCE_PP0P_/CLK (sky130_fd_sc_hd__edfxtp_1)
+     2    0.01    0.07    0.25    1.20 ^ mem_valid$_SDFFCE_PP0P_/Q (sky130_fd_sc_hd__edfxtp_1)
+                                         mem_valid (net)
+                  0.07    0.00    1.20 ^ mem_ready$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ mem_ready$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_1)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.27   slack (MET)
+
+
+Startpoint: rv32_soc/count_instr[63]$_SDFFE_PN0P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/count_instr[63]$_SDFFE_PN0P_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/count_instr[63]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     3    0.01    0.04    0.22    1.16 ^ rv32_soc/count_instr[63]$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/count_instr[63] (net)
+                  0.04    0.00    1.16 ^ _7911_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.02    0.04    1.20 v _7911_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _0208_ (net)
+                  0.02    0.00    1.20 v rv32_soc/count_instr[63]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/count_instr[63]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/count_cycle[3]$_SDFF_PN0_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/count_cycle[3]$_SDFF_PN0_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/count_cycle[3]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     5    0.01    0.05    0.22    1.16 ^ rv32_soc/count_cycle[3]$_SDFF_PN0_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/count_cycle[3] (net)
+                  0.05    0.00    1.16 ^ _8328_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.02    0.04    1.20 v _8328_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _0274_ (net)
+                  0.02    0.00    1.20 v rv32_soc/count_cycle[3]$_SDFF_PN0_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/count_cycle[3]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.93    0.93   clock network delay (propagated)
+                  0.05    0.00    0.93 ^ rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     2    0.01    0.03    0.21    1.13 ^ rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/reg_next_pc[22] (net)
+                  0.03    0.00    1.13 ^ _8206_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.16 v _8206_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _3375_ (net)
+                  0.02    0.00    1.16 v _8216_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.19 ^ _8216_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _0261_ (net)
+                  0.02    0.00    1.19 ^ rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.19   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.93    0.93   clock network delay (propagated)
+                          0.00    0.93   clock reconvergence pessimism
+                                  0.93 ^ rv32_soc/reg_next_pc[22]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.91   library hold time
+                                  0.91   data required time
+-----------------------------------------------------------------------------
+                                  0.91   data required time
+                                 -1.19   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/count_cycle[4]$_SDFF_PN0_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/count_cycle[4]$_SDFF_PN0_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/count_cycle[4]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     5    0.01    0.05    0.22    1.16 ^ rv32_soc/count_cycle[4]$_SDFF_PN0_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/count_cycle[4] (net)
+                  0.05    0.00    1.16 ^ _8331_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.02    0.04    1.20 v _8331_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _0275_ (net)
+                  0.02    0.00    1.20 v rv32_soc/count_cycle[4]$_SDFF_PN0_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/count_cycle[4]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/count_cycle[16]$_SDFF_PN0_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/count_cycle[16]$_SDFF_PN0_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                  0.06    0.00    0.94 ^ rv32_soc/count_cycle[16]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     5    0.01    0.05    0.22    1.16 ^ rv32_soc/count_cycle[16]$_SDFF_PN0_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/count_cycle[16] (net)
+                  0.05    0.00    1.16 ^ _8367_/A1 (sky130_fd_sc_hd__a21oi_1)
+     1    0.00    0.02    0.04    1.20 v _8367_/Y (sky130_fd_sc_hd__a21oi_1)
+                                         _0287_ (net)
+                  0.02    0.00    1.20 v rv32_soc/count_cycle[16]$_SDFF_PN0_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.20   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.94    0.94   clock network delay (propagated)
+                          0.00    0.94   clock reconvergence pessimism
+                                  0.94 ^ rv32_soc/count_cycle[16]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.92   library hold time
+                                  0.92   data required time
+-----------------------------------------------------------------------------
+                                  0.92   data required time
+                                 -1.20   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.96    0.96   clock network delay (propagated)
+                  0.06    0.00    0.96 ^ rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+     2    0.00    0.03    0.21    1.17 ^ rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_2)
+                                         rv32_soc/reg_next_pc[16] (net)
+                  0.03    0.00    1.17 ^ _8138_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.19 v _8138_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _3313_ (net)
+                  0.02    0.00    1.19 v _8147_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.22 ^ _8147_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _0255_ (net)
+                  0.02    0.00    1.22 ^ rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_2)
+                                  1.22   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.96    0.96   clock network delay (propagated)
+                          0.00    0.96   clock reconvergence pessimism
+                                  0.96 ^ rv32_soc/reg_next_pc[16]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+                         -0.02    0.94   library hold time
+                                  0.94   data required time
+-----------------------------------------------------------------------------
+                                  0.94   data required time
+                                 -1.22   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+
+Startpoint: rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_
+            (rising edge-triggered flip-flop clocked by clk0)
+Endpoint: rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_
+          (rising edge-triggered flip-flop clocked by clk0)
+Path Group: clk0
+Path Type: min
+Corner: fast
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.93    0.93   clock network delay (propagated)
+                  0.05    0.00    0.93 ^ rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_1)
+     2    0.00    0.04    0.21    1.13 ^ rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_/Q (sky130_fd_sc_hd__dfxtp_1)
+                                         rv32_soc/reg_next_pc[20] (net)
+                  0.04    0.00    1.13 ^ _8183_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.16 v _8183_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _3354_ (net)
+                  0.02    0.00    1.16 v _8192_/A (sky130_fd_sc_hd__nand2_1)
+     1    0.00    0.02    0.03    1.19 ^ _8192_/Y (sky130_fd_sc_hd__nand2_1)
+                                         _0259_ (net)
+                  0.02    0.00    1.19 ^ rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_/D (sky130_fd_sc_hd__dfxtp_1)
+                                  1.19   data arrival time
+
+                          0.00    0.00   clock clk0 (rise edge)
+                          0.93    0.93   clock network delay (propagated)
+                          0.00    0.93   clock reconvergence pessimism
+                                  0.93 ^ rv32_soc/reg_next_pc[20]$_SDFFE_PN0P_/CLK (sky130_fd_sc_hd__dfxtp_1)
+                         -0.02    0.91   library hold time
+                                  0.91   data required time
+-----------------------------------------------------------------------------
+                                  0.91   data required time
+                                 -1.19   data arrival time
+-----------------------------------------------------------------------------
+                                  0.28   slack (MET)
+
+

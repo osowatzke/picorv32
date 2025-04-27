@@ -1,0 +1,1661 @@
+| INFO     | job0 | cts.repair_timing    | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | cts.repair_timing    | 0 | Running in /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/cts.repair_timing/0
+| INFO     | job0 | cts.repair_timing    | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_repair_timing.tcl
+| INFO     | job0 | cts.repair_timing    | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | cts.repair_timing    | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | cts.repair_timing    | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | cts.repair_timing    | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | cts.repair_timing    | 0 | ##############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Schema Adapter
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | cts.repair_timing    | 0 | ##############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Setup debugging
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Setup debugging if requested
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | cts.repair_timing    | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | cts.repair_timing    | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | cts.repair_timing    | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Suppress messages if requested
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | cts.repair_timing    | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | cts.repair_timing    | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | cts.repair_timing    | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | cts.repair_timing    | 0 |     } else {
+| INFO     | job0 | cts.repair_timing    | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | cts.repair_timing    | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | cts.repair_timing    | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | cts.repair_timing    | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Setup helper functions
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Design information
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Design
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_design [sc_top]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | cts.repair_timing    | 0 | # APR Parameters
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | cts.repair_timing    | 0 | # Hard macro libraries
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | cts.repair_timing    | 0 | # Threads
+| INFO     | job0 | cts.repair_timing    | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Read Files
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | cts.repair_timing    | 0 | # Read Liberty
+| INFO     | job0 | cts.repair_timing    | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | cts.repair_timing    | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | cts.repair_timing    | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | cts.repair_timing    | 0 |     #Liberty
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | cts.repair_timing    | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | cts.repair_timing    | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | cts.repair_timing    | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | cts.repair_timing    | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | cts.repair_timing    | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | cts.repair_timing    | 0 |                 }
+| INFO     | job0 | cts.repair_timing    | 0 |                 break
+| INFO     | job0 | cts.repair_timing    | 0 |             }
+| INFO     | job0 | cts.repair_timing    | 0 |         }
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | cts.repair_timing    | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | cts.repair_timing    | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | cts.repair_timing    | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Read design files
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | cts.repair_timing    | 0 |         read_db $odb_file
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | } else {
+| INFO     | job0 | cts.repair_timing    | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | cts.repair_timing    | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | cts.repair_timing    | 0 |     # Read techlef
+| INFO     | job0 | cts.repair_timing    | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | cts.repair_timing    | 0 |     read_lef $sc_techlef
+| INFO     | job0 | cts.repair_timing    | 0 |     # Read Lefs
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | cts.repair_timing    | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | cts.repair_timing    | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | cts.repair_timing    | 0 |             read_lef $lef_file
+| INFO     | job0 | cts.repair_timing    | 0 |         }
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         # Read DEF
+| INFO     | job0 | cts.repair_timing    | 0 |         # get from previous step
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | cts.repair_timing    | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | cts.repair_timing    | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         # Read DEF
+| INFO     | job0 | cts.repair_timing    | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | cts.repair_timing    | 0 |         read_def $sc_def
+| INFO     | job0 | cts.repair_timing    | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         # Read Verilog
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | cts.repair_timing    | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | cts.repair_timing    | 0 |         link_design $sc_design
+| INFO     | job0 | cts.repair_timing    | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         # Read Verilog
+| INFO     | job0 | cts.repair_timing    | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | cts.repair_timing    | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | cts.repair_timing    | 0 |             read_verilog $netlist
+| INFO     | job0 | cts.repair_timing    | 0 |         }
+| INFO     | job0 | cts.repair_timing    | 0 |         link_design $sc_design
+| INFO     | job0 | cts.repair_timing    | 0 |     } else {
+| INFO     | job0 | cts.repair_timing    | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 |     # Handle global connect setup
+| INFO     | job0 | cts.repair_timing    | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | cts.repair_timing    | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | cts.repair_timing    | 0 |             source $global_connect
+| INFO     | job0 | cts.repair_timing    | 0 |         }
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | Reading ODB: inputs/picorv32_top.odb
+| INFO     | job0 | cts.repair_timing    | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Read timing constraints
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | cts.repair_timing    | 0 |         read_sdc $sdc
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | } else {
+| INFO     | job0 | cts.repair_timing    | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | cts.repair_timing    | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | cts.repair_timing    | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | cts.repair_timing    | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | cts.repair_timing    | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | Reading SDC: inputs/picorv32_top.sdc
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Common Setup
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | sc_setup_sta
+| INFO     | job0 | cts.repair_timing    | 0 | sc_setup_parasitics
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | cts.repair_timing    | 0 | sc_set_dont_use
+| INFO     | job0 | cts.repair_timing    | 0 | sc_setup_global_routing
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | cts.repair_timing    | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | cts.repair_timing    | 0 | set sc_starting_markers []
+| INFO     | job0 | cts.repair_timing    | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | cts.repair_timing    | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Source Step Script
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | report_units_metric
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | cts.repair_timing    | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | set openroad_dont_touch {}
+| INFO     | job0 | cts.repair_timing    | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | cts.repair_timing    | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | cts.repair_timing    | 0 |     # set don't touch list
+| INFO     | job0 | cts.repair_timing    | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | cts.repair_timing    | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | cts.repair_timing    | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | cts.repair_timing    | 0 | Global connection rules: 2
+| INFO     | job0 | cts.repair_timing    | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | cts.repair_timing    | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | cts.repair_timing    | 0 | Dont use report: reports/dont_use.repair_timing.drv.rpt
+| INFO     | job0 | cts.repair_timing    | 0 | repair_design siliconcompiler arguments: -cap_margin 0.0 -slew_margin 0.0
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0058] Using max wire length 4718um.
+| INFO     | job0 | cts.repair_timing    | 0 | Iteration |   Area    | Resized | Buffers | Nets repaired | Remaining
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |         0 |     +0.0% |       0 |       0 |             0 |      7558
+| INFO     | job0 | cts.repair_timing    | 0 |      1000 |     -0.0% |     122 |       0 |             0 |      6558
+| INFO     | job0 | cts.repair_timing    | 0 |      2000 |     +0.0% |     300 |       0 |             0 |      5558
+| INFO     | job0 | cts.repair_timing    | 0 |      3000 |     +0.0% |     475 |       0 |             0 |      4558
+| INFO     | job0 | cts.repair_timing    | 0 |      4000 |     -0.0% |     652 |       2 |             3 |      3558
+| INFO     | job0 | cts.repair_timing    | 0 |      5000 |     -0.1% |     948 |       2 |             3 |      2558
+| INFO     | job0 | cts.repair_timing    | 0 |      6000 |     -0.1% |    1263 |       2 |             3 |      1558
+| INFO     | job0 | cts.repair_timing    | 0 |      7000 |     -0.1% |    1528 |       2 |             3 |       558
+| INFO     | job0 | cts.repair_timing    | 0 |     final |     -0.1% |    1541 |       2 |             3 |         0
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0034] Found 3 slew violations.
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0036] Found 3 capacitance violations.
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0039] Resized 1541 instances.
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0038] Inserted 2 buffers in 3 nets.
+| INFO     | job0 | cts.repair_timing    | 0 | Placement Analysis
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | total displacement        168.1 u
+| INFO     | job0 | cts.repair_timing    | 0 | average displacement        0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | max displacement            5.4 u
+| INFO     | job0 | cts.repair_timing    | 0 | original HPWL          289913.5 u
+| INFO     | job0 | cts.repair_timing    | 0 | legalized HPWL         290004.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | delta HPWL                    0 %
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Dont use report: reports/dont_use.repair_timing.setup.rpt
+| INFO     | job0 | cts.repair_timing    | 0 | repair_timing siliconcompiler arguments: -skip_pin_swap -skip_gate_cloning
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0094] Found 43 endpoints with setup violations.
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0099] Repairing 43 out of 43 (100.00%) violating endpoints...
+| INFO     | job0 | cts.repair_timing    | 0 |    Iter   | Removed | Resized | Inserted | Cloned |  Pin  |   Area   |    WNS   |   TNS      |  Viol  | Worst
+| INFO     | job0 | cts.repair_timing    | 0 |           | Buffers |  Gates  | Buffers  |  Gates | Swaps |          |          |            | Endpts | Endpt
+| INFO     | job0 | cts.repair_timing    | 0 | --------------------------------------------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |         0 |       0 |       0 |        0 |      0 |     0 |    +0.0% |  -13.845 |     -203.6 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        10 |       0 |       1 |       14 |      0 |     0 |    +0.0% |   -7.677 |     -118.9 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        20 |       0 |       2 |       29 |      0 |     0 |    +0.0% |   -6.194 |     -106.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        30 |       0 |       3 |       48 |      0 |     0 |    +0.0% |   -5.951 |      -96.9 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        40 |       0 |       3 |       68 |      0 |     0 |    +0.1% |   -5.951 |     -100.3 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        50 |       0 |       9 |       75 |      0 |     0 |    +0.1% |   -5.153 |      -91.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        60 |       0 |      13 |       87 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        60 |       0 |      13 |       87 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        61 |       0 |      13 |       87 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        63 |       0 |      13 |       87 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        64 |       0 |      13 |       87 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        68 |       0 |      13 |       88 |      0 |     0 |    +0.1% |   -4.630 |      -83.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        70 |       0 |      13 |       90 |      0 |     0 |    +0.1% |   -4.630 |      -79.9 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        80 |       0 |      17 |      102 |      0 |     0 |    +0.1% |   -4.630 |      -71.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |        90 |       0 |      18 |      122 |      0 |     0 |    +0.1% |   -4.630 |      -70.6 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       100 |       0 |      23 |      132 |      0 |     0 |    +0.1% |   -4.630 |      -69.3 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       110 |       0 |      27 |      144 |      0 |     0 |    +0.1% |   -4.630 |      -69.3 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       113 |       0 |      24 |      144 |      0 |     0 |    +0.1% |   -4.630 |      -69.6 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       120 |       0 |      28 |      148 |      0 |     0 |    +0.1% |   -4.630 |      -69.1 |     43 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       122 |       0 |      29 |      150 |      0 |     0 |    +0.1% |   -4.630 |      -69.0 |     41 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       123 |       0 |      29 |      150 |      0 |     0 |    +0.1% |   -4.630 |      -69.0 |     40 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       124 |       0 |      29 |      150 |      0 |     0 |    +0.1% |   -4.630 |      -69.0 |     39 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       130 |       0 |      30 |      158 |      0 |     0 |    +0.1% |   -4.630 |      -65.5 |     39 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       133 |       0 |      33 |      158 |      0 |     0 |    +0.2% |   -4.630 |      -64.6 |     39 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       134 |       0 |      33 |      158 |      0 |     0 |    +0.2% |   -4.630 |      -64.6 |     38 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       135 |       0 |      33 |      158 |      0 |     0 |    +0.2% |   -4.630 |      -64.6 |     38 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       136 |       0 |      33 |      158 |      0 |     0 |    +0.2% |   -4.630 |      -64.6 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       140 |       0 |      33 |      164 |      0 |     0 |    +0.2% |   -4.630 |      -59.6 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       149 |       0 |      35 |      174 |      0 |     0 |    +0.2% |   -4.630 |      -56.7 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       150 |       0 |      35 |      174 |      0 |     0 |    +0.2% |   -4.630 |      -56.7 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       152 |       0 |      35 |      174 |      0 |     0 |    +0.2% |   -4.630 |      -56.7 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       160 |       0 |      37 |      184 |      0 |     0 |    +0.2% |   -4.687 |      -54.9 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       169 |       0 |      36 |      184 |      0 |     0 |    +0.2% |   -4.630 |      -56.7 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       170 |       0 |      36 |      184 |      0 |     0 |    +0.2% |   -4.630 |      -56.7 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       176 |       0 |      39 |      190 |      0 |     0 |    +0.2% |   -4.630 |      -53.6 |     37 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       177 |       0 |      39 |      190 |      0 |     0 |    +0.2% |   -4.630 |      -53.6 |     36 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       180 |       0 |      39 |      194 |      0 |     0 |    +0.2% |   -4.630 |      -51.4 |     36 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       190 |       0 |      40 |      212 |      0 |     0 |    +0.2% |   -4.630 |      -49.9 |     36 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       200 |       0 |      46 |      220 |      0 |     0 |    +0.2% |   -4.650 |      -48.4 |     36 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       201 |       0 |      42 |      220 |      0 |     0 |    +0.2% |   -4.630 |      -48.8 |     36 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       202 |       0 |      42 |      220 |      0 |     0 |    +0.2% |   -4.630 |      -48.8 |     35 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       210 |       0 |      46 |      227 |      0 |     0 |    +0.2% |   -4.650 |      -48.0 |     35 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       210 |       0 |      42 |      223 |      0 |     0 |    +0.2% |   -4.630 |      -48.8 |     35 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       213 |       0 |      42 |      223 |      0 |     0 |    +0.2% |   -4.630 |      -48.8 |     35 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       217 |       0 |      45 |      223 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     35 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       218 |       0 |      45 |      223 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     34 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       220 |       0 |      46 |      223 |      0 |     0 |    +0.2% |   -4.630 |      -48.7 |     34 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       225 |       0 |      45 |      225 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     34 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       230 |       0 |      47 |      229 |      0 |     0 |    +0.2% |   -4.690 |      -47.6 |     34 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       233 |       0 |      46 |      230 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     33 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       234 |       0 |      46 |      230 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     32 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       235 |       0 |      46 |      230 |      0 |     0 |    +0.2% |   -4.630 |      -48.5 |     31 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       238 |       0 |      46 |      234 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     29 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       240 |       0 |      47 |      234 |      0 |     0 |    +0.2% |   -4.630 |      -45.3 |     29 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       244 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     28 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       245 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     27 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       246 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     26 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       247 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     25 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       248 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     24 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       249 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     23 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       250 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     23 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       250 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     22 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       251 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       252 |       0 |      47 |      237 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     20 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       255 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     19 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       256 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     18 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       258 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     17 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       259 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     16 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       260 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     16 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       260 |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     15 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      260* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      261* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      262* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      263* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      264* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      265* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      266* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      267* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      268* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      269* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      270* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      270* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      271* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      272* |       0 |      47 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.9 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      274* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      275* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      276* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      277* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      278* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      279* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      280* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      280* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      281* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      282* |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |     final |       0 |      48 |      238 |      0 |     0 |    +0.2% |   -4.630 |      -44.8 |     21 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 | --------------------------------------------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0045] Inserted 108 buffers, 1 to split loads.
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0041] Resized 48 instances.
+| INFO     | job0 | cts.repair_timing    | 0 | [WARNING RSZ-0062] Unable to repair all setup violations.
+| INFO     | job0 | cts.repair_timing    | 0 | Placement Analysis
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | total displacement        491.2 u
+| INFO     | job0 | cts.repair_timing    | 0 | average displacement        0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | max displacement            8.9 u
+| INFO     | job0 | cts.repair_timing    | 0 | original HPWL          291264.6 u
+| INFO     | job0 | cts.repair_timing    | 0 | legalized HPWL         291631.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | delta HPWL                    0 %
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Dont use report: reports/dont_use.repair_timing.hold.rpt
+| INFO     | job0 | cts.repair_timing    | 0 | repair_timing siliconcompiler arguments: -skip_pin_swap -skip_gate_cloning
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0033] No hold violations found.
+| INFO     | job0 | cts.repair_timing    | 0 | Placement Analysis
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | total displacement          0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | average displacement        0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | max displacement            0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | original HPWL          291631.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | legalized HPWL         291631.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | delta HPWL                    0 %
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Dont use report: reports/dont_use.repair_timing.power.rpt
+| INFO     | job0 | cts.repair_timing    | 0 | repair_timing siliconcompiler arguments: -skip_pin_swap -skip_gate_cloning
+| INFO     | job0 | cts.repair_timing    | 0 | Iteration |   Area    |  Resized |   WNS    | Endpt
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |         0 |     +0.0% |        0 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       100 |     -0.0% |       24 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       200 |     -0.1% |       50 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       300 |     -0.1% |       81 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       400 |     -0.2% |      116 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       500 |     -0.2% |      140 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       600 |     -0.3% |      158 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       700 |     -0.3% |      180 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       800 |     -0.4% |      203 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |       900 |     -0.4% |      220 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1000 |     -0.5% |      236 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1100 |     -0.5% |      253 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1200 |     -0.6% |      272 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1300 |     -0.6% |      290 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1400 |     -0.7% |      308 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1500 |     -0.7% |      321 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1600 |     -0.7% |      343 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1700 |     -0.8% |      360 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1800 |     -0.8% |      379 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      1900 |     -0.8% |      398 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2000 |     -0.8% |      406 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2100 |     -0.8% |      418 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2200 |     -0.8% |      426 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2300 |     -0.8% |      437 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2400 |     -0.8% |      455 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2500 |     -0.8% |      463 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2600 |     -0.8% |      466 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |      2700 |     -0.8% |      488 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 |     final |     -0.8% |      504 |   -4.712 | rv32_soc\/alu_out_q\[0\]$_DFF_P_/D
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO RSZ-0141] Resized 504 instances.
+| INFO     | job0 | cts.repair_timing    | 0 | Placement Analysis
+| INFO     | job0 | cts.repair_timing    | 0 | ---------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | total displacement          0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | average displacement        0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | max displacement            0.0 u
+| INFO     | job0 | cts.repair_timing    | 0 | original HPWL          291604.6 u
+| INFO     | job0 | cts.repair_timing    | 0 | legalized HPWL         291604.6 u
+| INFO     | job0 | cts.repair_timing    | 0 | delta HPWL                    0 %
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | cts.repair_timing    | 0 |     # unset for next step
+| INFO     | job0 | cts.repair_timing    | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | cts.repair_timing    | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | cts.repair_timing    | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | cts.repair_timing    | 0 |         source -echo $sc_post_script
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Write Design Data
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | # Reporting
+| INFO     | job0 | cts.repair_timing    | 0 | ###############################
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | cts.repair_timing    | 0 | Startpoint: pcpi_rs1[0]$_DFFE_PP_
+| INFO     | job0 | cts.repair_timing    | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Endpoint: rv32_soc/alu_out_q[0]$_DFF_P_
+| INFO     | job0 | cts.repair_timing    | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Path Group: clk0
+| INFO     | job0 | cts.repair_timing    | 0 | Path Type: max
+| INFO     | job0 | cts.repair_timing    | 0 | Corner: slow
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    2.71    2.00    2.00 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   2.71    0.00    2.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.12    1.54    3.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00    3.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.12    0.35    3.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00    3.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.14    0.37    4.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00    4.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.13    0.38    4.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.13    0.00    4.65 ^ clkbuf_3_4__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.06    0.29    0.50    5.14 ^ clkbuf_3_4__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_4__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00    5.14 ^ clkbuf_leaf_46_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     30    0.08    0.34    0.63    5.77 ^ clkbuf_leaf_46_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_46_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.34    0.00    5.77 ^ pcpi_rs1[0]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.11    3.28    3.49    9.26 ^ pcpi_rs1[0]$_DFFE_PP_/Q (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          pcpi_rs1[0] (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   3.28    0.00    9.26 ^ _4861_/A (sky130_fd_sc_hd__inv_8)
+| INFO     | job0 | cts.repair_timing    | 0 |      4    0.03    0.39    1.06   10.32 v _4861_/Y (sky130_fd_sc_hd__inv_8)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4393_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.39    0.00   10.32 v _9374_/B (sky130_fd_sc_hd__ha_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.82   11.15 v _9374_/COUT (sky130_fd_sc_hd__ha_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4248_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   11.15 v _9303_/CIN (sky130_fd_sc_hd__fa_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.27    1.78   12.93 v _9303_/COUT (sky130_fd_sc_hd__fa_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4249_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.27    0.00   12.93 v _7420_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.54    0.77   13.70 ^ _7420_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2789_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.54    0.00   13.70 ^ _7422_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.11    0.33   14.03 v _7422_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2791_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   14.03 v _7423_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.62    0.59   14.63 ^ _7423_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2792_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.62    0.00   14.63 ^ _7425_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.34   14.97 v _7425_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2794_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   14.97 v _7426_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.42    0.43   15.40 ^ _7426_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2795_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.42    0.00   15.40 ^ _7427_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.09    0.27   15.67 v _7427_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2796_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   15.67 v _7428_/A2 (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.47    0.53   16.19 ^ _7428_/Y (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2797_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.47    0.00   16.19 ^ _7431_/B1 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.19    0.40   16.59 v _7431_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2800_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.19    0.00   16.59 v _7434_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.72    0.88   17.48 ^ _7434_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2803_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.72    0.00   17.48 ^ rebuffer26/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.14    0.65   18.13 ^ rebuffer26/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net175 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   18.13 ^ _7435_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.11    0.17   18.29 v _7435_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2804_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   18.29 v _7436_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.94    0.38   18.67 ^ _7436_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2805_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.94    0.00   18.67 ^ _7437_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.15    0.55   19.22 v _7437_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2806_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   19.22 v rebuffer17/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.11    0.52   19.74 v rebuffer17/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net166 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   19.74 v _7440_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.69    0.82   20.56 ^ _7440_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2809_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.69    0.00   20.56 ^ rebuffer25/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.17    0.65   21.22 ^ rebuffer25/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net174 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.17    0.00   21.22 ^ _7441_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.15    0.19   21.41 v _7441_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2810_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   21.41 v rebuffer51/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.09    0.49   21.90 v rebuffer51/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net200 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   21.90 v _7442_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.56    0.54   22.44 ^ _7442_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2811_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.56    0.00   22.44 ^ _7443_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.31   22.75 v _7443_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2812_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   22.75 v _7446_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.66    0.79   23.54 ^ _7446_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2815_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.66    0.00   23.54 ^ rebuffer49/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.15    0.62   24.16 ^ rebuffer49/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net198 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   24.16 ^ _7448_/B1 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.29    0.50   24.66 ^ _7448_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2817_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00   24.66 ^ _7449_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.12    0.26   24.92 v _7449_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2818_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   24.92 v rebuffer24/A (sky130_fd_sc_hd__buf_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      3    0.01    0.09    0.53   25.45 v rebuffer24/X (sky130_fd_sc_hd__buf_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net173 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   25.45 v _7454_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.46    0.52   25.96 ^ _7454_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2823_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.46    0.00   25.96 ^ _7456_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.00    0.14    0.37   26.33 v _7456_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2825_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   26.33 v _7472_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.04    4.46    3.63   29.96 ^ _7472_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2841_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   4.46    0.00   29.96 ^ _7473_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    1.13    2.78   32.74 ^ _7473_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2842_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   1.13    0.00   32.74 ^ _7474_/B (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      3    0.01    0.15    0.56   33.31 v _7474_/Y (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2843_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   33.31 v _8825_/A2 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.14    1.49   34.80 v _8825_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          rv32_soc/alu_out[0] (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   34.80 v rv32_soc/alu_out_q[0]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                  34.80   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 |                          25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00   25.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    2.71    2.00   27.00 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   2.71    0.00   27.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.12    1.54   28.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   28.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.12    0.35   28.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   28.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.14    0.37   29.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   29.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.13    0.38   29.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.13    0.00   29.65 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.06    0.29    0.49   30.14 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00   30.14 ^ clkbuf_leaf_42_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     30    0.09    0.37    0.65   30.79 ^ clkbuf_leaf_42_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_42_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.37    0.00   30.79 ^ rv32_soc/alu_out_q[0]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00   30.79   clock reconvergence pessimism
+| INFO     | job0 | cts.repair_timing    | 0 |                          -0.70   30.09   library setup time
+| INFO     | job0 | cts.repair_timing    | 0 |                                  30.09   data required time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                  30.09   data required time
+| INFO     | job0 | cts.repair_timing    | 0 |                                 -34.80   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                  -4.71   slack (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: setupslack
+| INFO     | job0 | cts.repair_timing    | 0 | worst slack -4.71
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: tns
+| INFO     | job0 | cts.repair_timing    | 0 | tns -152.36
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: report_checks -path_delay min
+| INFO     | job0 | cts.repair_timing    | 0 | Startpoint: mem_valid$_SDFFCE_PP0P_
+| INFO     | job0 | cts.repair_timing    | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Endpoint: mem_ready$_DFF_P_ (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Path Group: clk0
+| INFO     | job0 | cts.repair_timing    | 0 | Path Type: min
+| INFO     | job0 | cts.repair_timing    | 0 | Corner: fast
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    0.51    0.34    0.34 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.51    0.00    0.34 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.04    0.14    0.48 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.04    0.00    0.48 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.03    0.09    0.57 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.03    0.00    0.57 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.04    0.09    0.67 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.04    0.00    0.67 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.03    0.09    0.76 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.03    0.00    0.76 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.07    0.07    0.12    0.88 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.07    0.00    0.88 ^ clkbuf_leaf_41_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     31    0.10    0.09    0.14    1.02 ^ clkbuf_leaf_41_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_41_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00    1.02 ^ mem_valid$_SDFFCE_PP0P_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.05    0.24    1.26 ^ mem_valid$_SDFFCE_PP0P_/Q (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          mem_valid (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.05    0.00    1.26 ^ mem_ready$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                   1.26   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    0.51    0.34    0.34 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.51    0.00    0.34 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.04    0.14    0.48 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.04    0.00    0.48 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.03    0.09    0.57 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.03    0.00    0.57 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.04    0.09    0.67 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.04    0.00    0.67 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.03    0.09    0.76 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.03    0.00    0.76 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.07    0.07    0.12    0.88 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.07    0.00    0.88 ^ clkbuf_leaf_41_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     31    0.10    0.09    0.14    1.02 ^ clkbuf_leaf_41_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_41_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00    1.02 ^ mem_ready$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    1.02   clock reconvergence pessimism
+| INFO     | job0 | cts.repair_timing    | 0 |                          -0.02    1.00   library hold time
+| INFO     | job0 | cts.repair_timing    | 0 |                                   1.00   data required time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                   1.00   data required time
+| INFO     | job0 | cts.repair_timing    | 0 |                                  -1.26   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                   0.26   slack (MET)
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: holdslack
+| INFO     | job0 | cts.repair_timing    | 0 | worst slack 0.26
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | cts.repair_timing    | 0 | Startpoint: pcpi_rs1[0]$_DFFE_PP_
+| INFO     | job0 | cts.repair_timing    | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Endpoint: rv32_soc/alu_out_q[0]$_DFF_P_
+| INFO     | job0 | cts.repair_timing    | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.repair_timing    | 0 | Path Group: clk0
+| INFO     | job0 | cts.repair_timing    | 0 | Path Type: max
+| INFO     | job0 | cts.repair_timing    | 0 | Corner: slow
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    2.71    2.00    2.00 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   2.71    0.00    2.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.12    1.54    3.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00    3.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.12    0.35    3.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00    3.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.14    0.37    4.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00    4.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.13    0.38    4.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.13    0.00    4.65 ^ clkbuf_3_4__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.06    0.29    0.50    5.14 ^ clkbuf_3_4__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_4__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00    5.14 ^ clkbuf_leaf_46_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     30    0.08    0.34    0.63    5.77 ^ clkbuf_leaf_46_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_46_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.34    0.00    5.77 ^ pcpi_rs1[0]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.11    3.28    3.49    9.26 ^ pcpi_rs1[0]$_DFFE_PP_/Q (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          pcpi_rs1[0] (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   3.28    0.00    9.26 ^ _4861_/A (sky130_fd_sc_hd__inv_8)
+| INFO     | job0 | cts.repair_timing    | 0 |      4    0.03    0.39    1.06   10.32 v _4861_/Y (sky130_fd_sc_hd__inv_8)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4393_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.39    0.00   10.32 v _9374_/B (sky130_fd_sc_hd__ha_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.82   11.15 v _9374_/COUT (sky130_fd_sc_hd__ha_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4248_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   11.15 v _9303_/CIN (sky130_fd_sc_hd__fa_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.27    1.78   12.93 v _9303_/COUT (sky130_fd_sc_hd__fa_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _4249_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.27    0.00   12.93 v _7420_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.54    0.77   13.70 ^ _7420_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2789_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.54    0.00   13.70 ^ _7422_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.11    0.33   14.03 v _7422_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2791_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   14.03 v _7423_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.62    0.59   14.63 ^ _7423_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2792_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.62    0.00   14.63 ^ _7425_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.34   14.97 v _7425_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2794_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   14.97 v _7426_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.42    0.43   15.40 ^ _7426_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2795_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.42    0.00   15.40 ^ _7427_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.09    0.27   15.67 v _7427_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2796_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   15.67 v _7428_/A2 (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.47    0.53   16.19 ^ _7428_/Y (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2797_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.47    0.00   16.19 ^ _7431_/B1 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.19    0.40   16.59 v _7431_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2800_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.19    0.00   16.59 v _7434_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.72    0.88   17.48 ^ _7434_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2803_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.72    0.00   17.48 ^ rebuffer26/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.14    0.65   18.13 ^ rebuffer26/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net175 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   18.13 ^ _7435_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.11    0.17   18.29 v _7435_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2804_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   18.29 v _7436_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.94    0.38   18.67 ^ _7436_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2805_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.94    0.00   18.67 ^ _7437_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.15    0.55   19.22 v _7437_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2806_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   19.22 v rebuffer17/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.11    0.52   19.74 v rebuffer17/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net166 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.11    0.00   19.74 v _7440_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.69    0.82   20.56 ^ _7440_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2809_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.69    0.00   20.56 ^ rebuffer25/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.17    0.65   21.22 ^ rebuffer25/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net174 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.17    0.00   21.22 ^ _7441_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.15    0.19   21.41 v _7441_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2810_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   21.41 v rebuffer51/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.09    0.49   21.90 v rebuffer51/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net200 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   21.90 v _7442_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.56    0.54   22.44 ^ _7442_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2811_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.56    0.00   22.44 ^ _7443_/C (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.10    0.31   22.75 v _7443_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2812_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.10    0.00   22.75 v _7446_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.66    0.79   23.54 ^ _7446_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2815_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.66    0.00   23.54 ^ rebuffer49/A (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.15    0.62   24.16 ^ rebuffer49/X (sky130_fd_sc_hd__buf_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net198 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   24.16 ^ _7448_/B1 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.01    0.29    0.50   24.66 ^ _7448_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2817_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00   24.66 ^ _7449_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.12    0.26   24.92 v _7449_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2818_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   24.92 v rebuffer24/A (sky130_fd_sc_hd__buf_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      3    0.01    0.09    0.53   25.45 v rebuffer24/X (sky130_fd_sc_hd__buf_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          net173 (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.09    0.00   25.45 v _7454_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.46    0.52   25.96 ^ _7454_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2823_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.46    0.00   25.96 ^ _7456_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.00    0.14    0.37   26.33 v _7456_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2825_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   26.33 v _7472_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.04    4.46    3.63   29.96 ^ _7472_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2841_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   4.46    0.00   29.96 ^ _7473_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    1.13    2.78   32.74 ^ _7473_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2842_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   1.13    0.00   32.74 ^ _7474_/B (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.repair_timing    | 0 |      3    0.01    0.15    0.56   33.31 v _7474_/Y (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          _2843_ (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.15    0.00   33.31 v _8825_/A2 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.00    0.14    1.49   34.80 v _8825_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          rv32_soc/alu_out[0] (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   34.80 v rv32_soc/alu_out_q[0]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                                  34.80   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 |                          25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00   25.00   clock source latency
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.06    2.71    2.00   27.00 ^ clk (in)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   2.71    0.00   27.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      1    0.01    0.12    1.54   28.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   28.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.12    0.35   28.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.12    0.00   28.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.14    0.37   29.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.14    0.00   29.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      2    0.02    0.13    0.38   29.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.13    0.00   29.65 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |      7    0.06    0.29    0.49   30.14 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.29    0.00   30.14 ^ clkbuf_leaf_42_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |     30    0.09    0.37    0.65   30.79 ^ clkbuf_leaf_42_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.repair_timing    | 0 |                                          clknet_leaf_42_clk_regs (net)
+| INFO     | job0 | cts.repair_timing    | 0 |                   0.37    0.00   30.79 ^ rv32_soc/alu_out_q[0]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.repair_timing    | 0 |                           0.00   30.79   clock reconvergence pessimism
+| INFO     | job0 | cts.repair_timing    | 0 |                          -0.70   30.09   library setup time
+| INFO     | job0 | cts.repair_timing    | 0 |                                  30.09   data required time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                  30.09   data required time
+| INFO     | job0 | cts.repair_timing    | 0 |                                 -34.80   data arrival time
+| INFO     | job0 | cts.repair_timing    | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 |                                  -4.71   slack (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: clock_skew
+| INFO     | job0 | cts.repair_timing    | 0 | Clock clk0
+| INFO     | job0 | cts.repair_timing    | 0 |  5.8452 source latency rv32_soc/cpuregs[22][31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.repair_timing    | 0 | -5.2008 target latency pcpi_rs2[31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.repair_timing    | 0 |  0.0000 CRPR
+| INFO     | job0 | cts.repair_timing    | 0 | --------------
+| INFO     | job0 | cts.repair_timing    | 0 |  0.6443 setup skew
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Clock clk0
+| INFO     | job0 | cts.repair_timing    | 0 |  5.8452 source latency rv32_soc/cpuregs[22][31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.repair_timing    | 0 | -5.2008 target latency pcpi_rs2[31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.repair_timing    | 0 |  0.0000 CRPR
+| INFO     | job0 | cts.repair_timing    | 0 | --------------
+| INFO     | job0 | cts.repair_timing    | 0 |  0.6443 hold skew
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: DRV violators
+| INFO     | job0 | cts.repair_timing    | 0 | max slew
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Pin                                    Limit    Slew   Slack
+| INFO     | job0 | cts.repair_timing    | 0 | ------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | _9157_/Y                                9.99   13.85   -3.86 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9233_/B                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9266_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9267_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9251_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9252_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9238_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9239_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9255_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9256_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9261_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9262_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9242_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9243_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9234_/A1                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9221_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9222_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9229_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9230_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9225_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9217_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9199_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9200_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9203_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9204_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9195_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9186_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9182_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9183_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9178_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9173_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9174_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9163_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9257_/S                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9271_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9272_/A2                              10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9274_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9277_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9280_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9283_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9286_/A                               10.00   13.85   -3.85 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8729_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8730_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8742_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8732_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8733_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8744_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8745_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8726_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8727_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8723_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8741_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8724_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8721_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8720_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8717_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8718_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8714_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8715_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8711_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8712_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8708_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8709_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8705_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8706_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8699_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8700_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8696_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8697_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8693_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8694_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8690_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8691_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8688_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8687_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8684_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8685_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8682_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8681_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8678_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8679_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8676_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8673_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8675_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8672_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8765_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8766_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8762_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8763_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8759_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8760_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8757_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8756_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8753_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8754_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8750_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8751_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8747_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8748_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8738_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8739_/A1                               1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4874_/B                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4872_/X                                1.50    3.51   -2.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[25]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[26]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[27]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[30]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[18]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[24]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[21]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[22]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[31]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[28]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[29]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[14]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[23]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[20]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[12]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[17]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[19]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4793_/X                                1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[15]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[13]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[10]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[5]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[11]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[6]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[2]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[7]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[16]$_DFFE_PP_/DE               1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[3]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[4]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[8]$_DFFE_PP_/DE                1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | pcpi_rs2[9]$_DFFE_PP_/DE                1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[0]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | mem_la_wdata[1]$_DFFE_PP_/DE            1.50    3.21   -1.71 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4786_/Y                                1.49    2.85   -1.36 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6658_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6660_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6654_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[18]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[16]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[17]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[19]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6656_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5033_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6651_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5035_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[15]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6662_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5034_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[12]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[30]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[28]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[20]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9295_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[11]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[21]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9289_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[9]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[23]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9299_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[24]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6668_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9293_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[22]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6670_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[10]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9294_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9288_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[29]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9296_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[31]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9297_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[7]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[13]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[8]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[26]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[27]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[25]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6664_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9292_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9291_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9290_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9298_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6666_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[14]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[1]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[2]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[3]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[5]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[4]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[0]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/mem_rdata_q[6]$_DFFE_PP_/DE    1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4969_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4970_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4961_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4964_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4976_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4963_/S                                1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4949_/A2                               1.50    2.85   -1.35 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6683_/Y                                1.48    2.06   -0.57 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | load_slew10/A                           1.50    2.06   -0.56 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6680_/Y                                1.48    2.03   -0.55 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | load_slew11/A                           1.50    2.03   -0.53 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9156_/Y                                1.49    1.98   -0.49 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[19][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[22][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[18][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[23][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[21][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[20][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[17][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[16][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[12][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[13][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[2][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[3][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[6][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[7][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[9][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[5][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[4][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[1][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[28][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[29][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[0][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[25][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[24][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[30][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[31][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[8][0]$_DFFE_PP_/D      1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[14][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[27][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[15][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[26][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[11][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpuregs[10][0]$_DFFE_PP_/D     1.50    1.98   -0.48 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpu_state[3]$_DFF_P_/Q         1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5439_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5418_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5394_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5367_/B1                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5343_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5307_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7597_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7601_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7600_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7599_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7598_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5460_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5481_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5502_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5190_/B2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5559_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5523_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5512_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4804_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5201_/B2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5218_/B1                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5231_/B2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5241_/B2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5209_/B2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8529_/A2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8523_/A1                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4803_/B                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8534_/A2                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7477_/A1                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7476_/A1                               1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7589_/B                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4937_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4925_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5186_/A                                1.50    1.88   -0.38 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5550_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5507_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5496_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5544_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5475_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5533_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5486_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5517_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5444_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5465_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5454_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5433_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5423_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5412_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5402_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5388_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5379_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5362_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5336_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5348_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5324_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5313_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5301_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5287_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5189_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5217_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5255_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5240_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5230_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5269_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5208_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5200_/B1                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8524_/A2                               1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5186_/X                                1.50    1.82   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoder_trigger$_DFF_P_/Q      1.50    1.81   -0.32 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8164_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8174_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8186_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8203_/C1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8210_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7986_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8227_/C1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8230_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8245_/A                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8269_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8280_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8272_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8303_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8291_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8318_/C1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8152_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4942_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8141_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8135_/C1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8120_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8097_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8043_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7995_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7576_/B_N                              1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8010_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8005_/B1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8000_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7994_/A1                               1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7607_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7617_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7612_/C                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4934_/B                                1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4807_/B_N                              1.50    1.81   -0.31 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7564_/Y                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7954_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7952_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7950_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7948_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7946_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7944_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7942_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7940_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7937_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7935_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7933_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7931_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7956_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7958_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7961_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7929_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7963_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7967_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7969_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8251_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8246_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7987_/B1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7915_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8319_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7977_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7973_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7983_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7923_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8018_/C1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7971_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7992_/B                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8007_/C1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7921_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7919_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8000_/A2                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7991_/A                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7994_/A2                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7917_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7566_/A1                               1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7567_/B                                1.50    1.80   -0.30 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4986_/Y                                1.49    1.73   -0.24 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7477_/A2                               1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/instr_jalr$_DFFE_PP_/DE        1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/is_alu_reg_reg$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/instr_lui$_DFFE_PP_/DE         1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/is_alu_reg_imm$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/instr_jal$_DFFE_PP_/DE         1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/instr_auipc$_DFFE_PP_/DE       1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/is_lb_lh_lw_lbu_lhu$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/is_sb_sh_sw$_DFFE_PP_/DE       1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[1]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[5]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[6]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[7]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[18]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[9]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[19]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[16]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[13]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[15]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[17]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[14]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[4]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[11]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[8]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[3]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_rd[3]$_DFFE_PP_/DE     1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_rd[4]$_DFFE_PP_/DE     1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_rd[2]$_DFFE_PP_/DE     1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[2]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[12]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[10]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_imm_j[31]$_DFFE_PP_/DE    1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_rd[0]$_DFFE_PP_/DE     1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoded_rd[1]$_DFFE_PP_/DE     1.50    1.73   -0.23 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5110_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5114_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5115_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5122_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5123_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5118_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5119_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5126_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5127_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5130_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5131_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5134_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5135_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5138_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5139_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5142_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5143_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5147_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5146_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5150_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5151_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7981_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5155_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5154_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5158_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7980_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5159_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5162_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5161_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5164_/B                                1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5165_/A1                               1.50    1.72   -0.22 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | split14/X                               1.51    1.72   -0.21 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5572_/Y                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5710_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5758_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5627_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5840_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5800_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5973_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5898_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6163_/B1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6315_/B1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6255_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6339_/B1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6073_/A                                1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6462_/B1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6560_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6586_/A1                               1.50    1.64   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8766_/Y                                1.49    1.56   -0.07 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8114_/A1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8125_/A1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8136_/A1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8146_/A1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8159_/A1                               1.50    1.54   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8169_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8181_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8191_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8204_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8215_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8228_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8305_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8293_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8104_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8089_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8077_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8065_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8053_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8044_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8027_/A1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7615_/B1                               1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7612_/X                                1.51    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5117_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5121_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5125_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5129_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5133_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5137_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5141_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5145_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7979_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5149_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5153_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5157_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5160_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5163_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8528_/A                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9155_/S                                1.50    1.53   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | split13/X                               1.51    1.53   -0.02 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7594_/Y                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7596_/B1_N                             1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8559_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8582_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8591_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8567_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8584_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8562_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8551_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8665_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8547_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8580_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8586_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8564_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8557_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8573_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8588_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8593_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8554_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8570_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8590_/B1                               1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8549_/B1                               1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8578_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8595_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8663_/B                                1.50    1.51   -0.01 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | max capacitance
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Pin                                    Limit     Cap   Slack
+| INFO     | job0 | cts.repair_timing    | 0 | ------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | _4786_/Y                                0.15    0.31   -0.16 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4872_/X                                0.10    0.24   -0.14 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4793_/X                                0.11    0.24   -0.13 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9157_/Y                                0.08    0.21   -0.12 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/cpu_state[3]$_DFF_P_/Q         0.16    0.20   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7564_/Y                                0.17    0.20   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5186_/X                                0.17    0.20   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | rv32_soc/decoder_trigger$_DFF_P_/Q      0.16    0.20   -0.04 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _4986_/Y                                0.15    0.19   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _9156_/Y                                0.09    0.12   -0.03 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6683_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | split14/X                               0.13    0.15   -0.02 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _6680_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _5572_/Y                                0.17    0.19   -0.02 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _8766_/Y                                0.07    0.07   -0.00 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7612_/X                                0.16    0.16   -0.00 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | split13/X                               0.13    0.13   -0.00 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | _7594_/Y                                0.08    0.08   -0.00 (VIOLATED)
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: floating nets
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: fmax
+| INFO     | job0 | cts.repair_timing    | 0 | clk0 fmax = 33.66 MHz
+| INFO     | job0 | cts.repair_timing    | 0 | Clock                   Period          Waveform
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | clk0                     25.00        0.00     12.50
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: power
+| INFO     | job0 | cts.repair_timing    | 0 | Power for corner: fast
+| INFO     | job0 | cts.repair_timing    | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.repair_timing    | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Sequential             3.49e-03   7.14e-05   4.74e-05   3.61e-03  57.9%
+| INFO     | job0 | cts.repair_timing    | 0 | Combinational          4.37e-04   4.73e-04   4.93e-05   9.59e-04  15.3%
+| INFO     | job0 | cts.repair_timing    | 0 | Clock                  7.41e-04   9.30e-04   3.20e-06   1.67e-03  26.8%
+| INFO     | job0 | cts.repair_timing    | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Total                  4.67e-03   1.47e-03   9.99e-05   6.25e-03 100.0%
+| INFO     | job0 | cts.repair_timing    | 0 |                           74.8%      23.6%       1.6%
+| INFO     | job0 | cts.repair_timing    | 0 | Power for corner: slow
+| INFO     | job0 | cts.repair_timing    | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.repair_timing    | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Sequential             9.97e-04   3.39e-05   6.13e-10   1.03e-03  48.0%
+| INFO     | job0 | cts.repair_timing    | 0 | Combinational          1.48e-04   2.23e-04   1.19e-09   3.71e-04  17.3%
+| INFO     | job0 | cts.repair_timing    | 0 | Clock                  3.36e-04   4.11e-04   1.14e-10   7.47e-04  34.8%
+| INFO     | job0 | cts.repair_timing    | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Total                  1.48e-03   6.68e-04   1.92e-09   2.15e-03 100.0%
+| INFO     | job0 | cts.repair_timing    | 0 |                           68.9%      31.1%       0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | Power for corner: typical
+| INFO     | job0 | cts.repair_timing    | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.repair_timing    | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Sequential             2.88e-03   5.96e-05   1.37e-08   2.94e-03  59.3%
+| INFO     | job0 | cts.repair_timing    | 0 | Combinational          2.69e-04   3.94e-04   1.71e-08   6.63e-04  13.4%
+| INFO     | job0 | cts.repair_timing    | 0 | Clock                  5.90e-04   7.64e-04   1.05e-09   1.35e-03  27.3%
+| INFO     | job0 | cts.repair_timing    | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.repair_timing    | 0 | Total                  3.74e-03   1.22e-03   3.18e-08   4.96e-03 100.0%
+| INFO     | job0 | cts.repair_timing    | 0 |                           75.4%      24.6%       0.0%
+| INFO     | job0 | cts.repair_timing    | 0 | SC_METRIC: cellarea
+| INFO     | job0 | cts.repair_timing    | 0 | Design area 376781 u^2 39% utilization.
+| INFO     | job0 | cts.repair_timing    | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | cts.repair_timing    | 0 |   Macro                                     1  284538.47
+| INFO     | job0 | cts.repair_timing    | 0 |   Tap cell                               8831   11049.35
+| INFO     | job0 | cts.repair_timing    | 0 |   Buffer                                  111     875.84
+| INFO     | job0 | cts.repair_timing    | 0 |   Clock buffer                            100    2034.45
+| INFO     | job0 | cts.repair_timing    | 0 |   Timing Repair Buffer                    893    6567.55
+| INFO     | job0 | cts.repair_timing    | 0 |   Inverter                                228    1096.05
+| INFO     | job0 | cts.repair_timing    | 0 |   Clock inverter                           14     147.64
+| INFO     | job0 | cts.repair_timing    | 0 |   Sequential cell                        1574   44415.10
+| INFO     | job0 | cts.repair_timing    | 0 |   Multi-Input combinational cell         4262   37105.59
+| INFO     | job0 | cts.repair_timing    | 0 |   Total                                 16014  387830.04
+| INFO     | job0 | cts.repair_timing    | 0 | 
+| INFO     | job0 | cts.repair_timing    | 0 | Cell instance report:
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_sram_2kbyte_1rw1r_32x512_8         1  284538.47
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a2111oi_0                5      43.79
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a2111oi_1                1      10.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a211o_1                  5      43.79
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a211oi_1                22     165.16
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21boi_0                11      82.58
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21boi_2                13     146.39
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21o_1                  59     442.92
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21o_4                  21     315.30
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21oi_1                262    1311.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a21oi_2                156    1366.31
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a221o_1                  8      80.08
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a221oi_1                61     534.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a222oi_1                37     370.36
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a22o_1                  28     245.24
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a22oi_1                 39     292.78
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a311o_1                  1      10.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a31o_1                   6      52.55
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a31o_4                   2      35.03
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a31oi_1                 74     462.94
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a32o_1                   8      80.08
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a32oi_1                  5      43.79
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__a41oi_1                  3      26.28
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and2_0                  37     231.47
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and2_2                   1       7.51
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and2_4                  12     105.10
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and3_1                  23     143.89
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and3_2                  10      75.07
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and3_4                  24     270.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and3b_1                  8      70.07
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and4_1                  11      96.34
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and4_2                   8      80.08
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__and4_4                  11     123.87
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_1                  606    2274.68
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_12                  16     320.31
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_16                  81    2229.64
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_2                   83     415.40
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_4                  114     855.82
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_6                   54     608.08
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__buf_8                   47     705.68
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkbuf_1                22      82.58
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkbuf_16               78    1951.87
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkdlybuf4s15_2          3      33.78
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinv_1                36     135.13
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinv_16                7     210.20
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinv_2                 6      30.03
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinv_4                 1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinvlp_2               5      25.02
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__clkinvlp_4               2      15.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__conb_1                 149     559.29
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__dfxtp_1                 52    1041.00
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__dfxtp_2                266    5657.93
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__edfxtp_1              1256   37716.17
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__fa_1                     2      40.04
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__fa_2                     3      67.56
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__ha_1                   175    2189.60
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__ha_2                    15     225.22
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__ha_4                     9     225.22
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_1                  150     563.04
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_12                   3      48.80
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_16                   2      40.04
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_2                   20      75.07
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_4                    2      12.51
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_6                    4      35.03
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__inv_8                    4      45.04
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__mux2_1                  47     529.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__mux2_4                   1      15.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__mux2i_1                 76     760.73
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__mux4_2                 543   12229.23
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand2_1                435    1632.82
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand2_4                 64     720.69
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand3_1                 98     490.47
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand3b_1                11      82.58
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand4_1                 27     168.91
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2_1                 405    1520.21
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2_2                  50     312.80
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2_4                  16     180.17
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2_8                   5     100.10
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2b_1                 25     156.40
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2b_2                  3      26.28
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor2b_4                  4      55.05
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor3_1                  68     340.33
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor3_2                  18     180.17
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor3_4                   3      48.80
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor3b_1                 32     240.23
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor3b_2                  2      25.02
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor4_1                  22     137.63
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor4_2                  13     162.66
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o2111a_1                 1      11.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o2111ai_1                1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o211a_1                  2      20.02
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o211ai_1                17     127.62
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21a_1                  55     412.90
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21ai_0                529    2647.54
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21ai_4                  1      16.27
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21bai_1                22     165.16
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21bai_2                 9     101.35
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o21bai_4                 4      75.07
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o221a_1                  1      11.26
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o221ai_1                18     157.65
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o221ai_2                 3      45.04
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o221ai_4                 1      26.28
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o22ai_1                 29     181.42
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o22ai_2                  5      62.56
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o2bb2ai_1                1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o311ai_0                13     113.86
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o311ai_1                 1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o31a_1                   1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o31ai_1                 41     307.80
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__o32ai_1                  5      43.79
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or2_0                    3      18.77
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or2_2                    2      12.51
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or2_4                   11      96.34
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or3_1                   30     187.68
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or3_2                    1       7.51
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or3_4                   14     157.65
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or3b_1                   2      17.52
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or3b_4                   3      33.78
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or4_1                    5      37.54
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or4_2                    1       8.76
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or4_4                    6      67.56
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__or4bb_4                  1      15.01
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         8831   11049.35
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__xnor2_1                 86     753.22
+| INFO     | job0 | cts.repair_timing    | 0 |   sky130_fd_sc_hd__xor2_1                  18     157.65
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.repair_timing    | 0 | # Images
+| INFO     | job0 | cts.repair_timing    | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | cts.repair_timing    | 0 | if {
+| INFO     | job0 | cts.repair_timing    | 0 |     [sc_has_gui] &&
+| INFO     | job0 | cts.repair_timing    | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | cts.repair_timing    | 0 | } {
+| INFO     | job0 | cts.repair_timing    | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | cts.repair_timing    | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | cts.repair_timing    | 0 |     } else {
+| INFO     | job0 | cts.repair_timing    | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | cts.repair_timing    | 0 |     }
+| INFO     | job0 | cts.repair_timing    | 0 | }
+| INFO     | job0 | cts.repair_timing    | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32_top.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32_top.placement.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving hold timing histogram to reports/images/timing/hold.histogram.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "clocks" to reports/images/picorv32_top.clocks.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "clk0" clock tree for slow to reports/images/clocktree/clk0.slow.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "clk0" clock tree for fast to reports/images/clocktree/clk0.fast.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "clk0" clock tree for typical to reports/images/clocktree/clk0.typical.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "clock - clk0" to reports/images/clocks/picorv32_top.clk0.png
+| INFO     | job0 | cts.repair_timing    | 0 | [INFO FLW-0001] Saving "optimizer" to reports/images/picorv32_top.optimizer.png
+| INFO     | job0 | cts.repair_timing    | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | cts.repair_timing    | 0 |  344: [WARNING RSZ-0062] Unable to repair all setup violations.
+| WARNING  | job0 | cts.repair_timing    | 0 | 1636: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | cts.repair_timing    | 0 | Number of errors: 0
+| INFO     | job0 | cts.repair_timing    | 0 | Number of warnings: 2
+| INFO     | job0 | cts.repair_timing    | 0 | Finished task in 90.31s
+| INFO     | job0 | cts.repair_timing    | 0 | Archiving cts.repair_timing0...

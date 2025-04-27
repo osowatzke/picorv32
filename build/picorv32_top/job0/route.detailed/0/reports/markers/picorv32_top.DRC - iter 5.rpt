@@ -1,0 +1,27 @@
+violation type: Short
+	srcs: net:rv32_soc\/count_instr\[31\] net:net1820
+	bbox = (824.4800, 765.7800) - (824.6200, 765.9200) on Layer met1
+violation type: Short
+	srcs: net:rv32_soc\/count_instr\[31\] net:net1820
+	bbox = (824.4800, 765.7800) - (824.6200, 765.9100) on Layer met1
+violation type: Short
+	srcs: net:rv32_soc\/count_instr\[31\] net:net1820
+	bbox = (824.4800, 765.7700) - (824.6200, 765.9100) on Layer met1
+violation type: Short
+	srcs: net:rv32_soc\/count_instr\[31\] net:net1820
+	bbox = (824.4800, 765.7700) - (824.6200, 765.9200) on Layer met1
+violation type: Metal Spacing
+	srcs: net:_3009_
+	bbox = (821.6450, 765.6400) - (821.9350, 765.7350) on Layer met1
+violation type: Metal Spacing
+	srcs: net:rv32_soc\/count_cycle\[4\] net:rv32_soc\/instr_rdinstrh
+	bbox = (800.6900, 697.4500) - (800.7950, 697.6500) on Layer met1
+violation type: Metal Spacing
+	srcs: net:rv32_soc\/count_cycle\[4\] net:rv32_soc\/instr_rdinstrh
+	bbox = (800.6900, 697.4500) - (800.7950, 697.6250) on Layer met1
+violation type: Metal Spacing
+	srcs: net:rv32_soc\/count_cycle\[4\] net:rv32_soc\/instr_rdinstrh
+	bbox = (800.6900, 697.4950) - (800.7950, 697.6500) on Layer met1
+violation type: Metal Spacing
+	srcs: net:rv32_soc\/count_cycle\[4\] net:rv32_soc\/instr_rdinstrh
+	bbox = (800.6900, 697.4950) - (800.7950, 697.6250) on Layer met1

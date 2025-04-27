@@ -1,0 +1,993 @@
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Tool 'openroad' found with version 'v2.0-20575' in directory '/sc_tools/bin'
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Running in /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/cts.clock_tree_synthesis/0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | openroad -no_init -metrics reports/metrics.json -exit /venv/lib/python3.10/site-packages/siliconcompiler/tools/openroad/scripts/apr/sc_clock_tree_synthesis.tcl
+| INFO     | job0 | cts.clock_tree_sy... | 0 | OpenROAD v2.0-20575-ge78e29127
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Features included (+) or not (-): +GPU +GUI +Python
+| INFO     | job0 | cts.clock_tree_sy... | 0 | This program is licensed under the BSD-3 license. See the LICENSE file for details.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Components of this program may be licensed under more restrictive licenses which must be honored.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ##############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Schema Adapter
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_step [sc_cfg_get arg step]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_index [sc_cfg_get arg index]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_flow [sc_cfg_get option flow]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_tool [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index tool]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_task [sc_cfg_get flowgraph $sc_flow $sc_step $sc_index task]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_refdir [sc_cfg_tool_task_get refdir]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ##############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Setup debugging
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source -echo "$sc_refdir/common/debugging.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Setup debugging if requested
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [llength [sc_cfg_tool_task_get {var} debug_level]] > 0 } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach debug [sc_cfg_tool_task_get {var} debug_level] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         lassign [split $debug " "] debug_tool debug_category debug_level
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         utl::info FLW 1 "Setting debugging for $debug_tool/$debug_category/$debug_level"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         set_debug_level $debug_tool $debug_category $debug_level
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Suppress messages if requested
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | foreach msg [sc_cfg_tool_task_get warningoff] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set or_msg [split $msg "-"]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     if { [llength $or_msg] != 2 } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         utl::warn FLW 1 "$msg is not a valid message id"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } else {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         set or_tool [lindex $or_msg 0]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         set or_msg_id [expr { int([lindex $or_msg 1]) }]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         utl::info FLW 1 "Suppressing $msg messages"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         suppress_message $or_tool $or_msg_id
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Setup helper functions
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source "$sc_refdir/common/procs.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Design information
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Design
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_design [sc_top]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_optmode [sc_cfg_get option optmode]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_pdk [sc_cfg_get option pdk]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_stackup [sc_cfg_get option stackup]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # APR Parameters
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_targetlibs [sc_get_asic_libraries logic]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_mainlib [lindex $sc_targetlibs 0]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Hard macro libraries
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_macrolibs [sc_get_asic_libraries macro]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Threads
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set_thread_count [sc_cfg_tool_task_get threads]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO ORD-0030] Using 2 thread(s).
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Read Files
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source -echo "$sc_refdir/common/read_liberty.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_scenarios [dict keys [sc_cfg_get constraint timing]]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_delaymodel [sc_cfg_get asic delaymodel]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Read Liberty
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::info FLW 1 "Defining timing corners: $sc_scenarios"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Defining timing corners: slow fast typical
+| INFO     | job0 | cts.clock_tree_sy... | 0 | define_corners {*}$sc_scenarios
+| INFO     | job0 | cts.clock_tree_sy... | 0 | foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     #Liberty
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach corner $sc_scenarios {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         foreach libcorner [sc_cfg_get constraint timing $corner libcorner] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             if { [sc_cfg_exists library $lib output $libcorner $sc_delaymodel] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                 foreach lib_file [sc_cfg_get library $lib output $libcorner $sc_delaymodel] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     puts "Reading liberty file for ${corner} ($libcorner): ${lib_file}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     read_liberty -corner $corner $lib_file
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                 }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                 break
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Reading liberty file for slow (slow): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Reading liberty file for fast (fast): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__ff_100C_1v95.lib.gz
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Reading liberty file for typical (typical): /nfs/sc_compute/cache/lambdapdk-v0.1.50/lambdapdk/sky130/libs/sky130hd/nldm/sky130_fd_sc_hd__tt_025C_1v80.lib.gz
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source -echo "$sc_refdir/common/read_input_files.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Read design files
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [sc_has_input_files odb "input layout odb"] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach odb_file [sc_get_input_files odb "input layout odb"] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Reading ODB: ${odb_file}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         read_db $odb_file
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | } else {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set sc_libtype [sc_cfg_get library $sc_mainlib asic libarch]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set sc_techlef [sc_cfg_get pdk $sc_pdk aprtech openroad $sc_stackup $sc_libtype lef]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # Read techlef
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     puts "Reading techlef: ${sc_techlef}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     read_lef $sc_techlef
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # Read Lefs
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach lib "$sc_targetlibs $sc_macrolibs" {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         foreach lef_file [sc_cfg_get library $lib output $sc_stackup lef] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             puts "Reading lef: ${lef_file}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             read_lef $lef_file
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     if { [file exists "inputs/${sc_design}.def"] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         # Read DEF
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         # get from previous step
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Reading DEF: inputs/${sc_design}.def"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         read_def "inputs/${sc_design}.def"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } elseif { [sc_cfg_exists input layout def] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         # Read DEF
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         set sc_def [lindex [sc_cfg_get input layout def] 0]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Reading DEF: ${sc_def}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         read_def $sc_def
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } elseif { [file exists "inputs/${sc_design}.vg"] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         # Read Verilog
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Reading netlist verilog: inputs/${sc_design}.vg"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         read_verilog "inputs/${sc_design}.vg"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         link_design $sc_design
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } elseif { [sc_cfg_exists input netlist verilog] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         # Read Verilog
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         foreach netlist [sc_cfg_get input netlist verilog] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             puts "Reading netlist verilog: ${netlist}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             read_verilog $netlist
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         link_design $sc_design
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } else {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         utl::error FLW 1 "No input files available"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # Handle global connect setup
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     if { [sc_cfg_tool_task_exists {file} global_connect] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         foreach global_connect [sc_cfg_tool_task_get {file} global_connect] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             puts "Loading global connect configuration: ${global_connect}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             source $global_connect
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     tee -file reports/global_connections.rpt {report_global_connect}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Reading ODB: inputs/picorv32_top.odb
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source -echo "$sc_refdir/common/read_timing_constraints.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Read timing constraints
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [sc_has_input_files sdc "input constraint sdc"] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach sdc [sc_get_input_files sdc "input constraint sdc"] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Reading SDC: ${sdc}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         read_sdc $sdc
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | } else {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # fall back on default auto generated constraints file
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set sdc [sc_cfg_tool_task_get {file} opensta_generic_sdc]
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     puts "Reading SDC: ${sdc}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     utl::warn FLW 1 "Defaulting back to default SDC"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     read_sdc "${sdc}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Reading SDC: inputs/picorv32_top.sdc
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Common Setup
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | sc_setup_sta
+| INFO     | job0 | cts.clock_tree_sy... | 0 | sc_setup_parasitics
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Using met5 for clock parasitics estimation
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Using met2 for signal parasitics estimation
+| INFO     | job0 | cts.clock_tree_sy... | 0 | sc_set_dont_use
+| INFO     | job0 | cts.clock_tree_sy... | 0 | sc_setup_global_routing
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for li1 to 100.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for met1 to 40.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for met2 to 40.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for met3 to 30.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for met4 to 30.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Setting global routing adjustment for met5 to 30.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Store incoming markers to avoid rewriting them
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set sc_starting_markers []
+| INFO     | job0 | cts.clock_tree_sy... | 0 | foreach markerdb [[ord::get_db_block] getMarkerCategories] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     lappend sc_starting_markers [$markerdb getName]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Source Step Script
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | report_units_metric
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__prestep__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [sc_cfg_tool_task_exists prescript] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach sc_pre_script [sc_cfg_tool_task_get prescript] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Sourcing pre script: ${sc_pre_script}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         source -echo $sc_pre_script
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__step__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | set openroad_dont_touch {}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [sc_cfg_tool_task_exists {var} dont_touch] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set openroad_dont_touch [sc_cfg_tool_task_get {var} dont_touch]
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # set don't touch list
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     set_dont_touch $openroad_dont_touch
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | tee -quiet -file reports/dont_touch.start.rpt {report_dont_touch}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | tee -quiet -file reports/dont_use.start.rpt {report_dont_use}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | tee -file reports/global_connections.start.rpt {report_global_connect}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Global connection rules: 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Instances: ".*" with pins "VPWR" connect to "VDD"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Instances: ".*" with pins "VGND" connect to "VSS"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Dont use report: reports/dont_use.clock_tree_synthesis.rpt
+| INFO     | job0 | cts.clock_tree_sy... | 0 | clock_tree_synthesis siliconcompiler arguments: -balance_levels -obstruction_aware -buf_list {sky130_fd_sc_hd__clkbuf_1 sky130_fd_sc_hd__clkbuf_2 sky130_fd_sc_hd__clkbuf_4 sky130_fd_sc_hd__clkbuf_8 sky130_fd_sc_hd__clkbuf_16}
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [WARNING CTS-0128] -obstruction_aware is obsolete.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0050] Root buffer is sky130_fd_sc_hd__clkbuf_16.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0051] Sink buffer is sky130_fd_sc_hd__clkbuf_16.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0052] The following clock buffers will be used for CTS:
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     sky130_fd_sc_hd__clkbuf_1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     sky130_fd_sc_hd__clkbuf_2
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     sky130_fd_sc_hd__clkbuf_4
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     sky130_fd_sc_hd__clkbuf_8
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                     sky130_fd_sc_hd__clkbuf_16
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0049] Characterization buffer is sky130_fd_sc_hd__clkbuf_16.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0007] Net "clk" found for clock "clk0".
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0011]  Clock net "clk" for macros has 2 sinks.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0011]  Clock net "clk_regs" for registers has 1574 sinks.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0008] TritonCTS found 2 clock nets.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0097] Characterization used 5 buffer(s) types.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0201] 1 blockages from hard placement blockages and placed macros will be used.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0027] Generating H-Tree topology for net clk.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0028]  Total number of sinks: 2.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0029]  Sinks will be clustered in groups of up to 30 and with maximum cluster diameter of 100.0 um.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0030]  Number of static layers: 0.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0020]  Wire segment unit: 13600  dbu (13 um).
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0021]  Distance between buffers: 3 units (100 um).
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0023]  Original sink region: [(178710, 150130), (832530, 524470)].
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0024]  Normalized sink region: [(13.1404, 11.039), (61.2154, 38.564)].
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0025]     Width:  48.0750.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0026]     Height: 27.5250.
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  Level 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Direction: Horizontal
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sinks per sub-region: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sub-region size: 24.0375 X 27.5250
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0034]     Segment length (rounded): 12.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0032]  Stop criterion found. Max number of sinks is 15.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0035]  Number of sinks covered: 2.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0201] 1 blockages from hard placement blockages and placed macros will be used.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0027] Generating H-Tree topology for net clk_regs.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0028]  Total number of sinks: 1574.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0029]  Sinks will be clustered in groups of up to 30 and with maximum cluster diameter of 100.0 um.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0030]  Number of static layers: 0.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0020]  Wire segment unit: 13600  dbu (13 um).
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0021]  Distance between buffers: 3 units (100 um).
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0204] A clustering solution was found from clustering size of 30 and clustering diameter of 100.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0205] Better solution may be possible if either -sink_clustering_size, -sink_clustering_max_diameter, or both options are omitted to enable automatic clustering.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0019]  Total number of sinks after clustering: 58.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0024]  Normalized sink region: [(23.8833, 43.0876), (59.9481, 69.9461)].
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0025]     Width:  36.0649.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0026]     Height: 26.8585.
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  Level 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Direction: Horizontal
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sinks per sub-region: 29
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sub-region size: 18.0324 X 26.8585
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0034]     Segment length (rounded): 10.
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  Level 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Direction: Vertical
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sinks per sub-region: 15
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sub-region size: 18.0324 X 13.4293
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0034]     Segment length (rounded): 6.
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  Level 3
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Direction: Horizontal
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sinks per sub-region: 8
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     Sub-region size: 9.0162 X 13.4293
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0034]     Segment length (rounded): 4.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0032]  Stop criterion found. Max number of sinks is 15.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0035]  Number of sinks covered: 58.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0018]     Created 3 clock buffers.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0012]     Minimum number of buffers in the clock path: 2.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0013]     Maximum number of buffers in the clock path: 2.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0015]     Created 3 clock nets.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0016]     Fanout distribution for the current clock = 1:2..
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0017]     Max level of the clock tree: 1.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0018]     Created 72 clock buffers.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0012]     Minimum number of buffers in the clock path: 4.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0013]     Maximum number of buffers in the clock path: 5.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0015]     Created 72 clock nets.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0016]     Fanout distribution for the current clock = 2:1, 5:1, 6:2, 7:2, 8:2, 9:1, 10:1, 14:1, 15:1, 18:2, 19:1, 23:1, 24:1, 27:2, 28:1, 30:45..
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0017]     Max level of the clock tree: 3.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0098] Clock net "clk"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0099]  Sinks 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0100]  Leaf buffers 0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0101]  Average sink wire length 1675.45 um
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0102]  Path depth 2 - 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0207]  Leaf load cells 37
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0098] Clock net "clk_regs"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0099]  Sinks 1611
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0100]  Leaf buffers 57
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0101]  Average sink wire length 368.84 um
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0102]  Path depth 4 - 5
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO CTS-0207]  Leaf load cells 37
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total number of Clock Roots: 2.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total number of Buffers Inserted: 75.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total number of Clock Subnets: 75.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total number of Sinks: 1576.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Cells used:
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkbuf_16: 77
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Dummys used:
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkbuf_1: 22
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkbuf_16: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_1: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_16: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_4: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinvlp_4: 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_12: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_16: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_2: 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_6: 4
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_8: 1
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO RSZ-0058] Using max wire length 4718um.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Placement Analysis
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ---------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | total displacement       1431.2 u
+| INFO     | job0 | cts.clock_tree_sy... | 0 | average displacement        0.1 u
+| INFO     | job0 | cts.clock_tree_sy... | 0 | max displacement           14.6 u
+| INFO     | job0 | cts.clock_tree_sy... | 0 | original HPWL          284478.6 u
+| INFO     | job0 | cts.clock_tree_sy... | 0 | legalized HPWL         289802.2 u
+| INFO     | job0 | cts.clock_tree_sy... | 0 | delta HPWL                    2 %
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [llength $openroad_dont_touch] > 0 } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     # unset for next step
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     unset_dont_touch $openroad_dont_touch
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__poststep__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if { [sc_cfg_tool_task_exists postscript] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     foreach sc_post_script [sc_cfg_tool_task_get postscript] {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         puts "Sourcing post script: ${sc_post_script}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         source -echo $sc_post_script
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Write Design Data
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__write__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source "$sc_refdir/common/write_data.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Reporting
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ###############################
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__metric__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | source "$sc_refdir/common/reports.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: report_checks -path_delay max
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Startpoint: mem_la_wdata[3]$_DFFE_PP_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Endpoint: rv32_soc/alu_out_q[0]$_DFF_P_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Group: clk0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Type: max
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Corner: slow
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    2.71    2.00    2.00 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.71    0.00    2.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.12    1.54    3.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00    3.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.12    0.35    3.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00    3.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.14    0.37    4.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00    4.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.13    0.38    4.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00    4.65 ^ clkbuf_3_4__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      7    0.06    0.29    0.50    5.14 ^ clkbuf_3_4__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_4__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.29    0.00    5.14 ^ clkbuf_leaf_46_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.08    0.34    0.63    5.77 ^ clkbuf_leaf_46_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_46_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.34    0.00    5.77 ^ mem_la_wdata[3]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      6    0.12    3.83    3.89    9.66 ^ mem_la_wdata[3]$_DFFE_PP_/Q (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          mem_la_wdata[3] (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   3.83    0.00    9.67 ^ _7532_/A (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    0.76    2.10   11.76 v _7532_/Y (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _4407_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.76    0.00   11.76 v _9379_/A (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      8    0.04    1.12    2.26   14.02 ^ _9379_/SUM (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _4410_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.12    0.00   14.02 ^ _7420_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.20    0.56   14.59 v _7420_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2789_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.20    0.00   14.59 v _7422_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.73    0.88   15.46 ^ _7422_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2791_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.73    0.00   15.46 ^ _7423_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.18    0.42   15.89 v _7423_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2792_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.18    0.00   15.89 v _7425_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.65    0.81   16.69 ^ _7425_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2794_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.65    0.00   16.70 ^ _7426_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.13    0.36   17.06 v _7426_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2795_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00   17.06 v _7427_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.46    0.48   17.54 ^ _7427_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2796_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.46    0.00   17.54 ^ _7428_/A2 (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.17    0.35   17.89 v _7428_/Y (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2797_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.17    0.00   17.89 v _7431_/B1 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.71    1.65   19.54 ^ _7431_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2800_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.71    0.00   19.54 ^ _7434_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.25    0.89   20.43 v _7434_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2803_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.25    0.00   20.43 v _7435_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.36    0.58   21.01 ^ _7435_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2804_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.36    0.00   21.01 ^ _7436_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.26    0.42   21.42 v _7436_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2805_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.26    0.00   21.42 v _7437_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    2.25    2.28   23.70 ^ _7437_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2806_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.25    0.00   23.70 ^ _7440_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.31    1.12   24.82 v _7440_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2809_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.31    0.00   24.82 v _7441_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.45    1.68   26.50 ^ _7441_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2810_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.45    0.00   26.50 ^ _7442_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.22    0.63   27.13 v _7442_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2811_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.22    0.00   27.13 v _7443_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.03    0.99   28.12 ^ _7443_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2812_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.03    0.00   28.12 ^ _7446_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.19    0.64   28.76 v _7446_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2815_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.19    0.00   28.76 v _7448_/B1 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.18    1.36   30.11 v _7448_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2817_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.18    0.00   30.11 v _7449_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    1.93    1.98   32.09 ^ _7449_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2818_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.93    0.00   32.09 ^ _7454_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.23    0.93   33.02 v _7454_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2823_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.23    0.00   33.02 v _7456_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.04    4.64    3.81   36.84 ^ _7456_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2825_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   4.64    0.00   36.84 ^ _7472_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.04    1.28    3.15   39.99 v _7472_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2841_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.28    0.00   39.99 v _7473_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    1.13    1.66   41.65 ^ _7473_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2842_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.13    0.00   41.65 ^ _7474_/B (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    0.15    0.56   42.22 v _7474_/Y (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2843_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.15    0.00   42.22 v _8825_/A2 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.14    1.49   43.71 v _8825_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          rv32_soc/alu_out[0] (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00   43.71 v rv32_soc/alu_out_q[0]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  43.71   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                          25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00   25.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    2.71    2.00   27.00 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.71    0.00   27.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.12    1.54   28.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00   28.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.12    0.35   28.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00   28.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.14    0.37   29.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00   29.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.13    0.38   29.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00   29.65 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      7    0.06    0.29    0.49   30.14 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.29    0.00   30.14 ^ clkbuf_leaf_42_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.09    0.37    0.65   30.79 ^ clkbuf_leaf_42_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_42_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.37    0.00   30.79 ^ rv32_soc/alu_out_q[0]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00   30.79   clock reconvergence pessimism
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                          -0.70   30.08   library setup time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  30.08   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  30.08   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                 -43.71   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                 -13.62   slack (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: setupslack
+| INFO     | job0 | cts.clock_tree_sy... | 0 | worst slack -13.62
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: tns
+| INFO     | job0 | cts.clock_tree_sy... | 0 | tns -205.64
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: report_checks -path_delay min
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Startpoint: rv32_soc/count_cycle[63]$_SDFF_PN0_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Endpoint: rv32_soc/count_cycle[63]$_SDFF_PN0_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Group: clk0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Type: min
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Corner: fast
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    0.51    0.34    0.34 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.51    0.00    0.34 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.04    0.14    0.48 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.04    0.00    0.48 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.03    0.09    0.57 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.03    0.00    0.57 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.04    0.09    0.67 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.04    0.00    0.67 ^ clkbuf_2_3_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.03    0.09    0.76 ^ clkbuf_2_3_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_3_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.03    0.00    0.76 ^ clkbuf_3_7__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      6    0.06    0.06    0.11    0.87 ^ clkbuf_3_7__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_7__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.06    0.00    0.87 ^ clkbuf_leaf_33_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.09    0.08    0.14    1.01 ^ clkbuf_leaf_33_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_33_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.08    0.00    1.01 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    0.04    0.22    1.23 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/Q (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          rv32_soc/count_cycle[63] (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.04    0.00    1.23 ^ _8522_/A1 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.02    0.04    1.27 v _8522_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _0334_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.02    0.00    1.27 v rv32_soc/count_cycle[63]$_SDFF_PN0_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                   1.27   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    0.51    0.34    0.34 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.51    0.00    0.34 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.04    0.14    0.48 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.04    0.00    0.48 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.03    0.09    0.57 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.03    0.00    0.57 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.04    0.09    0.67 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.04    0.00    0.67 ^ clkbuf_2_3_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.03    0.09    0.76 ^ clkbuf_2_3_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_3_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.03    0.00    0.76 ^ clkbuf_3_7__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      6    0.06    0.06    0.11    0.87 ^ clkbuf_3_7__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_7__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.06    0.00    0.87 ^ clkbuf_leaf_33_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.09    0.08    0.14    1.01 ^ clkbuf_leaf_33_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_33_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.08    0.00    1.01 ^ rv32_soc/count_cycle[63]$_SDFF_PN0_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    1.01   clock reconvergence pessimism
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                          -0.02    0.99   library hold time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                   0.99   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                   0.99   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  -1.27   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                   0.28   slack (MET)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: holdslack
+| INFO     | job0 | cts.clock_tree_sy... | 0 | worst slack 0.28
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: unconstrained
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Startpoint: mem_la_wdata[3]$_DFFE_PP_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |             (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Endpoint: rv32_soc/alu_out_q[0]$_DFF_P_
+| INFO     | job0 | cts.clock_tree_sy... | 0 |           (rising edge-triggered flip-flop clocked by clk0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Group: clk0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Path Type: max
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Corner: slow
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Fanout     Cap    Slew   Delay    Time   Description
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00    0.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    2.71    2.00    2.00 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.71    0.00    2.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.12    1.54    3.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00    3.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.12    0.35    3.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00    3.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.14    0.37    4.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00    4.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.13    0.38    4.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00    4.65 ^ clkbuf_3_4__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      7    0.06    0.29    0.50    5.14 ^ clkbuf_3_4__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_4__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.29    0.00    5.14 ^ clkbuf_leaf_46_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.08    0.34    0.63    5.77 ^ clkbuf_leaf_46_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_46_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.34    0.00    5.77 ^ mem_la_wdata[3]$_DFFE_PP_/CLK (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      6    0.12    3.83    3.89    9.66 ^ mem_la_wdata[3]$_DFFE_PP_/Q (sky130_fd_sc_hd__edfxtp_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          mem_la_wdata[3] (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   3.83    0.00    9.67 ^ _7532_/A (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    0.76    2.10   11.76 v _7532_/Y (sky130_fd_sc_hd__clkinv_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _4407_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.76    0.00   11.76 v _9379_/A (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      8    0.04    1.12    2.26   14.02 ^ _9379_/SUM (sky130_fd_sc_hd__ha_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _4410_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.12    0.00   14.02 ^ _7420_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.20    0.56   14.59 v _7420_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2789_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.20    0.00   14.59 v _7422_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.73    0.88   15.46 ^ _7422_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2791_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.73    0.00   15.46 ^ _7423_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.18    0.42   15.89 v _7423_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2792_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.18    0.00   15.89 v _7425_/B (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.65    0.81   16.69 ^ _7425_/Y (sky130_fd_sc_hd__nor3_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2794_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.65    0.00   16.70 ^ _7426_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.13    0.36   17.06 v _7426_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2795_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00   17.06 v _7427_/B (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.46    0.48   17.54 ^ _7427_/Y (sky130_fd_sc_hd__nor2_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2796_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.46    0.00   17.54 ^ _7428_/A2 (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.17    0.35   17.89 v _7428_/Y (sky130_fd_sc_hd__o21bai_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2797_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.17    0.00   17.89 v _7431_/B1 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.71    1.65   19.54 ^ _7431_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2800_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.71    0.00   19.54 ^ _7434_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.25    0.89   20.43 v _7434_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2803_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.25    0.00   20.43 v _7435_/A2 (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.36    0.58   21.01 ^ _7435_/Y (sky130_fd_sc_hd__a21oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2804_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.36    0.00   21.01 ^ _7436_/B1 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.26    0.42   21.42 v _7436_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2805_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.26    0.00   21.42 v _7437_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    2.25    2.28   23.70 ^ _7437_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2806_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.25    0.00   23.70 ^ _7440_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.31    1.12   24.82 v _7440_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2809_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.31    0.00   24.82 v _7441_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.45    1.68   26.50 ^ _7441_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2810_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.45    0.00   26.50 ^ _7442_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.22    0.63   27.13 v _7442_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2811_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.22    0.00   27.13 v _7443_/C (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    1.03    0.99   28.12 ^ _7443_/Y (sky130_fd_sc_hd__nor3_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2812_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.03    0.00   28.12 ^ _7446_/A3 (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.19    0.64   28.76 v _7446_/Y (sky130_fd_sc_hd__o31ai_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2815_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.19    0.00   28.76 v _7448_/B1 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.01    0.18    1.36   30.11 v _7448_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2817_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.18    0.00   30.11 v _7449_/B2 (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    1.93    1.98   32.09 ^ _7449_/Y (sky130_fd_sc_hd__a221oi_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2818_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.93    0.00   32.09 ^ _7454_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.23    0.93   33.02 v _7454_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2823_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.23    0.00   33.02 v _7456_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.04    4.64    3.81   36.84 ^ _7456_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2825_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   4.64    0.00   36.84 ^ _7472_/A2 (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.04    1.28    3.15   39.99 v _7472_/Y (sky130_fd_sc_hd__o21ai_0)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2841_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.28    0.00   39.99 v _7473_/S (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    1.13    1.66   41.65 ^ _7473_/Y (sky130_fd_sc_hd__mux2i_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2842_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   1.13    0.00   41.65 ^ _7474_/B (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      3    0.01    0.15    0.56   42.22 v _7474_/Y (sky130_fd_sc_hd__nand2_4)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          _2843_ (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.15    0.00   42.22 v _8825_/A2 (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.00    0.14    1.49   43.71 v _8825_/X (sky130_fd_sc_hd__a221o_1)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          rv32_soc/alu_out[0] (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00   43.71 v rv32_soc/alu_out_q[0]$_DFF_P_/D (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  43.71   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                          25.00   25.00   clock clk0 (rise edge)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00   25.00   clock source latency
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.06    2.71    2.00   27.00 ^ clk (in)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   2.71    0.00   27.00 ^ clkbuf_regs_0_clk0/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      1    0.01    0.12    1.54   28.55 ^ clkbuf_regs_0_clk0/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00   28.55 ^ clkbuf_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.12    0.35   28.90 ^ clkbuf_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.12    0.00   28.90 ^ clkbuf_1_1_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.14    0.37   29.27 ^ clkbuf_1_1_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_1_1_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.14    0.00   29.27 ^ clkbuf_2_2_0_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      2    0.02    0.13    0.38   29.65 ^ clkbuf_2_2_0_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_2_2_0_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.13    0.00   29.65 ^ clkbuf_3_5__f_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |      7    0.06    0.29    0.49   30.14 ^ clkbuf_3_5__f_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_3_5__leaf_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.29    0.00   30.14 ^ clkbuf_leaf_42_clk_regs/A (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     30    0.09    0.37    0.65   30.79 ^ clkbuf_leaf_42_clk_regs/X (sky130_fd_sc_hd__clkbuf_16)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                          clknet_leaf_42_clk_regs (net)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                   0.37    0.00   30.79 ^ rv32_soc/alu_out_q[0]$_DFF_P_/CLK (sky130_fd_sc_hd__dfxtp_2)
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           0.00   30.79   clock reconvergence pessimism
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                          -0.70   30.08   library setup time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  30.08   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                  30.08   data required time
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                 -43.71   data arrival time
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -----------------------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                                 -13.62   slack (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: clock_skew
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock clk0
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  5.8452 source latency rv32_soc/cpuregs[22][31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -5.2000 target latency pcpi_rs2[31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  0.0000 CRPR
+| INFO     | job0 | cts.clock_tree_sy... | 0 | --------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  0.6452 setup skew
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock clk0
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  5.8452 source latency rv32_soc/cpuregs[22][31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.clock_tree_sy... | 0 | -5.2000 target latency pcpi_rs2[31]$_DFFE_PP_/CLK ^
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  0.0000 CRPR
+| INFO     | job0 | cts.clock_tree_sy... | 0 | --------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 |  0.6452 hold skew
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: DRV violators
+| INFO     | job0 | cts.clock_tree_sy... | 0 | max slew
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Pin                                    Limit    Slew   Slack
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _6683_/Y                                1.48    2.05   -0.57 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | load_slew1/A                            1.50    2.05   -0.55 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _6680_/Y                                1.48    2.03   -0.55 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | load_slew2/A                            1.50    2.03   -0.53 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _8766_/Y                                1.49    1.57   -0.07 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | max capacitance
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Pin                                    Limit     Cap   Slack
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _6683_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _6680_/Y                                0.05    0.07   -0.02 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | _8766_/Y                                0.07    0.07   -0.00 (VIOLATED)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: floating nets
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: overdriven nets
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: fmax
+| INFO     | job0 | cts.clock_tree_sy... | 0 | clk0 fmax = 25.89 MHz
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock                   Period          Waveform
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | clk0                     25.00        0.00     12.50
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: power
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Power for corner: fast
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Sequential             3.45e-03   7.57e-05   4.74e-05   3.58e-03  57.8%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Combinational          4.02e-04   4.87e-04   5.17e-05   9.41e-04  15.2%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock                  7.41e-04   9.30e-04   3.20e-06   1.67e-03  27.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total                  4.60e-03   1.49e-03   1.02e-04   6.19e-03 100.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           74.2%      24.1%       1.7%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Power for corner: slow
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Sequential             9.97e-04   3.58e-05   6.13e-10   1.03e-03  47.6%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Combinational          1.60e-04   2.29e-04   1.34e-09   3.90e-04  18.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock                  3.36e-04   4.11e-04   1.14e-10   7.47e-04  34.4%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total                  1.49e-03   6.76e-04   2.06e-09   2.17e-03 100.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           68.8%      31.2%       0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Power for corner: typical
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Group                  Internal  Switching    Leakage      Total
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           Power      Power      Power      Power (Watts)
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Sequential             2.88e-03   6.32e-05   1.37e-08   2.94e-03  59.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Combinational          2.85e-04   4.06e-04   1.86e-08   6.90e-04  13.9%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Clock                  5.90e-04   7.63e-04   1.05e-09   1.35e-03  27.1%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | ----------------------------------------------------------------
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Total                  3.75e-03   1.23e-03   3.33e-08   4.98e-03 100.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 |                           75.3%      24.7%       0.0%
+| INFO     | job0 | cts.clock_tree_sy... | 0 | SC_METRIC: cellarea
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Design area 379392 u^2 40% utilization.
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Cell type report:                       Count       Area
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Macro                                     1  284538.47
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Tap cell                               8831   11049.35
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Buffer                                  111     993.45
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Clock buffer                            100    2034.45
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Timing Repair Buffer                    783    7927.60
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Inverter                                228    1159.86
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Clock inverter                           14     147.64
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Sequential cell                        1574   44418.85
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Multi-Input combinational cell         4262   38171.61
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   Total                                 15904  390441.29
+| INFO     | job0 | cts.clock_tree_sy... | 0 | 
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Cell instance report:
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_sram_2kbyte_1rw1r_32x512_8         1  284538.47
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a2111oi_0                5      43.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a2111oi_1                1      10.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a211o_1                  5      43.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a211oi_1                22     165.16
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21boi_0                11      82.58
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21boi_1                 1       7.51
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21boi_2                11     123.87
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21boi_4                 1      18.77
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21o_1                  61     457.94
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21o_4                  19     285.27
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21oi_1                265    1326.27
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a21oi_2                153    1340.04
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a221o_1                  7      70.07
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a221o_4                  1      21.27
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a221oi_1                61     534.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a222oi_1                37     370.36
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a22o_1                  28     245.24
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a22oi_1                 39     292.78
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a311o_1                  1      10.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a31o_1                   5      43.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a31o_4                   3      52.55
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a31oi_1                 74     462.94
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a32o_1                   8      80.08
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a32oi_1                  5      43.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__a41oi_1                  3      26.28
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and2_0                  33     206.45
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and2_4                  17     148.89
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and3_1                  19     118.86
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and3_4                  38     427.91
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and3b_1                  8      70.07
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and4_1                   3      26.28
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__and4_4                  27     304.04
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_1                  413    1550.24
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_12                  29     580.56
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_16                 102    2807.69
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_4                  107     803.27
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_6                  124    1396.34
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__buf_8                  118    1771.70
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkbuf_1                22      82.58
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkbuf_16               78    1951.87
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkdlybuf4s15_2          1      11.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_1                45     168.91
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_16                9     270.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_2                 7      35.03
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinv_4                 1       8.76
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__clkinvlp_4               2      15.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__conb_1                 149     559.29
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__dfxtp_1                 49     980.94
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__dfxtp_2                269    5721.74
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__edfxtp_1              1256   37716.17
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__fa_1                     5     100.10
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__ha_1                   169    2114.53
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__ha_2                    18     270.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__ha_4                    12     300.29
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_1                  137     514.24
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_12                   3      48.80
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_16                   3      60.06
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_2                   25      93.84
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_4                    2      12.51
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_6                    4      35.03
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__inv_8                    4      45.04
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__mux2_1                  40     450.43
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__mux2_4                   8     120.12
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__mux2i_1                 76     760.73
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__mux4_2                 543   12229.23
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand2_1                410    1538.98
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand2_4                 89    1002.21
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand2b_1                18     112.61
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand3_1                 98     490.47
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand3b_1                11      82.58
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand4_1                 27     168.91
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nand4b_1                 1       8.76
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2_1                 358    1343.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2_2                  52     325.31
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2_4                  36     405.39
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2_8                  30     600.58
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2b_1                 15      93.84
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2b_2                  8      70.07
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor2b_4                  9     123.87
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor3_1                  69     345.33
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor3_2                  13     130.12
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor3_4                   7     113.86
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor3b_1                 30     225.22
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor3b_2                  4      50.05
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor4_1                  21     131.38
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor4_2                  14     175.17
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__nor4b_1                  3      26.28
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o2111a_1                 1      11.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o2111ai_2                1      15.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o211a_1                  2      20.02
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o211ai_1                17     127.62
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21a_1                  55     412.90
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21ai_0                527    2637.53
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21ai_4                  3      48.80
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21bai_1                21     157.65
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21bai_2                 9     101.35
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o21bai_4                 5      93.84
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o221a_1                  1      11.26
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o221ai_1                18     157.65
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o221ai_2                 4      60.06
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o22a_1                   2      17.52
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o22ai_1                 28     175.17
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o22ai_2                  6      75.07
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o2bb2ai_1                1       8.76
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o311a_1                  1      10.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o311ai_0                14     122.62
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o31a_1                   1       8.76
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o31ai_1                 41     307.80
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o32a_1                   1      10.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__o32ai_1                  5      43.79
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or2_0                    2      12.51
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or2_4                   14     122.62
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or3_1                   27     168.91
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or3_4                   18     202.69
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or3b_1                   1       8.76
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or3b_4                   4      45.04
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or4_1                    4      30.03
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or4_4                    8      90.09
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__or4bb_4                  1      15.01
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__tapvpwrvgnd_1         8831   11049.35
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__xnor2_1                 86     753.22
+| INFO     | job0 | cts.clock_tree_sy... | 0 |   sky130_fd_sc_hd__xor2_1                  18     157.65
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| INFO     | job0 | cts.clock_tree_sy... | 0 | # Images
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::push_metrics_stage "sc__image__{}"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | if {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     [sc_has_gui] &&
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     [lindex [sc_cfg_tool_task_get var ord_enable_images] 0] == "true"
+| INFO     | job0 | cts.clock_tree_sy... | 0 | } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     if { [gui::enabled] } {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         source "$sc_refdir/common/write_images.tcl"
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     } else {
+| INFO     | job0 | cts.clock_tree_sy... | 0 |         gui::show "source \"$sc_refdir/common/write_images.tcl\"" false
+| INFO     | job0 | cts.clock_tree_sy... | 0 |     }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | }
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "snapshot" to reports/images/picorv32_top.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "placement" to reports/images/picorv32_top.placement.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving setup timing histogram to reports/images/timing/setup.histogram.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving hold timing histogram to reports/images/timing/hold.histogram.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "placement density heatmap" to reports/images/heatmap/placement_density.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "estimated routing congestion heatmap" to reports/images/heatmap/estimated_routing_congestion.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "power density for fast heatmap" to reports/images/heatmap/power_density/fast.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "power density for slow heatmap" to reports/images/heatmap/power_density/slow.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "power density for typical heatmap" to reports/images/heatmap/power_density/typical.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "clocks" to reports/images/picorv32_top.clocks.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "clk0" clock tree for slow to reports/images/clocktree/clk0.slow.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "clk0" clock tree for fast to reports/images/clocktree/clk0.fast.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "clk0" clock tree for typical to reports/images/clocktree/clk0.typical.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "clock - clk0" to reports/images/clocks/picorv32_top.clk0.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | [INFO FLW-0001] Saving "optimizer" to reports/images/picorv32_top.optimizer.png
+| INFO     | job0 | cts.clock_tree_sy... | 0 | utl::pop_metrics_stage
+| WARNING  | job0 | cts.clock_tree_sy... | 0 | 213: [WARNING CTS-0128] -obstruction_aware is obsolete.
+| WARNING  | job0 | cts.clock_tree_sy... | 0 | 968: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Number of errors: 0
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Number of warnings: 2
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Finished task in 54.45s
+| INFO     | job0 | cts.clock_tree_sy... | 0 | Archiving cts.clock_tree_synthesis0...

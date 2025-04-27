@@ -1,0 +1,7 @@
+Clock clk0
+13.6779 source latency pcpi_rs2[31]$_DFFE_PP_/CLK ^
+-14.4364 target latency rv32_soc/alu_out_q[0]$_DFF_P_/CLK ^
+ 0.0000 CRPR
+--------------
+-0.7585 setup skew
+

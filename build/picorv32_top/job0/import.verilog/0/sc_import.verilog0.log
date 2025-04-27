@@ -1,0 +1,347 @@
+| INFO     | job0 | import.verilog       | 0 | Running in /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/import.verilog/0
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_top_5bd346a55eb2ffb2a6c7f9d3488dac0abd380db3.v:55:16: warning: implicit conversion of port connection truncates from 32 to 9 bits [-Wport-width-trunc]
+| WARNING  | job0 | import.verilog       | 0 |         .addr0(mem_addr),
+| WARNING  | job0 | import.verilog       | 0 |                ^~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:183:7: warning: unused net 'dbg_mem_valid' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire dbg_mem_valid = mem_valid;
+| WARNING  | job0 | import.verilog       | 0 |              ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:184:7: warning: unused net 'dbg_mem_instr' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire dbg_mem_instr = mem_instr;
+| WARNING  | job0 | import.verilog       | 0 |              ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:185:7: warning: unused net 'dbg_mem_ready' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire dbg_mem_ready = mem_ready;
+| WARNING  | job0 | import.verilog       | 0 |              ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:186:14: warning: unused net 'dbg_mem_addr' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire [31:0] dbg_mem_addr  = mem_addr;
+| WARNING  | job0 | import.verilog       | 0 |                     ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:187:14: warning: unused net 'dbg_mem_wdata' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire [31:0] dbg_mem_wdata = mem_wdata;
+| WARNING  | job0 | import.verilog       | 0 |                     ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:188:14: warning: unused net 'dbg_mem_wstrb' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire [ 3:0] dbg_mem_wstrb = mem_wstrb;
+| WARNING  | job0 | import.verilog       | 0 |                     ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:189:14: warning: unused net 'dbg_mem_rdata' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire [31:0] dbg_mem_rdata = mem_rdata;
+| WARNING  | job0 | import.verilog       | 0 |                     ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:332:3: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:337:4: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                         (ENABLE_MUL || ENABLE_FAST_MUL) && pcpi_mul_ready: begin
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:333:4: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                         ENABLE_PCPI && pcpi_ready: begin
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:341:4: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                         ENABLE_DIV && pcpi_div_ready: begin
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:333:4: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                         ENABLE_PCPI && pcpi_ready: begin
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:375:7: warning: unused net 'mem_busy' [-Wunused-net]
+| WARNING  | job0 | import.verilog       | 0 |         wire mem_busy = |{mem_do_prefetch, mem_do_rinst, mem_do_rdata, mem_do_wdata};
+| WARNING  | job0 | import.verilog       | 0 |              ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:382:74: warning: arithmetic between operands of different types ('logic[31:2]' and 'logic') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |         assign mem_la_addr = (mem_do_prefetch || mem_do_rinst) ? {next_pc[31:2] + mem_la_firstword_xfer, 2'b00} : {reg_op1[31:2], 2'b00};
+| WARNING  | job0 | import.verilog       | 0 |                                                                   ~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:403:3: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                 case (mem_wordsize)
+| WARNING  | job0 | import.verilog       | 0 |                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:412:5: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                 case (reg_op1[1])
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:420:5: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                 case (reg_op1[1:0])
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:437:4: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                         case (mem_rdata_latched[1:0])
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:439:6: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                         case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:455:6: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                         case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:509:6: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                         case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:581:4: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                         case (mem_state)
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:880:112: warning: implicit conversion changes signedness from 'logic signed[31:0]' to 'logic[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                         { decoded_imm_j[31:20], decoded_imm_j[10:1], decoded_imm_j[11], decoded_imm_j[19:12], decoded_imm_j[0] } <= $signed({mem_rdata_latched[31:12], 1'b0});
+| WARNING  | job0 | import.verilog       | 0 |                                                                                                                                  ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:880:112: warning: implicit conversion expands from 21 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                         { decoded_imm_j[31:20], decoded_imm_j[10:1], decoded_imm_j[11], decoded_imm_j[19:12], decoded_imm_j[0] } <= $signed({mem_rdata_latched[31:12], 1'b0});
+| WARNING  | job0 | import.verilog       | 0 |                                                                                                                                  ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:890:17: warning: implicit conversion from 'integer' to 'reg[4:0]' changes value from 32 to 5'b0 [-Wconstant-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                 decoded_rs1 <= ENABLE_IRQ_QREGS ? irqregs_offset : 3; // instr_retirq
+| WARNING  | job0 | import.verilog       | 0 |                                             ^~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:902:5: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                 case (mem_rdata_latched[1:0])
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:904:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:908:25: warning: arithmetic between operands of different types ('int' and 'logic[4:2]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rd <= 8 + mem_rdata_latched[4:2];
+| WARNING  | job0 | import.verilog       | 0 |                                                                               ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:912:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:913:25: warning: arithmetic between operands of different types ('int' and 'logic[4:2]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rd <= 8 + mem_rdata_latched[4:2];
+| WARNING  | job0 | import.verilog       | 0 |                                                                               ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:917:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:918:26: warning: arithmetic between operands of different types ('int' and 'logic[4:2]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rs2 <= 8 + mem_rdata_latched[4:2];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:923:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:939:38: warning: implicit conversion from 'logic[6:2]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 if (mem_rdata_latched[12] || mem_rdata_latched[6:2]) begin
+| WARNING  | job0 | import.verilog       | 0 |                                                                                              ^~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:954:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rd <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                       ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:955:27: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                        ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:960:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rd <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                       ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:961:27: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                        ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:965:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rd <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                       ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:966:27: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                        ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:967:27: warning: arithmetic between operands of different types ('int' and 'logic[4:2]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                         decoded_rs2 <= 8 + mem_rdata_latched[4:2];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                        ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:975:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:980:26: warning: arithmetic between operands of different types ('int' and 'logic[9:7]') [-Warith-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 decoded_rs1 <= 8 + mem_rdata_latched[9:7];
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:986:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (mem_rdata_latched[15:13])
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:996:13: warning: implicit conversion from 'logic[11:7]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                                                                 if (mem_rdata_latched[11:7]) begin
+| WARNING  | job0 | import.verilog       | 0 |                                                                     ^~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1101:74: warning: '&&' within '||' [-Wlogical-op-parentheses]
+| WARNING  | job0 | import.verilog       | 0 |                         is_jalr_addi_slti_sltiu_xori_ori_andi <= instr_jalr || is_alu_reg_imm && |{
+| WARNING  | job0 | import.verilog       | 0 |                                                                             ~~ ~~~~~~~~~~~~~~~^~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1101:74: note: place parentheses around the '&&' expression to silence this warning
+| WARNING  | job0 | import.verilog       | 0 |                         is_jalr_addi_slti_sltiu_xori_ori_andi <= instr_jalr || is_alu_reg_imm && |{
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~~~~~~~~~~~~~~~^~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1126:21: warning: implicit conversion changes signedness from 'reg signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed(mem_rdata_q[31:20]);
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1126:21: warning: implicit conversion expands from 12 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed(mem_rdata_q[31:20]);
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1128:21: warning: implicit conversion changes signedness from 'logic signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed({mem_rdata_q[31], mem_rdata_q[7], mem_rdata_q[30:25], mem_rdata_q[11:8], 1'b0});
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1128:21: warning: implicit conversion expands from 13 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed({mem_rdata_q[31], mem_rdata_q[7], mem_rdata_q[30:25], mem_rdata_q[11:8], 1'b0});
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1130:21: warning: implicit conversion changes signedness from 'logic signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed({mem_rdata_q[31:25], mem_rdata_q[11:7]});
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1130:21: warning: implicit conversion expands from 12 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                         decoded_imm <= $signed({mem_rdata_q[31:25], mem_rdata_q[11:7]});
+| WARNING  | job0 | import.verilog       | 0 |                                                     ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1245:14: warning: implicit conversion changes signedness from 'logic signed[32:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                         alu_shr = $signed({instr_sra || instr_srai ? reg_op1[31] : 1'b0, reg_op1}) >>> reg_op2[4:0];
+| WARNING  | job0 | import.verilog       | 0 |                                 ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1245:14: warning: implicit conversion truncates from 33 to 32 bits [-Wwidth-trunc]
+| WARNING  | job0 | import.verilog       | 0 |                         alu_shr = $signed({instr_sra || instr_srai ? reg_op1[31] : 1'b0, reg_op1}) >>> reg_op2[4:0];
+| WARNING  | job0 | import.verilog       | 0 |                                 ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1252:3: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1269:3: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1273:15: warning: implicit conversion expands from 1 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                 alu_out = alu_out_0;
+| WARNING  | job0 | import.verilog       | 0 |                                         ~ ^~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1282:4: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                         BARREL_SHIFTER && (instr_srl || instr_srli || instr_sra || instr_srai):
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1280:4: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                         BARREL_SHIFTER && (instr_sll || instr_slli):
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1299:25: warning: implicit conversion from 'reg[1:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                 if (latched_branch || irq_state || !resetn)
+| WARNING  | job0 | import.verilog       | 0 |                                       ^~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1315:4: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                         case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1325:35: warning: bitwise operation between operands of different types ('reg[31:0]' and 'reg') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                         cpuregs_wrdata = reg_next_pc | latched_compr;
+| WARNING  | job0 | import.verilog       | 0 |                                                          ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1328:5: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                 ENABLE_IRQ && irq_state[1]: begin
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1324:5: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                 ENABLE_IRQ && irq_state[0]: begin
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1338:34: warning: implicit conversion from 'reg[4:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                 if (resetn && cpuregs_write && latched_rd)
+| WARNING  | job0 | import.verilog       | 0 |                                                ^~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1352:18: warning: implicit conversion from 'reg[4:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                         cpuregs_rs1 = decoded_rs1 ? cpuregs[decoded_rs1] : 0;
+| WARNING  | job0 | import.verilog       | 0 |                                       ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1353:18: warning: implicit conversion from 'reg[4:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                         cpuregs_rs2 = decoded_rs2 ? cpuregs[decoded_rs2] : 0;
+| WARNING  | job0 | import.verilog       | 0 |                                       ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1361:18: warning: implicit conversion from 'reg[4:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                         cpuregs_rs1 = decoded_rs ? cpuregs[decoded_rs] : 0;
+| WARNING  | job0 | import.verilog       | 0 |                                       ^~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1425:9: warning: implicit conversion from 'reg[3:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                                 if (pcpi_timeout_counter)
+| WARNING  | job0 | import.verilog       | 0 |                                     ^~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1442:41: warning: implicit conversion from 'reg[31:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                 if (ENABLE_IRQ && ENABLE_IRQ_TIMER && timer) begin
+| WARNING  | job0 | import.verilog       | 0 |                                                       ^~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1478:8: warning: implicit conversion from 'logic[31:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                         if (~STACKADDR) begin
+| WARNING  | job0 | import.verilog       | 0 |                             ^~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1486:3: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                 case (cpu_state)
+| WARNING  | job0 | import.verilog       | 0 |                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1498:5: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1511:6: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && irq_state[1]: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1506:6: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && irq_state[0]: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1521:65: warning: bitwise operation between operands of different types ('logic[35:0]' and 'reg[31:0]') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                 trace_data <= (irq_active ? TRACE_IRQ : 0) | TRACE_BRANCH | (current_pc & 32'hfffffffe);
+| WARNING  | job0 | import.verilog       | 0 |                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1523:50: warning: bitwise operation between operands of different types ('logic[35:0]' and 'reg[31:0]') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                 trace_data <= (irq_active ? TRACE_IRQ : 0) | (latched_stalu ? alu_out_q : reg_out);
+| WARNING  | job0 | import.verilog       | 0 |                                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~  ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1523:69: warning: implicit conversion expands from 32 to 36 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                                 trace_data <= (irq_active ? TRACE_IRQ : 0) | (latched_stalu ? alu_out_q : reg_out);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                            ~                  ^~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1523:81: warning: implicit conversion expands from 32 to 36 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                                 trace_data <= (irq_active ? TRACE_IRQ : 0) | (latched_stalu ? alu_out_q : reg_out);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                            ~                              ^~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1538:104: warning: implicit conversion from 'reg[1:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                                 if (ENABLE_IRQ && ((decoder_trigger && !irq_active && !irq_delay && |(irq_pending & ~irq_mask)) || irq_state)) begin
+| WARNING  | job0 | import.verilog       | 0 |                                                                                                                                    ^~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1544:36: warning: bitwise operation between operands of different types ('integer' and 'reg') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                 latched_rd <= irqregs_offset | irq_state[0];
+| WARNING  | job0 | import.verilog       | 0 |                                                               ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1549:10: warning: implicit conversion from 'reg[31:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                                         if (irq_pending) begin
+| WARNING  | job0 | import.verilog       | 0 |                                             ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1628:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1658:6: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_setq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1650:6: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_getq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1663:21: warning: implicit conversion truncates from 32 to 5 bits [-Wwidth-trunc]
+| WARNING  | job0 | import.verilog       | 0 |                                                 latched_rd <= latched_rd | irqregs_offset;
+| WARNING  | job0 | import.verilog       | 0 |                                                            ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1663:32: warning: bitwise operation between operands of different types ('reg[4:0]' and 'integer') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                 latched_rd <= latched_rd | irqregs_offset;
+| WARNING  | job0 | import.verilog       | 0 |                                                               ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1667:6: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && instr_retirq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1650:6: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_getq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1678:6: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && instr_maskirq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1650:6: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_getq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1687:6: warning: 'case' statement contains duplicate items for value '1'b0' (the second one will never be matched) [-Wcase-dup]
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_TIMER && instr_timer: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | ../../sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1650:6: note: previous usage here
+| WARNING  | job0 | import.verilog       | 0 |                                         ENABLE_IRQ && ENABLE_IRQ_QREGS && instr_getq: begin
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1717:56: warning: implicit conversion expands from 5 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                                 reg_op2 <= is_slli_srli_srai && BARREL_SHIFTER ? decoded_rs2 : decoded_imm;
+| WARNING  | job0 | import.verilog       | 0 |                                                                                                ~ ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1731:18: warning: implicit conversion truncates from 32 to 5 bits [-Wwidth-trunc]
+| WARNING  | job0 | import.verilog       | 0 |                                                         reg_sh <= cpuregs_rs2;
+| WARNING  | job0 | import.verilog       | 0 |                                                                ~~ ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1761:15: warning: implicit conversion truncates from 32 to 5 bits [-Wwidth-trunc]
+| WARNING  | job0 | import.verilog       | 0 |                                 reg_sh <= cpuregs_rs2;
+| WARNING  | job0 | import.verilog       | 0 |                                        ~~ ^~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1837:6: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                         case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1840:43: warning: implicit conversion changes signedness from 'reg signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                                 instr_srai || instr_sra: reg_op1 <= $signed(reg_op1) >>> 4;
+| WARNING  | job0 | import.verilog       | 0 |                                                                                  ~~ ^~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1845:6: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                         case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                         ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1848:43: warning: implicit conversion changes signedness from 'reg signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                                 instr_srai || instr_sra: reg_op1 <= $signed(reg_op1) >>> 1;
+| WARNING  | job0 | import.verilog       | 0 |                                                                                  ~~ ^~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1860:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1867:64: warning: bitwise operation between operands of different types ('logic[35:0]' and 'reg[31:0]') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                         trace_data <= (irq_active ? TRACE_IRQ : 0) | TRACE_ADDR | ((reg_op1 + decoded_imm) & 32'hffffffff);
+| WARNING  | job0 | import.verilog       | 0 |                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1885:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1895:64: warning: bitwise operation between operands of different types ('logic[35:0]' and 'reg[31:0]') [-Wbitwise-op-mismatch]
+| WARNING  | job0 | import.verilog       | 0 |                                                         trace_data <= (irq_active ? TRACE_IRQ : 0) | TRACE_ADDR | ((reg_op1 + decoded_imm) & 32'hffffffff);
+| WARNING  | job0 | import.verilog       | 0 |                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1902:7: warning: 'case' missing 'default' label [-Wcase-default]
+| WARNING  | job0 | import.verilog       | 0 |                                                 case (1'b1)
+| WARNING  | job0 | import.verilog       | 0 |                                                 ^~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1904:34: warning: implicit conversion changes signedness from 'reg signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                                         latched_is_lh: reg_out <= $signed(mem_rdata_word[15:0]);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1904:34: warning: implicit conversion expands from 16 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                                         latched_is_lh: reg_out <= $signed(mem_rdata_word[15:0]);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1905:34: warning: implicit conversion changes signedness from 'reg signed[31:0]' to 'reg[31:0]' [-Wsign-conversion]
+| WARNING  | job0 | import.verilog       | 0 |                                                         latched_is_lb: reg_out <= $signed(mem_rdata_word[7:0]);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1905:34: warning: implicit conversion expands from 8 to 32 bits [-Wwidth-expand]
+| WARNING  | job0 | import.verilog       | 0 |                                                         latched_is_lb: reg_out <= $signed(mem_rdata_word[7:0]);
+| WARNING  | job0 | import.verilog       | 0 |                                                                                ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/picorv32_1fd920965824d6cf10bc77b88815b2fb6bbb8476.v:1917:27: warning: implicit conversion from 'reg[31:0]' to boolean value [-Wint-bool-conv]
+| WARNING  | job0 | import.verilog       | 0 |                         if(ENABLE_IRQ_TIMER && timer)
+| WARNING  | job0 | import.verilog       | 0 |                                                ^~~~~
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/sky130_sram_2k_e49ab7942d19c42fd78f60cb91df3a696d739d95.bb.v:14:23: warning: undriven output port 'dout0' [-Wundriven-port]
+| WARNING  | job0 | import.verilog       | 0 |     output reg [31:0] dout0,
+| WARNING  | job0 | import.verilog       | 0 |                       ^
+| WARNING  | job0 | import.verilog       | 0 | /nfs/sc_compute/builds/0dc368a6940a4df4bc65e8967a8d3eeb/picorv32_top/job0/sc_collected_files/sky130_sram_2k_e49ab7942d19c42fd78f60cb91df3a696d739d95.bb.v:19:23: warning: undriven output port 'dout1' [-Wundriven-port]
+| WARNING  | job0 | import.verilog       | 0 |     output reg [31:0] dout1
+| WARNING  | job0 | import.verilog       | 0 |                       ^
+| INFO     | job0 | import.verilog       | 0 | Number of errors: 0
+| INFO     | job0 | import.verilog       | 0 | Number of warnings: 104
+| INFO     | job0 | import.verilog       | 0 | Finished task in 0.74s
+| INFO     | job0 | import.verilog       | 0 | Archiving import.verilog0...

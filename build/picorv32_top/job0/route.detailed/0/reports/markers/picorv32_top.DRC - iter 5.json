@@ -1,0 +1,298 @@
+{
+    "DRC - iter 5": {
+        "description": "",
+        "source": "DRT",
+        "max_markers": "10000",
+        "category": {
+            "Short": {
+                "description": "",
+                "source": "DRT",
+                "max_markers": "10000",
+                "violations": [
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "824.4800",
+                                        "y": "765.7800"
+                                    },
+                                    {
+                                        "x": "824.6200",
+                                        "y": "765.9200"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_instr\\[31\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "net1820"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "824.4800",
+                                        "y": "765.7800"
+                                    },
+                                    {
+                                        "x": "824.6200",
+                                        "y": "765.9100"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_instr\\[31\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "net1820"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "824.4800",
+                                        "y": "765.7700"
+                                    },
+                                    {
+                                        "x": "824.6200",
+                                        "y": "765.9100"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_instr\\[31\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "net1820"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "824.4800",
+                                        "y": "765.7700"
+                                    },
+                                    {
+                                        "x": "824.6200",
+                                        "y": "765.9200"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_instr\\[31\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "net1820"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Metal Spacing": {
+                "description": "",
+                "source": "DRT",
+                "max_markers": "10000",
+                "violations": [
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "821.6450",
+                                        "y": "765.6400"
+                                    },
+                                    {
+                                        "x": "821.9350",
+                                        "y": "765.7350"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "_3009_"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "800.6900",
+                                        "y": "697.4500"
+                                    },
+                                    {
+                                        "x": "800.7950",
+                                        "y": "697.6500"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_cycle\\[4\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/instr_rdinstrh"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "800.6900",
+                                        "y": "697.4500"
+                                    },
+                                    {
+                                        "x": "800.7950",
+                                        "y": "697.6250"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_cycle\\[4\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/instr_rdinstrh"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "800.6900",
+                                        "y": "697.4950"
+                                    },
+                                    {
+                                        "x": "800.7950",
+                                        "y": "697.6500"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_cycle\\[4\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/instr_rdinstrh"
+                            }
+                        ]
+                    },
+                    {
+                        "visited": "false",
+                        "visible": "true",
+                        "waived": "false",
+                        "layer": "met1",
+                        "shape": [
+                            {
+                                "type": "box",
+                                "points": [
+                                    {
+                                        "x": "800.6900",
+                                        "y": "697.4950"
+                                    },
+                                    {
+                                        "x": "800.7950",
+                                        "y": "697.6250"
+                                    }
+                                ]
+                            }
+                        ],
+                        "sources": [
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/count_cycle\\[4\\]"
+                            },
+                            {
+                                "type": "net",
+                                "name": "rv32_soc\\\/instr_rdinstrh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

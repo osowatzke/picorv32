@@ -1,0 +1,7 @@
+ 153: [WARNING ORD-2011] LEF master sky130_sram_2kbyte_1rw1r_32x512_8 has no liberty cell.
+ 175: [WARNING FLW-0001] Defaulting back to default SDC
+ 184: Warning: There are 68 input ports missing set_input_delay.
+ 253: Warning: There are 133 output ports missing set_output_delay.
+ 387: Warning: There are 301 unconstrained endpoints.
+ 736: [WARNING IFP-0028] Core area lower left (10.000, 10.000) snapped to (10.120, 10.880).
+1014: [WARNING GUI-0076] QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-www-data'
