@@ -42,6 +42,12 @@ test_ez: testbench_ez.vvp
 test_ez_vcd: testbench_ez.vvp
 	$(VVP) -N $< +vcd
 
+test_fpu: testbench_fpu.vvp
+	$(VVP) -N $<
+
+test_fpu_vcd: testbench_fpu.vvp
+	$(VVP) -N $< +vcd
+    
 test_sp: testbench_sp.vvp firmware/firmware.hex
 	$(VVP) -N $<
 
@@ -58,6 +64,10 @@ testbench.vvp: testbench.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v
 	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
 
+testbench_fpu.vvp: testbench_fpu.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v
+	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
+	chmod -x $@
+    
 testbench_rvf.vvp: testbench.v picorv32.v rvfimon.v
 	$(IVERILOG) -o $@ -D RISCV_FORMAL $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@

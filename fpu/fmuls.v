@@ -34,8 +34,8 @@ module fmuls (
     localparam FUNCT7_HI    = 31;
 
     // Relevant fields of fmuls instruction
-    localparam [6:0] FMULS_FUNCT7 = 7'b1010011;
-    localparam [6:0] FMULS_OPCODE = 7'b0001000;
+    localparam [6:0] FMULS_FUNCT7 = 7'b0001000;
+    localparam [6:0] FMULS_OPCODE = 7'b1010011;
 
     // Subregions of instruction
     wire [6:0] opcodeIn;
@@ -82,7 +82,7 @@ module fmuls (
         rs2R            <= pcipRs2In;
     end
 
-    assign start         = instMatchR & (!instMatch2R || done);
+    assign start         = instMatchR & !instMatch2R;
     assign rst           = !rstLowIn;
 
     floating_point_multiply #(.FRAC_WIDTH(24), .EXP_WIDTH(8)) mult_i (
@@ -110,8 +110,8 @@ module fmuls (
         end
     end
 
-    assign pcpiWaitOut  = instMatchR;
-    assign pcpiReadyOut = pcpiReadyR;
+    assign pcipWaitOut  = instMatchR;
+    assign pcipReadyOut = done; //pcpiReadyR;
     assign pcipWrOut    = done;
 
 endmodule
