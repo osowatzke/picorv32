@@ -25,3 +25,7 @@ https://github.com/osowatzke/cnn-hw-accelerator/tree/main
 RISV Floating Point Documentation (Starting on Page 111 \[130 when searching\]):
 
 https://drive.google.com/file/d/1uviu1nH-tScFfgrovvFCrj7Omv8tFtkp/view
+
+PCPI Interface:
+
+https://kuleuven-diepenbeek.github.io/hwswcodesign-course/200_coprocessor/202_pcpi/
