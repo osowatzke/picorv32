@@ -7,8 +7,7 @@ module floating_point_multiply (
      dataBIn,
      validIn,
      dataOut,
-     validOut
-);
+     validOut);
 
     // Parameters to define floating-point type
     parameter FRAC_WIDTH        = 24;
@@ -30,7 +29,7 @@ module floating_point_multiply (
 
     // Define mutliplier bias
     localparam BIAS             = 2**(EXP_WIDTH - 1) - 1;
-    
+
     // Determine sizes of partial products
     localparam PRODA_IN_WIDTH   = FRAC_WIDTH/2;
     localparam PRODB_IN_WIDTH   = FRAC_WIDTH - PRODA_IN_WIDTH;
@@ -169,7 +168,7 @@ module floating_point_multiply (
     wire [MANTISSA_WIDTH-1:0] aMantissa, bMantissa;
 
     integer i;
-    
+
     // Parse Portions of Floating Point Number
     assign aSign = dataAIn[SIGN_IDX];
     assign bSign = dataBIn[SIGN_IDX];

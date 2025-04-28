@@ -1,25 +1,26 @@
 `timescale 1 ns / 1 ns
 
 module fmuls (
-    clkIn;
-    rstLowIn;
-    pcipValidIn;
-    pcipInstIn;
-    pcipRs1In;
-    pcipRs2In;
-    pcipWrIn;
-    pcipRdOut;
-    pcipWaitOut;
-    pcipReadyOut)
+    clkIn,
+    rstLowIn,
+    pcipValidIn,
+    pcipInstIn,
+    pcipRs1In,
+    pcipRs2In,
+    pcipWrOut,
+    pcipRdOut,
+    pcipWaitOut,
+    pcipReadyOut);
     
+    input         clkIn;
+    input         rstLowIn;
     input         pcipValidIn;
     input [31:0]  pcipInstIn;
     input [31:0]  pcipRs1In;
     input [31:0]  pcipRs2In;
-    input         pcipWrIn;
-    
-    output        pcipWrIn;
-    output [31:0] pcipRdOut
+
+    output        pcipWrOut;
+    output [31:0] pcipRdOut;
     output        pcipWaitOut;
     output        pcipReadyOut;
 
@@ -63,23 +64,22 @@ module fmuls (
     assign funct7In = pcipInstIn[FUNCT7_HI:FUNCT7_LO];
 
     // Determine whether instruction is a floating point multiply
-    always @(posedge clk) begin
+    always @(posedge clkIn) begin
         if (rstLowIn) begin
             instMatchR      <= 0;
             if (pcipValidIn && funct7In == FMULS_FUNCT7 && opcodeIn == FMULS_OPCODE) begin
                 instMatchR  <= 1;
             end
             instMatch2R     <= instMatchR;        
-        end
-        else
+        end else begin
             instMatchR      <= 0;
             instMatch2R     <= 0;
         end
     end
 
-    always @(posedge clk) begin
-        rs1R            <= pcpiRs1In;
-        rs2R            <= pcpiRs2In;
+    always @(posedge clkIn) begin
+        rs1R            <= pcipRs1In;
+        rs2R            <= pcipRs2In;
     end
 
     assign start         = instMatchR & (!instMatch2R || done);
@@ -91,10 +91,10 @@ module fmuls (
         .dataAIn(rs1R),
         .dataBIn(rs2R),
         .validIn(start),
-        .dataOut(pcpiRdOut),
+        .dataOut(pcipRdOut),
         .validOut(done));
 
-    always @(posedge clk) begin
+    always @(posedge clkIn) begin
         if (rstLowIn) begin
             initR           <= 0;
             if (start) begin
@@ -104,10 +104,10 @@ module fmuls (
                 pcpiReadyR  <= 1;
             end
         end
-        else
+        else begin
             pcpiReadyR      <= 0;
             initR           <= 1;
-        begin
+        end
     end
 
     assign pcpiWaitOut  = instMatchR;
@@ -115,11 +115,11 @@ module fmuls (
     assign pcipWrOut    = done;
 
 endmodule
-// Determine whether instruction is a floating 
-/*generate
-    for (stage = 0; stage < NUM_ADDER_STAGES; stage = stage + 1) begin
-        
-        prodR[mantissaAR 
-    end 
-end*/
 
+// Determine whether instruction is a floating 
+//generate
+//    for (stage = 0; stage < NUM_ADDER_STAGES; stage = stage + 1) begin
+//      
+//        prodR[mantissaAR 
+//    end 
+//end

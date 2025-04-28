@@ -336,7 +336,7 @@ module picorv32 #(
 			.pcipInstIn  (pcpi_insn      ),
 			.pcipRs1In   (pcpi_rs1       ),
 			.pcipRs2In   (pcpi_rs2       ),
-			.pcipWrIn    (pcpi_fpu_wr    ),
+			.pcipWrOut   (pcpi_fpu_wr    ),
 			.pcipRdOut   (pcpi_fpu_rd    ),
 			.pcipWaitOut (pcpi_fpu_wait  ),
 			.pcipReadyOut(pcpi_fpu_ready )
@@ -2692,6 +2692,7 @@ module picorv32_axi #(
 		.ENABLE_MUL          (ENABLE_MUL          ),
 		.ENABLE_FAST_MUL     (ENABLE_FAST_MUL     ),
 		.ENABLE_DIV          (ENABLE_DIV          ),
+		.ENABLE_FPU          (ENABLE_FPU          ),
 		.ENABLE_IRQ          (ENABLE_IRQ          ),
 		.ENABLE_IRQ_QREGS    (ENABLE_IRQ_QREGS    ),
 		.ENABLE_IRQ_TIMER    (ENABLE_IRQ_TIMER    ),
