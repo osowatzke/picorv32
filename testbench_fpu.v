@@ -74,9 +74,9 @@ module testbench;
             err         <= 0;
         end else if (mem_valid && mem_ready && mem_wstrb) begin
             if (dataY === mem_wdata) begin
-                $display("Expected (0x%08x) = Measured (0x%08x)", dataY, mem_wdata);
+                $display("Time %t :: Expected (0x%08x) = Measured (0x%08x)", $time, dataY, mem_wdata);
             end else begin
-                $display("Error :: Expected (0x%08x) != Measured (0x%08x)", dataY, mem_wdata);
+                $display("ERROR Time %t :: Expected (0x%08x) != Measured (0x%08x)", $time, dataY, mem_wdata);
                 err     <= 1;
             end
             if (doneA | doneB | doneY) begin
