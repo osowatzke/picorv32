@@ -73,10 +73,10 @@ module testbench;
         if (resetn == 0) begin
             err         <= 0;
         end else if (mem_valid && mem_ready && mem_wstrb) begin
-            if (dataY === mem_rdata) begin
-                $display("Expected (0x%08x) = Measured (0x%08x)", dataY, mem_rdata);
+            if (dataY === mem_wdata) begin
+                $display("Expected (0x%08x) = Measured (0x%08x)", dataY, mem_wdata);
             end else begin
-                $display("Error :: Expected (0x%08x) != Measured (0x%08x)", dataY, mem_rdata);
+                $display("Error :: Expected (0x%08x) != Measured (0x%08x)", dataY, mem_wdata);
                 err     <= 1;
             end
             if (doneA | doneB | doneY) begin
@@ -198,11 +198,11 @@ module testbench;
 				if (mem_wstrb[2]) memory[mem_addr >> 2][23:16] <= mem_wdata[23:16];
 				if (mem_wstrb[3]) memory[mem_addr >> 2][31:24] <= mem_wdata[31:24];
 			end
-            if (memUpdate) begin
-                memory[128] <= dataA;
-                memory[129] <= dataB;
-            end
 			/* add memory-mapped IO here */
 		end
+        if (memUpdate) begin
+            memory[128] <= dataA;
+            memory[129] <= dataB;
+        end
 	end
 endmodule
