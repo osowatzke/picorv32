@@ -8,13 +8,16 @@
 `timescale 1 ns / 1 ps
 
 module testbench;
+
 	reg clk = 1;
 	reg resetn = 0;
 	wire trap;
-
-    parameter DATA_A_FILE = "dataA.txt";
-    parameter DATA_B_FILE = "dataB.txt";
-    parameter DATA_Y_FILE = "dataY.txt";
+    
+    parameter OP = "mult";
+    
+    localparam DATA_A_FILE = {"./fpu/test/", OP, "/dataA.txt"};
+    localparam DATA_B_FILE = {"./fpu/test/", OP, "/dataB.txt"};
+    localparam DATA_Y_FILE = {"./fpu/test/", OP, "/dataY.txt"};
     
 	always #5 clk = ~clk;
 
