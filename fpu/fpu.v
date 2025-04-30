@@ -100,7 +100,7 @@ module fpu (
         rs1R            <= pcpiRs1In;
         rs2R            <= pcpiRs2In;
         if (funct7In == FSUBS_FUNCT7) begin
-            rs2R[31]    <= !rs2R[31];
+            rs2R[31]    <= !pcpiRs2In[31];
         end
     end
     
