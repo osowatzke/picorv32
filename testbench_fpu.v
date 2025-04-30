@@ -182,7 +182,14 @@ module testbench;
 		memory[0] = 32'h 20000093; //       li      x1,512
 		memory[1] = 32'h 0000a103; // loop: lw      x2,0(x1)
         memory[2] = 32'h 0040a183; //       lw      x3,4(x1)
-		memory[3] = 32'h 10310253; //       fmul.s  x4,x2,x3 // should be f4, f2, and f3 (but simplified arch)
+        if (OP == "add")
+            memory[3] = 32'h 00310253; //   fadd.s  x4,x2,x3 // should be f4, f2, and f3 (but simplified arch)
+        else if (OP == "sub")
+            memory[3] = 32'h 08310253; //   fsub.s  x4,x2,x3 // should be f4, f2, and f3 (but simplified arch)
+        else if (OP == "mult")
+            memory[3] = 32'h 10310253; //   fmul.s  x4,x2,x3 // should be f4, f2, and f3 (but simplified arch)
+        else
+            memory[3] = 32'h 00000000; //   nop
 		memory[4] = 32'h 0040a423; //       sw      x4,8(x1)
 		memory[5] = 32'h ff1ff06f; //       j       <loop>
         // Data
