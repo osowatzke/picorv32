@@ -11,6 +11,8 @@ ICARUS_SUFFIX =
 IVERILOG = iverilog$(ICARUS_SUFFIX)
 VVP = vvp$(ICARUS_SUFFIX)
 
+OP := mult
+
 TEST_OBJS = $(addsuffix .o,$(basename $(wildcard tests/*.S)))
 FIRMWARE_OBJS = firmware/start.o firmware/irq.o firmware/print.o firmware/hello.o firmware/sieve.o firmware/multest.o firmware/stats.o
 GCC_WARNS  = -Werror -Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
@@ -47,7 +49,7 @@ test_fpu: testbench_fpu.vvp
 
 test_fpu_vcd: testbench_fpu.vvp
 	$(VVP) -N $< +vcd
-    
+	
 test_sp: testbench_sp.vvp firmware/firmware.hex
 	$(VVP) -N $<
 
@@ -64,10 +66,10 @@ testbench.vvp: testbench.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v
 	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
 
-testbench_fpu.vvp: testbench_fpu.v picorv32.v fpu/floating_point_add.v fpu/floating_point_multiply.v fpu/fpu.v fpu/file_source.v
-	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
+testbench_fpu.vvp: testbench_fpu.v picorv32.v fpu/floating_point_add.v fpu/floating_point_multiply.v fpu/fpu.v fpu/file_source.v FORCE
+	$(IVERILOG) -Ptestbench.OP=\"$(OP)\" -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $(wordlist 1,6,$^)
 	chmod -x $@
-    
+
 testbench_rvf.vvp: testbench.v picorv32.v rvfimon.v
 	$(IVERILOG) -o $@ -D RISCV_FORMAL $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
@@ -192,3 +194,5 @@ clean:
 		testbench_verilator testbench_verilator_dir
 
 .PHONY: test test_vcd test_sp test_axi test_wb test_wb_vcd test_ez test_ez_vcd test_synth download-tools build-tools toc clean
+
+FORCE:
