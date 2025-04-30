@@ -22,25 +22,36 @@ module file_source (
     integer file, stat;
     
     initial begin
-        dataOut     <= 0;
-        doneOut     <= 0;
-        validOut    <= 0;
         file = $fopen(FILE_NAME, "r");
         if (file == 0) begin
             $display("Error: Could not open \"%s\"", FILE_NAME);
             $finish;
         end
-        while (!$feof(file)) begin
-            @(posedge clkIn)
-            if (rstIn == 0 && validIn) begin
-                stat = $fscanf(file, "%h\n", dataOut);
-                validOut <= 1;
+    end
+    
+    reg [DATA_WIDTH-1:0] fileData;
+    
+    always @(posedge(clkIn)) begin
+        if (rstIn) begin
+            dataOut     <= 0;
+            doneOut     <= 0;
+            validOut    <= 0;
+        end else begin
+            validOut    <= 0;
+            if (file != 0 && !$feof(file)) begin
+                if (validIn) begin
+                    stat = $fscanf(file, "%h\n", fileData);
+                    dataOut  <= fileData; // Must assign with block assignment
+                    validOut <= 1;
+                    if ($feof(file)) begin
+                        $fclose(file);
+                        file = 0;
+                    end
+                end
             end else begin
-                validOut <= 0;
+                doneOut <= 1;
             end
         end
-        $fclose(file);
-        doneOut <= 1;
     end
         
 endmodule

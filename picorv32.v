@@ -329,17 +329,17 @@ module picorv32 #(
 	end endgenerate
 
 	generate if (ENABLE_FPU) begin
-		fmuls pcpi_fpu(
+		fpu pcpi_fpu(
 			.clkIn       (clk            ),
 			.rstLowIn    (resetn         ),
-			.pcipValidIn (pcpi_valid     ),
-			.pcipInstIn  (pcpi_insn      ),
-			.pcipRs1In   (pcpi_rs1       ),
-			.pcipRs2In   (pcpi_rs2       ),
-			.pcipWrOut   (pcpi_fpu_wr    ),
-			.pcipRdOut   (pcpi_fpu_rd    ),
-			.pcipWaitOut (pcpi_fpu_wait  ),
-			.pcipReadyOut(pcpi_fpu_ready )
+			.pcpiValidIn (pcpi_valid     ),
+			.pcpiInstIn  (pcpi_insn      ),
+			.pcpiRs1In   (pcpi_rs1       ),
+			.pcpiRs2In   (pcpi_rs2       ),
+			.pcpiWrOut   (pcpi_fpu_wr    ),
+			.pcpiRdOut   (pcpi_fpu_rd    ),
+			.pcpiWaitOut (pcpi_fpu_wait  ),
+			.pcpiReadyOut(pcpi_fpu_ready )
 		);
 	end else begin
 		assign pcpi_fpu_wr = 0;

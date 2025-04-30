@@ -64,7 +64,7 @@ testbench.vvp: testbench.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v
 	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
 
-testbench_fpu.vvp: testbench_fpu.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v fpu/file_source.v
+testbench_fpu.vvp: testbench_fpu.v picorv32.v fpu/floating_point_add.v fpu/floating_point_multiply.v fpu/fpu.v fpu/file_source.v
 	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
     
