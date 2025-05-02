@@ -36,3 +36,5 @@
 /synth.log
 /synth.v
 .*.swp
+__pycache__
+/build
