@@ -1,0 +1,48 @@
+📦 Basic Memory Interface
+
+The PicoRV32 uses a valid-ready handshake for memory transfers—only one transfer at a time.
+Key Signals:
+
+    mem_valid: Core starts a memory transfer.
+
+    mem_ready: Memory acknowledges the transfer.
+
+    mem_instr: High if it’s an instruction fetch.
+
+    mem_addr: Address for read or write.
+
+    mem_wdata: Data to write.
+
+    mem_wstrb: Byte-enable for writing.
+
+    mem_rdata: Data read from memory.
+
+📖 Read Operation:
+
+    mem_wstrb = 0 → it’s a read.
+
+    mem_wdata is ignored.
+
+    Memory returns data on mem_rdata when mem_ready is high.
+
+    Can be asynchronous or zero-wait (e.g., mem_ready = 1 always).
+
+✍️ Write Operation:
+
+    mem_wstrb ≠ 0 → it’s a write.
+
+    mem_rdata is ignored.
+
+    Memory writes mem_wdata to mem_addr.
+
+    mem_wstrb decides which bytes to write:
+
+        Examples:
+
+            1111 = write full word
+
+            1100 = upper 16 bits
+
+            0001 = lowest byte
+
+    mem_ready can be asserted immediately or tied to 1.
