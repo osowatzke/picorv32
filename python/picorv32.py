@@ -12,7 +12,7 @@ def main(signoff_only):
     chip.set('option', 'jobname', 'rtl2gds')
 
     if not signoff_only:
-        chip.input("picorv32.v")
+        chip.input("../picorv32.v")
         chip.clock('clk', period=25)
         chip.set('option', 'remote', True)
         chip.set('option', 'nodisplay', True)
