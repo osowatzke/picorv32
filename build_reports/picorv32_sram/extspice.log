@@ -1,0 +1,1616 @@
+
+Magic 8.3 revision 367 - Compiled on Thu Apr 10 12:43:50 UTC 2025.
+Starting magic under Tcl interpreter
+Using the terminal as the console.
+Using NULL graphics device.
+Processing system .magicrc file
+Loading "/venv/lib/python3.10/site-packages/siliconcompiler/tools/magic/sc_magic.tcl" from command line.
+2 Magic internal units = 1 Lambda
+Input style sky130(): scaleFactor=2, multiplier=2
+The following types are not handled by extraction and will be treated as non-electrical types:
+    obsactive mvobsactive obsli1 obsm1 obsm2 obsm3 obsm4 obsm5 obsmrdl ubm fillblock comment obscomment res0p35 res0p69 res1p41 res2p85 res5p73 
+Scaled tech values by 2 / 1 to match internal grid scaling
+Input style sky130(vendor): scaleFactor=2, multiplier=2
+CIF input style is now "sky130(vendor)"
+Reading LEF /nfs/sc_compute/builds/a6b9bc43e1b142e4b2d2c0f27f668731/picorv32_with_sram/signoff/extspice/0/inputs/sc_sky130_fd_sc_hd_3499b5628b93c366da939378f49738ac0a09ec8a.tlef
+Reading LEF data from file /nfs/sc_compute/builds/a6b9bc43e1b142e4b2d2c0f27f668731/picorv32_with_sram/signoff/extspice/0/inputs/sc_sky130_fd_sc_hd_3499b5628b93c366da939378f49738ac0a09ec8a.tlef.
+This action cannot be undone.
+LEF read, Line 69 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 70 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read, Line 102 (Message): Unknown keyword "MINENCLOSEDAREA" in LEF file; ignoring.
+LEF read, Line 104 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 105 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read, Line 111 (Message): Unknown keyword "MAXIMUMDENSITY" in LEF file; ignoring.
+LEF read, Line 112 (Message): Unknown keyword "DENSITYCHECKWINDOW" in LEF file; ignoring.
+LEF read, Line 113 (Message): Unknown keyword "DENSITYCHECKSTEP" in LEF file; ignoring.
+LEF read, Line 145 (Message): Unknown keyword "MINENCLOSEDAREA" in LEF file; ignoring.
+LEF read, Line 153 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 154 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read, Line 156 (Message): Unknown keyword "MAXIMUMDENSITY" in LEF file; ignoring.
+LEF read, Line 157 (Message): Unknown keyword "DENSITYCHECKWINDOW" in LEF file; ignoring.
+LEF read, Line 158 (Message): Unknown keyword "DENSITYCHECKSTEP" in LEF file; ignoring.
+LEF read, Line 194 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 195 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read, Line 197 (Message): Unknown keyword "MAXIMUMDENSITY" in LEF file; ignoring.
+LEF read, Line 198 (Message): Unknown keyword "DENSITYCHECKWINDOW" in LEF file; ignoring.
+LEF read, Line 199 (Message): Unknown keyword "DENSITYCHECKSTEP" in LEF file; ignoring.
+LEF read, Line 235 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 236 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read, Line 238 (Message): Unknown keyword "MAXIMUMDENSITY" in LEF file; ignoring.
+LEF read, Line 239 (Message): Unknown keyword "DENSITYCHECKWINDOW" in LEF file; ignoring.
+LEF read, Line 240 (Message): Unknown keyword "DENSITYCHECKSTEP" in LEF file; ignoring.
+LEF read, Line 276 (Message): Unknown keyword "ANTENNAMODEL" in LEF file; ignoring.
+LEF read, Line 277 (Message): Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF read: Processed 783 lines.
+Reading LEF /nfs/sc_compute/builds/a6b9bc43e1b142e4b2d2c0f27f668731/picorv32_with_sram/signoff/extspice/0/inputs/sc_sky130_fd_sc_hd_merged_f461cfa636bd54c7344cae01b999d2227ebccdd2.lef
+Reading LEF data from file /nfs/sc_compute/builds/a6b9bc43e1b142e4b2d2c0f27f668731/picorv32_with_sram/signoff/extspice/0/inputs/sc_sky130_fd_sc_hd_merged_f461cfa636bd54c7344cae01b999d2227ebccdd2.lef.
+This action cannot be undone.
+LEF read: Processed 50727 lines.
+Warning: Calma reading is not undoable!  I hope that's OK.
+Library written using GDS-II Release 6.0
+Library name: LIB
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_11".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_12".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_360_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_15".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_29".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_28".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w0_740_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w1_260_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_16".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_13".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w7_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w7_000_sli_dli_da_p".
+Reading "sky130_fd_bd_sram__openram_dp_nand3_dec".
+Reading "sky130_fd_bd_sram__openram_dp_nand2_dec".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec".
+CIF file read warning: CIF style sky130(vendor): units rescaled by factor of 5 / 1
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dli".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sli_dactive".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m18_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m18_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m22_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m22_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m7_w1_680_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m7_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w1_680_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w1_680_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_20".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_17".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_and3_dec".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w2_880_sli_dli".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pnand2".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_23".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_22".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_21".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w0_550_sli_dli".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m41_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m41_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m14_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m14_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w1_680_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_16".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_15".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dactive".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m24_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m24_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m8_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m8_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_4".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m42_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m42_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m15_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m15_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m5_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w1_260_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w2_000_sli_dli_da_p".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_3".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_2".
+Reading "sky130_fd_bd_sram__openram_dff".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode3x8".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_precharge_1".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_27".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_26".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_25".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_24".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_column_mux".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pand2".
+Reading "sky130_fd_bd_sram__openram_write_driver".
+Reading "sky130_fd_bd_sram__openram_sense_amp".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_precharge_0".
+Reading "sky130_fd_bd_sram__openram_dp_cell_cap_row".
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_cap_row" (byte position 259110): Unknown layer/datatype in boundary, layer=33 type=42
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_cap_row" (byte position 259814): Unknown layer/datatype in boundary, layer=33 type=43
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_cap_row" (byte position 260774): Unknown layer/datatype in boundary, layer=22 type=21
+Reading "sky130_fd_bd_sram__openram_dp_cell_dummy".
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_dummy" (byte position 277056): Unknown layer/datatype in boundary, layer=33 type=42
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_dummy" (byte position 280832): Unknown layer/datatype in boundary, layer=33 type=43
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_dummy" (byte position 285024): Unknown layer/datatype in boundary, layer=22 type=21
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_dummy" (byte position 285472): Unknown layer/datatype in boundary, layer=22 type=22
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_dummy" (byte position 285728): Unknown layer/datatype in boundary, layer=235 type=0
+Reading "sky130_fd_bd_sram__openram_dp_cell_replica".
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_replica" (byte position 304108): Unknown layer/datatype in boundary, layer=33 type=42
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_replica" (byte position 307884): Unknown layer/datatype in boundary, layer=33 type=43
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_replica" (byte position 312076): Unknown layer/datatype in boundary, layer=22 type=21
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_replica" (byte position 313036): Unknown layer/datatype in boundary, layer=22 type=22
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell_replica" (byte position 313292): Unknown layer/datatype in boundary, layer=235 type=0
+Reading "sky130_fd_bd_sram__openram_dp_cell_cap_col".
+Reading "sky130_fd_bd_sram__openram_dp_cell".
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell" (byte position 334350): Unknown layer/datatype in boundary, layer=33 type=42
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell" (byte position 338126): Unknown layer/datatype in boundary, layer=33 type=43
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell" (byte position 342318): Unknown layer/datatype in boundary, layer=22 type=21
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell" (byte position 343278): Unknown layer/datatype in boundary, layer=22 type=22
+Error while reading cell "sky130_fd_bd_sram__openram_dp_cell" (byte position 343534): Unknown layer/datatype in boundary, layer=235 type=0
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_20".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_19".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_18".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_17".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_5".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_4".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pnand3".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_14".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_13".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_12".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_11".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_1".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_10".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_9".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_8".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_7".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pand2_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pinv_1".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_decoder".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array" (byte position 1307114): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array" (byte position 1307386): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array" (byte position 1307794): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array" (byte position 1308202): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_write_driver_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_sense_amp_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_9".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_8".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1550070): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1550730): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1551274): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1551410): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1551682): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1551954): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1552226): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1552702): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1552974): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1553246): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1553518): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1553790): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1554062): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1554266): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1555882): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1556286): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1557702): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1558518): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1558790): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1559062): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1559538): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1559810): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1560502): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1560706): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1560774): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1563130): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1563402): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1563758): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1563894): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1563962): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1564098): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1564250): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1564742): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1565014): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1565762): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1566034): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1566782): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1567054): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1567394): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1567734): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1568006): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1568142): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1568278): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1568430): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1569406): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1570466): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1571290): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1571358): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1572826): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1573098): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1574602): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1574822): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1575278): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1575938): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1576582): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1576786): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1576854): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1577058): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1577262): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1577602): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1577806): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1577942): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0" (byte position 1578010): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1654670): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1655214): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1655758): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1656166): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1656438): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1656710): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1657186): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1657458): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1657730): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1658002): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1658274): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1658546): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1658750): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1658818): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1659750): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1660862): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1661774): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1662590): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1662862): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1663134): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1664402): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1664674): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1664946): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1665014): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1665282): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1665418): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1666764): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1667108): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1667452): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1667588): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1667792): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1667860): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1668340): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1668612): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1669360): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1669632): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1670380): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1670652): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1670992): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1671332): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1671604): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1671740): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1671876): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1672076): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1672342): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1674136): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1674204): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1674272): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1675424): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1675896): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1676840): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1677180): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1677384): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1677656): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1677928): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1678064): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1678768): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1678836): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1679040): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1679384): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1679728): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1680072): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array" (byte position 1680492): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_dummy_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_replica_column_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_replica_column".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_bitcell_array".
+    5000 uses
+    10000 uses
+    15000 uses
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_6".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_1".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10560960): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10561164): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10561368): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10561776): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10561912): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10562320): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10562388): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10563820): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10563956): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10564432): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10564772): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10565110): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10565588): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10566000): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10566476): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10566952): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10567088): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10567564): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10568116): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10568728): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10569068): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10569620): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10569688): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10569756): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10569824): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10570976): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10571044): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10571384): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10571520): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10571996): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10572412): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10574044): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10574112): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10574520): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10574724): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10575208): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10575820): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10576432): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10577516): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10577656): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10577860): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10578064): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10578748): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10579492): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10579560): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10579968): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10580588): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10580724): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain" (byte position 10580792): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pand3_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pand3".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_3".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pand2_1".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_2".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array" (byte position 10606452): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array" (byte position 10606724): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array" (byte position 10606996): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10610240): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10610512): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10610716): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10611056): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10611124): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10611192): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10611872): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612008): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612144): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612280): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612416): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612484): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612756): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10612892): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10613232): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10613300): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10613436): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0" (byte position 10613708): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_port_address_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_port_address".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_port_data_0".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_port_data".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_replica_bitcell_array".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_33".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_32".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_39".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_contact_38".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_cr_5".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_cr_4".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_cr_3".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_data_dff".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_wmask_dff".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_col_addr_dff".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11921984): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922256): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922324): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922392): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922460): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922596): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11922868): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923276): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923344): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923480): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923548): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923616): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11923752): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11924024): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11924228): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11924296): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11924500): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff" (byte position 11924568): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11932032): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11932236): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11932576): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11933188): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11934484): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11935168): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11935712): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936052): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936120): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936596): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936732): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936868): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11936936): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937208): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937276): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937344): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937412): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937548): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937616): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937684): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937820): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r" (byte position 11937888): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw".
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11951390): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11951730): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11951934): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11953022): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11954042): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11954178): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11954586): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11955198): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957046): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957454): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957590): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957658): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957726): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957794): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11957862): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11958338): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11958542): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11958746): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11958882): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959154): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959222): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959290): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959358): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959494): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959562): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_7" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959630): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959698): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_14" placed on top of itself.  Ignoring the extra one.
+Error while reading cell "sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw" (byte position 11959766): Warning: cell "sky130_sram_2kbyte_1rw1r_32x512_8_contact_19" placed on top of itself.  Ignoring the extra one.
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8_bank".
+Reading "VIA_M4M5_PR".
+Reading "VIA_M3M4_PR".
+Reading "VIA_M1M2_PR_MR".
+Reading "VIA_L1M1_PR_MR".
+Reading "VIA_M2M3_PR".
+Reading "VIA_M1M2_PR".
+Reading "VIA_via2_3_1600_480_1_5_320_320".
+Reading "VIA_via3_4_1600_480_1_4_400_400".
+Reading "VIA_via4_5_1600_480_1_4_400_400".
+Reading "VIA_via5_6_1600_1600_1_1_1600_1600".
+Reading "sky130_sram_2kbyte_1rw1r_32x512_8".
+    5000 uses
+Reading "sky130_fd_sc_hd__dfxtp_4".
+Warning:  cell sky130_fd_sc_hd__dfxtp_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__edfxtp_1".
+Warning:  cell sky130_fd_sc_hd__edfxtp_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkdlybuf4s25_1".
+Warning:  cell sky130_fd_sc_hd__clkdlybuf4s25_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkdlybuf4s18_2".
+Warning:  cell sky130_fd_sc_hd__clkdlybuf4s18_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkdlybuf4s15_2".
+Warning:  cell sky130_fd_sc_hd__clkdlybuf4s15_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_16".
+Warning:  cell sky130_fd_sc_hd__buf_16 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_12".
+Warning:  cell sky130_fd_sc_hd__buf_12 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__dlymetal6s2s_1".
+Warning:  cell sky130_fd_sc_hd__dlymetal6s2s_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__dlymetal6s4s_1".
+Warning:  cell sky130_fd_sc_hd__dlymetal6s4s_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkdlybuf4s15_1".
+Warning:  cell sky130_fd_sc_hd__clkdlybuf4s15_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_2".
+Warning:  cell sky130_fd_sc_hd__buf_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_1".
+Warning:  cell sky130_fd_sc_hd__buf_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_8".
+Warning:  cell sky130_fd_sc_hd__inv_8 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinv_4".
+Warning:  cell sky130_fd_sc_hd__clkinv_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__bufinv_16".
+Warning:  cell sky130_fd_sc_hd__bufinv_16 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinvlp_4".
+Warning:  cell sky130_fd_sc_hd__clkinvlp_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinv_8".
+Warning:  cell sky130_fd_sc_hd__clkinv_8 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkbuf_1".
+Warning:  cell sky130_fd_sc_hd__clkbuf_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_16".
+Warning:  cell sky130_fd_sc_hd__inv_16 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkbuf_16".
+Warning:  cell sky130_fd_sc_hd__clkbuf_16 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_8".
+Warning:  cell sky130_fd_sc_hd__buf_8 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_6".
+Warning:  cell sky130_fd_sc_hd__buf_6 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__conb_1".
+Warning:  cell sky130_fd_sc_hd__conb_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__buf_4".
+Warning:  cell sky130_fd_sc_hd__buf_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__dfxtp_2".
+Warning:  cell sky130_fd_sc_hd__dfxtp_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__dfxtp_1".
+Warning:  cell sky130_fd_sc_hd__dfxtp_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__ha_2".
+Warning:  cell sky130_fd_sc_hd__ha_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__ha_4".
+Warning:  cell sky130_fd_sc_hd__ha_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__ha_1".
+Warning:  cell sky130_fd_sc_hd__ha_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fa_2".
+Warning:  cell sky130_fd_sc_hd__fa_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fa_1".
+Warning:  cell sky130_fd_sc_hd__fa_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and4_4".
+Warning:  cell sky130_fd_sc_hd__and4_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a41o_1".
+Warning:  cell sky130_fd_sc_hd__a41o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21ba_1".
+Warning:  cell sky130_fd_sc_hd__o21ba_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o311a_1".
+Warning:  cell sky130_fd_sc_hd__o311a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2b_2".
+Warning:  cell sky130_fd_sc_hd__nor2b_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o211a_1".
+Warning:  cell sky130_fd_sc_hd__o211a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and2_2".
+Warning:  cell sky130_fd_sc_hd__and2_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and4_1".
+Warning:  cell sky130_fd_sc_hd__and4_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and4_2".
+Warning:  cell sky130_fd_sc_hd__and4_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and3_2".
+Warning:  cell sky130_fd_sc_hd__and3_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o41ai_1".
+Warning:  cell sky130_fd_sc_hd__o41ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinv_2".
+Warning:  cell sky130_fd_sc_hd__clkinv_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a311o_1".
+Warning:  cell sky130_fd_sc_hd__a311o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o32a_1".
+Warning:  cell sky130_fd_sc_hd__o32a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o22ai_2".
+Warning:  cell sky130_fd_sc_hd__o22ai_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o22a_1".
+Warning:  cell sky130_fd_sc_hd__o22a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__xor2_1".
+Warning:  cell sky130_fd_sc_hd__xor2_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21o_4".
+Warning:  cell sky130_fd_sc_hd__a21o_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a2111oi_1".
+Warning:  cell sky130_fd_sc_hd__a2111oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o2111ai_1".
+Warning:  cell sky130_fd_sc_hd__o2111ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o311ai_1".
+Warning:  cell sky130_fd_sc_hd__o311ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o221a_1".
+Warning:  cell sky130_fd_sc_hd__o221a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a31o_1".
+Warning:  cell sky130_fd_sc_hd__a31o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor3_2".
+Warning:  cell sky130_fd_sc_hd__nor3_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or4_1".
+Warning:  cell sky130_fd_sc_hd__or4_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o22ai_1".
+Warning:  cell sky130_fd_sc_hd__o22ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor3_4".
+Warning:  cell sky130_fd_sc_hd__nor3_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a221o_1".
+Warning:  cell sky130_fd_sc_hd__a221o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a211o_1".
+Warning:  cell sky130_fd_sc_hd__a211o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o221ai_2".
+Warning:  cell sky130_fd_sc_hd__o221ai_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o32ai_1".
+Warning:  cell sky130_fd_sc_hd__o32ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o211ai_1".
+Warning:  cell sky130_fd_sc_hd__o211ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or4_4".
+Warning:  cell sky130_fd_sc_hd__or4_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o221ai_1".
+Warning:  cell sky130_fd_sc_hd__o221ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__mux4_2".
+Warning:  cell sky130_fd_sc_hd__mux4_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__xnor2_1".
+Warning:  cell sky130_fd_sc_hd__xnor2_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or3_4".
+Warning:  cell sky130_fd_sc_hd__or3_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o31a_1".
+Warning:  cell sky130_fd_sc_hd__o31a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21boi_1".
+Warning:  cell sky130_fd_sc_hd__a21boi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o311ai_0".
+Warning:  cell sky130_fd_sc_hd__o311ai_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a22o_1".
+Warning:  cell sky130_fd_sc_hd__a22o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21boi_2".
+Warning:  cell sky130_fd_sc_hd__a21boi_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21boi_0".
+Warning:  cell sky130_fd_sc_hd__a21boi_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a32oi_1".
+Warning:  cell sky130_fd_sc_hd__a32oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21bai_1".
+Warning:  cell sky130_fd_sc_hd__o21bai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21boi_4".
+Warning:  cell sky130_fd_sc_hd__a21boi_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21bai_2".
+Warning:  cell sky130_fd_sc_hd__o21bai_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a222oi_1".
+Warning:  cell sky130_fd_sc_hd__a222oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a32o_1".
+Warning:  cell sky130_fd_sc_hd__a32o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a31o_4".
+Warning:  cell sky130_fd_sc_hd__a31o_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2b_4".
+Warning:  cell sky130_fd_sc_hd__nor2b_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and2_4".
+Warning:  cell sky130_fd_sc_hd__and2_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21ai_4".
+Warning:  cell sky130_fd_sc_hd__o21ai_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21oi_2".
+Warning:  cell sky130_fd_sc_hd__a21oi_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor3b_1".
+Warning:  cell sky130_fd_sc_hd__nor3b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or3b_4".
+Warning:  cell sky130_fd_sc_hd__or3b_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or3b_1".
+Warning:  cell sky130_fd_sc_hd__or3b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21o_1".
+Warning:  cell sky130_fd_sc_hd__a21o_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or4_2".
+Warning:  cell sky130_fd_sc_hd__or4_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or2_2".
+Warning:  cell sky130_fd_sc_hd__or2_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor4b_1".
+Warning:  cell sky130_fd_sc_hd__nor4b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__mux2_1".
+Warning:  cell sky130_fd_sc_hd__mux2_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__mux2_4".
+Warning:  cell sky130_fd_sc_hd__mux2_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and4b_1".
+Warning:  cell sky130_fd_sc_hd__and4b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2_8".
+Warning:  cell sky130_fd_sc_hd__nor2_8 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a41oi_1".
+Warning:  cell sky130_fd_sc_hd__a41oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a2111oi_0".
+Warning:  cell sky130_fd_sc_hd__a2111oi_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_6".
+Warning:  cell sky130_fd_sc_hd__inv_6 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a31oi_1".
+Warning:  cell sky130_fd_sc_hd__a31oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand3b_1".
+Warning:  cell sky130_fd_sc_hd__nand3b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and3_1".
+Warning:  cell sky130_fd_sc_hd__and3_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2_4".
+Warning:  cell sky130_fd_sc_hd__nor2_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand2b_1".
+Warning:  cell sky130_fd_sc_hd__nand2b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or2_0".
+Warning:  cell sky130_fd_sc_hd__or2_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o2bb2ai_1".
+Warning:  cell sky130_fd_sc_hd__o2bb2ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a211oi_1".
+Warning:  cell sky130_fd_sc_hd__a211oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a221oi_1".
+Warning:  cell sky130_fd_sc_hd__a221oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_4".
+Warning:  cell sky130_fd_sc_hd__inv_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinv_1".
+Warning:  cell sky130_fd_sc_hd__clkinv_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2_2".
+Warning:  cell sky130_fd_sc_hd__nor2_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand4b_1".
+Warning:  cell sky130_fd_sc_hd__nand4b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand4_1".
+Warning:  cell sky130_fd_sc_hd__nand4_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor4_2".
+Warning:  cell sky130_fd_sc_hd__nor4_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_12".
+Warning:  cell sky130_fd_sc_hd__inv_12 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a22oi_1".
+Warning:  cell sky130_fd_sc_hd__a22oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a311oi_1".
+Warning:  cell sky130_fd_sc_hd__a311oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a21oi_1".
+Warning:  cell sky130_fd_sc_hd__a21oi_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or2_4".
+Warning:  cell sky130_fd_sc_hd__or2_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand3_1".
+Warning:  cell sky130_fd_sc_hd__nand3_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and3_4".
+Warning:  cell sky130_fd_sc_hd__and3_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21ai_0".
+Warning:  cell sky130_fd_sc_hd__o21ai_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor4_1".
+Warning:  cell sky130_fd_sc_hd__nor4_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__and2_0".
+Warning:  cell sky130_fd_sc_hd__and2_0 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o31ai_1".
+Warning:  cell sky130_fd_sc_hd__o31ai_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or3_2".
+Warning:  cell sky130_fd_sc_hd__or3_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__or3_1".
+Warning:  cell sky130_fd_sc_hd__or3_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2b_1".
+Warning:  cell sky130_fd_sc_hd__nor2b_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor3_1".
+Warning:  cell sky130_fd_sc_hd__nor3_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__a2111o_2".
+Warning:  cell sky130_fd_sc_hd__a2111o_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nor2_1".
+Warning:  cell sky130_fd_sc_hd__nor2_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_1".
+Warning:  cell sky130_fd_sc_hd__inv_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinv_16".
+Warning:  cell sky130_fd_sc_hd__clkinv_16 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__clkinvlp_2".
+Warning:  cell sky130_fd_sc_hd__clkinvlp_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__inv_2".
+Warning:  cell sky130_fd_sc_hd__inv_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__o21a_1".
+Warning:  cell sky130_fd_sc_hd__o21a_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand2_1".
+Warning:  cell sky130_fd_sc_hd__nand2_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__mux2i_1".
+Warning:  cell sky130_fd_sc_hd__mux2i_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__nand2_4".
+Warning:  cell sky130_fd_sc_hd__nand2_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__tapvpwrvgnd_1".
+Warning:  cell sky130_fd_sc_hd__tapvpwrvgnd_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fill_2".
+Warning:  cell sky130_fd_sc_hd__fill_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fill_1".
+Warning:  cell sky130_fd_sc_hd__fill_1 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fill_4".
+Warning:  cell sky130_fd_sc_hd__fill_4 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__fill_8".
+Warning:  cell sky130_fd_sc_hd__fill_8 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "sky130_fd_sc_hd__diode_2".
+Warning:  cell sky130_fd_sc_hd__diode_2 already existed before reading GDS!
+Using pre-existing cell definition
+Reading "picorv32_with_sram".
+    5000 uses
+    10000 uses
+    15000 uses
+    20000 uses
+    25000 uses
+    30000 uses
+    35000 uses
+    40000 uses
+    45000 uses
+    50000 uses
+    55000 uses
+    60000 uses
+    65000 uses
+    70000 uses
+    75000 uses
+    80000 uses
+    85000 uses
+    90000 uses
+    95000 uses
+    100000 uses
+    105000 uses
+    110000 uses
+    115000 uses
+    120000 uses
+    125000 uses
+    130000 uses
+    135000 uses
+    140000 uses
+    145000 uses
+    150000 uses
+    155000 uses
+    160000 uses
+    165000 uses
+    170000 uses
+    175000 uses
+Processing VIA_via2_3_1600_480_1_5_320_320
+Processing VIA_via4_5_1600_480_1_4_400_400
+Processing VIA_via3_4_1600_480_1_4_400_400
+Processing VIA_via5_6_1600_1600_1_1_1600_1600
+Processing VIA_M1M2_PR
+Processing VIA_L1M1_PR_MR
+Processing VIA_M2M3_PR
+Processing VIA_M4M5_PR
+Processing VIA_M3M4_PR
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_14
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_39
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_13
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_19
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_7
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_38
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_33
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_32
+Processing sky130_fd_bd_sram__openram_dff
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_wmask_dff
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_cr_3
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_col_addr_dff
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_data_dff
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_11
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dli
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sli_dactive
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_12
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_29
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_28
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_16
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_1
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m7_w1_680_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m7_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_4
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_1
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pand2_1
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w1_680_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w1_680_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_3
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w0_740_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w1_260_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_2
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_360_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_1
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_17
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m18_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m18_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_16
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_5
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dactive
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pnand3
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pand3_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m22_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m22_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_15
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_4
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pand3
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m24_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m24_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_14
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m8_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m8_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_13
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_12
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_11
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_3
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m42_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m42_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_10
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m15_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m15_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_9
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m5_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_8
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w1_260_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_7
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_2
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_cr_5
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m41_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m41_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_20
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m14_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m14_w2_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_19
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w1_680_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_18
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_6
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_cr_4
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pand2_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_20
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_17
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w7_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w7_000_sli_dli_da_p
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_15
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec_0
+Processing sky130_fd_bd_sram__openram_dp_nand2_dec
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver_array
+Processing sky130_fd_bd_sram__openram_dp_nand3_dec
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_and3_dec
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode3x8
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_decoder
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_port_address_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_port_address
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_25
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_26
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_27
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_24
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w2_880_sli_dli
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_23
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_22
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_21
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w0_550_sli_dli
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_precharge_1
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array_0
+Processing sky130_fd_bd_sram__openram_sense_amp
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_sense_amp_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_port_data_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_column_mux
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pinv
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pdriver
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pnand2
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_pand2
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array
+Processing sky130_fd_bd_sram__openram_write_driver
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_write_driver_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_precharge_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_port_data
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_9
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_contact_8
+Processing sky130_fd_bd_sram__openram_dp_cell_cap_row
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array
+Processing sky130_fd_bd_sram__openram_dp_cell_cap_col
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array_0
+Processing sky130_fd_bd_sram__openram_dp_cell_dummy
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_dummy_array
+Processing sky130_fd_bd_sram__openram_dp_cell_replica
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_replica_column_0
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_replica_column
+Processing sky130_fd_bd_sram__openram_dp_cell
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_bitcell_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_replica_bitcell_array
+Processing sky130_sram_2kbyte_1rw1r_32x512_8_bank
+Processing sky130_sram_2kbyte_1rw1r_32x512_8
+Processing VIA_M1M2_PR_MR
+Processing picorv32_with_sram
+Extracting sky130_fd_sc_hd__fill_8 into sky130_fd_sc_hd__fill_8.ext:
+Extracting VIA_via2_3_1600_480_1_5_320_320 into VIA_via2_3_1600_480_1_5_320_320.ext:
+Extracting VIA_via4_5_1600_480_1_4_400_400 into VIA_via4_5_1600_480_1_4_400_400.ext:
+Extracting VIA_via3_4_1600_480_1_4_400_400 into VIA_via3_4_1600_480_1_4_400_400.ext:
+Extracting sky130_fd_sc_hd__fill_4 into sky130_fd_sc_hd__fill_4.ext:
+Extracting sky130_fd_sc_hd__fill_2 into sky130_fd_sc_hd__fill_2.ext:
+Extracting sky130_fd_sc_hd__tapvpwrvgnd_1 into sky130_fd_sc_hd__tapvpwrvgnd_1.ext:
+Extracting sky130_fd_sc_hd__fill_1 into sky130_fd_sc_hd__fill_1.ext:
+Extracting VIA_via5_6_1600_1600_1_1_1600_1600 into VIA_via5_6_1600_1600_1_1_1600_1600.ext:
+Extracting sky130_fd_sc_hd__clkbuf_16 into sky130_fd_sc_hd__clkbuf_16.ext:
+Extracting VIA_M1M2_PR into VIA_M1M2_PR.ext:
+Extracting VIA_L1M1_PR_MR into VIA_L1M1_PR_MR.ext:
+Extracting sky130_fd_sc_hd__conb_1 into sky130_fd_sc_hd__conb_1.ext:
+Extracting VIA_M2M3_PR into VIA_M2M3_PR.ext:
+Extracting VIA_M4M5_PR into VIA_M4M5_PR.ext:
+Extracting VIA_M3M4_PR into VIA_M3M4_PR.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_14 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_14.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_39 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_39.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_13 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_13.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_19 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_19.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_7 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_7.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_38 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_38.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_33 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_33.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_32 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_32.ext:
+Extracting sky130_fd_bd_sram__openram_dff into sky130_fd_bd_sram__openram_dff.ext:
+Warning:  Ports "clk" and "CLK" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff into sky130_sram_2kbyte_1rw1r_32x512_8_row_addr_dff.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_wmask_dff into sky130_sram_2kbyte_1rw1r_32x512_8_wmask_dff.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_cr_3 into sky130_sram_2kbyte_1rw1r_32x512_8_cr_3.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_col_addr_dff into sky130_sram_2kbyte_1rw1r_32x512_8_col_addr_dff.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_data_dff into sky130_sram_2kbyte_1rw1r_32x512_8_data_dff.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_11 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_11.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dli into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dli.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sli_dactive into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sli_dactive.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_12 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_12.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_29 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_29.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_28 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_28.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_16 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_16.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_1 into sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_1.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m7_w1_680_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m7_w1_680_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m7_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m7_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_4 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_4.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_1 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_1.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pnand2_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pand2_1 into sky130_sram_2kbyte_1rw1r_32x512_8_pand2_1.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w1_680_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w1_680_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w1_680_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w1_680_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_3 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_3.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w0_740_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w0_740_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w1_260_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w1_260_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_2 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_2.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_0 into sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array into sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_360_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_360_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w1_120_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_1 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_1.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_17 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_17.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain into sky130_sram_2kbyte_1rw1r_32x512_8_delay_chain.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m18_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m18_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m18_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m18_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_16 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_16.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_5 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_5.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dactive into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w0_740_sactive_dactive.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pnand3 into sky130_sram_2kbyte_1rw1r_32x512_8_pnand3.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pand3_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pand3_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m22_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m22_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m22_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m22_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_15 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_15.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_4 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_4.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pand3 into sky130_sram_2kbyte_1rw1r_32x512_8_pand3.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m24_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m24_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m24_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m24_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_14 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_14.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m8_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m8_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m8_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m8_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_13 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_13.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m3_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m3_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_12 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_12.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_11 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_11.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_3 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_3.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m42_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m42_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m42_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m42_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_10 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_10.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m15_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m15_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m15_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m15_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_9 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_9.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m5_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m5_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_8 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_8.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w1_260_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m2_w1_260_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m2_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_7 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_7.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_2 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_2.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw into sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_rw.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_cr_5 into sky130_sram_2kbyte_1rw1r_32x512_8_cr_5.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array_0 into sky130_sram_2kbyte_1rw1r_32x512_8_dff_buf_array_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m41_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m41_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m41_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m41_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_20 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_20.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m14_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m14_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m14_w2_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m14_w2_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_19 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_19.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w1_680_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m5_w1_680_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_18 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_18.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_6 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_6.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r into sky130_sram_2kbyte_1rw1r_32x512_8_control_logic_r.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_cr_4 into sky130_sram_2kbyte_1rw1r_32x512_8_cr_4.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pand2_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pand2_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_20 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_20.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_17 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_17.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0 into sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w7_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w7_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w7_000_sli_dli_da_p into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w7_000_sli_dli_da_p.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_15 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_15.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec_0 into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec_0.ext:
+Extracting sky130_fd_bd_sram__openram_dp_nand2_dec into sky130_fd_bd_sram__openram_dp_nand2_dec.ext:
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec_0 into sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver into sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver_array into sky130_sram_2kbyte_1rw1r_32x512_8_wordline_driver_array.ext:
+Extracting sky130_fd_bd_sram__openram_dp_nand3_dec into sky130_fd_bd_sram__openram_dp_nand3_dec.ext:
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec into sky130_sram_2kbyte_1rw1r_32x512_8_pinv_dec.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_and3_dec into sky130_sram_2kbyte_1rw1r_32x512_8_and3_dec.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode3x8 into sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode3x8.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec into sky130_sram_2kbyte_1rw1r_32x512_8_and2_dec.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4 into sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_predecode2x4.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_decoder into sky130_sram_2kbyte_1rw1r_32x512_8_hierarchical_decoder.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_port_address_0 into sky130_sram_2kbyte_1rw1r_32x512_8_port_address_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_port_address into sky130_sram_2kbyte_1rw1r_32x512_8_port_address.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_25 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_25.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_26 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_26.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_27 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_27.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_24 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_24.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w2_880_sli_dli into sky130_sram_2kbyte_1rw1r_32x512_8_nmos_m1_w2_880_sli_dli.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_0 into sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array_0 into sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_23 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_23.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_22 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_22.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_21 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_21.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w0_550_sli_dli into sky130_sram_2kbyte_1rw1r_32x512_8_pmos_m1_w0_550_sli_dli.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_precharge_1 into sky130_sram_2kbyte_1rw1r_32x512_8_precharge_1.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array_0 into sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array_0.ext:
+Extracting sky130_fd_bd_sram__openram_sense_amp into sky130_fd_bd_sram__openram_sense_amp.ext:
+Warning:  Ports "VDD_uq0" and "vdd_uq0" are electrically shorted.
+Warning:  Ports "dout" and "DOUT" are electrically shorted.
+Warning:  Ports "br" and "BR" are electrically shorted.
+Warning:  Ports "bl" and "BL" are electrically shorted.
+Warning:  Ports "en" and "EN" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "GND_uq0" and "gnd_uq0" are electrically shorted.
+Warning:  Ports "GND_uq0" and "gnd" are electrically shorted.
+Warning:  Ports "GND_uq0" and "GND" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_sense_amp_array into sky130_sram_2kbyte_1rw1r_32x512_8_sense_amp_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_port_data_0 into sky130_sram_2kbyte_1rw1r_32x512_8_port_data_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_column_mux into sky130_sram_2kbyte_1rw1r_32x512_8_column_mux.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array into sky130_sram_2kbyte_1rw1r_32x512_8_column_mux_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pinv into sky130_sram_2kbyte_1rw1r_32x512_8_pinv.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pdriver into sky130_sram_2kbyte_1rw1r_32x512_8_pdriver.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pnand2 into sky130_sram_2kbyte_1rw1r_32x512_8_pnand2.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_pand2 into sky130_sram_2kbyte_1rw1r_32x512_8_pand2.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array into sky130_sram_2kbyte_1rw1r_32x512_8_write_mask_and_array.ext:
+Extracting sky130_fd_bd_sram__openram_write_driver into sky130_fd_bd_sram__openram_write_driver.ext:
+Warning:  Ports "GND_uq0" and "gnd_uq0" are electrically shorted.
+Warning:  Ports "din" and "DIN" are electrically shorted.
+Warning:  Ports "en" and "EN" are electrically shorted.
+Warning:  Ports "br" and "BR" are electrically shorted.
+Warning:  Ports "bl" and "BL" are electrically shorted.
+Warning:  Ports "VDD_uq0" and "vdd_uq0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "GND_uq1" and "gnd_uq1" are electrically shorted.
+Warning:  Ports "GND_uq1" and "gnd" are electrically shorted.
+Warning:  Ports "GND_uq1" and "GND" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_write_driver_array into sky130_sram_2kbyte_1rw1r_32x512_8_write_driver_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_precharge_0 into sky130_sram_2kbyte_1rw1r_32x512_8_precharge_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array into sky130_sram_2kbyte_1rw1r_32x512_8_precharge_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_port_data into sky130_sram_2kbyte_1rw1r_32x512_8_port_data.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_9 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_9.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_contact_8 into sky130_sram_2kbyte_1rw1r_32x512_8_contact_8.ext:
+Extracting sky130_fd_bd_sram__openram_dp_cell_cap_row into sky130_fd_bd_sram__openram_dp_cell_cap_row.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0 into sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array into sky130_sram_2kbyte_1rw1r_32x512_8_row_cap_array.ext:
+Extracting sky130_fd_bd_sram__openram_dp_cell_cap_col into sky130_fd_bd_sram__openram_dp_cell_cap_col.ext:
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array into sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array_0 into sky130_sram_2kbyte_1rw1r_32x512_8_col_cap_array_0.ext:
+Extracting sky130_fd_bd_sram__openram_dp_cell_dummy into sky130_fd_bd_sram__openram_dp_cell_dummy.ext:
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_dummy_array into sky130_sram_2kbyte_1rw1r_32x512_8_dummy_array.ext:
+Extracting sky130_fd_bd_sram__openram_dp_cell_replica into sky130_fd_bd_sram__openram_dp_cell_replica.ext:
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+sky130_fd_bd_sram__openram_dp_cell_replica: 3 warnings
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_replica_column_0 into sky130_sram_2kbyte_1rw1r_32x512_8_replica_column_0.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_replica_column into sky130_sram_2kbyte_1rw1r_32x512_8_replica_column.ext:
+Extracting sky130_fd_bd_sram__openram_dp_cell into sky130_fd_bd_sram__openram_dp_cell.ext:
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+Error:  Asymmetric device with multiple terminals!
+sky130_fd_bd_sram__openram_dp_cell: 2 warnings
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_bitcell_array into sky130_sram_2kbyte_1rw1r_32x512_8_bitcell_array.ext:
+Created database crash recovery file /tmp//MAG23.3UveJo
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_replica_bitcell_array into sky130_sram_2kbyte_1rw1r_32x512_8_replica_bitcell_array.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8_bank into sky130_sram_2kbyte_1rw1r_32x512_8_bank.ext:
+Extracting sky130_sram_2kbyte_1rw1r_32x512_8 into sky130_sram_2kbyte_1rw1r_32x512_8.ext:
+Extracting sky130_fd_sc_hd__edfxtp_1 into sky130_fd_sc_hd__edfxtp_1.ext:
+Extracting sky130_fd_sc_hd__buf_1 into sky130_fd_sc_hd__buf_1.ext:
+Extracting sky130_fd_sc_hd__nor4_2 into sky130_fd_sc_hd__nor4_2.ext:
+Extracting sky130_fd_sc_hd__dfxtp_2 into sky130_fd_sc_hd__dfxtp_2.ext:
+Extracting sky130_fd_sc_hd__nor2_1 into sky130_fd_sc_hd__nor2_1.ext:
+Extracting sky130_fd_sc_hd__buf_6 into sky130_fd_sc_hd__buf_6.ext:
+Extracting sky130_fd_sc_hd__o21ai_0 into sky130_fd_sc_hd__o21ai_0.ext:
+Extracting sky130_fd_sc_hd__dfxtp_1 into sky130_fd_sc_hd__dfxtp_1.ext:
+Extracting sky130_fd_sc_hd__clkinvlp_2 into sky130_fd_sc_hd__clkinvlp_2.ext:
+Extracting sky130_fd_sc_hd__buf_8 into sky130_fd_sc_hd__buf_8.ext:
+Extracting VIA_M1M2_PR_MR into VIA_M1M2_PR_MR.ext:
+Extracting sky130_fd_sc_hd__mux4_2 into sky130_fd_sc_hd__mux4_2.ext:
+Extracting sky130_fd_sc_hd__buf_16 into sky130_fd_sc_hd__buf_16.ext:
+Extracting sky130_fd_sc_hd__nand4_1 into sky130_fd_sc_hd__nand4_1.ext:
+Extracting sky130_fd_sc_hd__nand2_1 into sky130_fd_sc_hd__nand2_1.ext:
+Extracting sky130_fd_sc_hd__a22oi_1 into sky130_fd_sc_hd__a22oi_1.ext:
+Extracting sky130_fd_sc_hd__clkbuf_1 into sky130_fd_sc_hd__clkbuf_1.ext:
+Extracting sky130_fd_sc_hd__a21oi_2 into sky130_fd_sc_hd__a21oi_2.ext:
+Extracting sky130_fd_sc_hd__nand2_4 into sky130_fd_sc_hd__nand2_4.ext:
+Extracting sky130_fd_sc_hd__nand4b_1 into sky130_fd_sc_hd__nand4b_1.ext:
+Extracting sky130_fd_sc_hd__mux2i_1 into sky130_fd_sc_hd__mux2i_1.ext:
+Extracting sky130_fd_sc_hd__nor4_1 into sky130_fd_sc_hd__nor4_1.ext:
+Extracting sky130_fd_sc_hd__or3_1 into sky130_fd_sc_hd__or3_1.ext:
+Extracting sky130_fd_sc_hd__a31oi_1 into sky130_fd_sc_hd__a31oi_1.ext:
+Extracting sky130_fd_sc_hd__mux2_1 into sky130_fd_sc_hd__mux2_1.ext:
+Extracting sky130_fd_sc_hd__ha_2 into sky130_fd_sc_hd__ha_2.ext:
+Extracting sky130_fd_sc_hd__ha_1 into sky130_fd_sc_hd__ha_1.ext:
+Extracting sky130_fd_sc_hd__inv_1 into sky130_fd_sc_hd__inv_1.ext:
+Extracting sky130_fd_sc_hd__a21oi_1 into sky130_fd_sc_hd__a21oi_1.ext:
+Extracting sky130_fd_sc_hd__a221oi_1 into sky130_fd_sc_hd__a221oi_1.ext:
+Extracting sky130_fd_sc_hd__nor2_8 into sky130_fd_sc_hd__nor2_8.ext:
+Extracting sky130_fd_sc_hd__mux2_4 into sky130_fd_sc_hd__mux2_4.ext:
+Extracting sky130_fd_sc_hd__nand2b_1 into sky130_fd_sc_hd__nand2b_1.ext:
+Extracting sky130_fd_sc_hd__nor2_2 into sky130_fd_sc_hd__nor2_2.ext:
+Extracting sky130_fd_sc_hd__o21a_1 into sky130_fd_sc_hd__o21a_1.ext:
+Extracting sky130_fd_sc_hd__a2111o_2 into sky130_fd_sc_hd__a2111o_2.ext:
+Extracting sky130_fd_sc_hd__and3_1 into sky130_fd_sc_hd__and3_1.ext:
+Extracting sky130_fd_sc_hd__nand3_1 into sky130_fd_sc_hd__nand3_1.ext:
+Extracting sky130_fd_sc_hd__nand3b_1 into sky130_fd_sc_hd__nand3b_1.ext:
+Extracting sky130_fd_sc_hd__or3b_1 into sky130_fd_sc_hd__or3b_1.ext:
+Extracting sky130_fd_sc_hd__or3_2 into sky130_fd_sc_hd__or3_2.ext:
+Extracting sky130_fd_sc_hd__nor2b_4 into sky130_fd_sc_hd__nor2b_4.ext:
+Extracting sky130_fd_sc_hd__o32a_1 into sky130_fd_sc_hd__o32a_1.ext:
+Extracting sky130_fd_sc_hd__a2111oi_0 into sky130_fd_sc_hd__a2111oi_0.ext:
+Extracting sky130_fd_sc_hd__o2bb2ai_1 into sky130_fd_sc_hd__o2bb2ai_1.ext:
+Extracting sky130_fd_sc_hd__a32o_1 into sky130_fd_sc_hd__a32o_1.ext:
+Extracting sky130_fd_sc_hd__nor4b_1 into sky130_fd_sc_hd__nor4b_1.ext:
+Extracting sky130_fd_sc_hd__buf_4 into sky130_fd_sc_hd__buf_4.ext:
+Extracting sky130_fd_sc_hd__o32ai_1 into sky130_fd_sc_hd__o32ai_1.ext:
+Extracting sky130_fd_sc_hd__a32oi_1 into sky130_fd_sc_hd__a32oi_1.ext:
+Extracting sky130_fd_sc_hd__buf_12 into sky130_fd_sc_hd__buf_12.ext:
+Extracting sky130_fd_sc_hd__o211ai_1 into sky130_fd_sc_hd__o211ai_1.ext:
+Extracting sky130_fd_sc_hd__nor3b_1 into sky130_fd_sc_hd__nor3b_1.ext:
+Extracting sky130_fd_sc_hd__or3_4 into sky130_fd_sc_hd__or3_4.ext:
+Extracting sky130_fd_sc_hd__nor3_1 into sky130_fd_sc_hd__nor3_1.ext:
+Extracting sky130_fd_sc_hd__diode_2 into sky130_fd_sc_hd__diode_2.ext:
+Extracting sky130_fd_sc_hd__o21ai_4 into sky130_fd_sc_hd__o21ai_4.ext:
+Extracting sky130_fd_sc_hd__a31o_4 into sky130_fd_sc_hd__a31o_4.ext:
+Extracting sky130_fd_sc_hd__clkinv_1 into sky130_fd_sc_hd__clkinv_1.ext:
+Extracting sky130_fd_sc_hd__inv_12 into sky130_fd_sc_hd__inv_12.ext:
+Extracting sky130_fd_sc_hd__nor2b_1 into sky130_fd_sc_hd__nor2b_1.ext:
+Extracting sky130_fd_sc_hd__ha_4 into sky130_fd_sc_hd__ha_4.ext:
+Extracting sky130_fd_sc_hd__a21o_1 into sky130_fd_sc_hd__a21o_1.ext:
+Extracting sky130_fd_sc_hd__and2_4 into sky130_fd_sc_hd__and2_4.ext:
+Extracting sky130_fd_sc_hd__or2_4 into sky130_fd_sc_hd__or2_4.ext:
+Extracting sky130_fd_sc_hd__buf_2 into sky130_fd_sc_hd__buf_2.ext:
+Extracting sky130_fd_sc_hd__inv_4 into sky130_fd_sc_hd__inv_4.ext:
+Extracting sky130_fd_sc_hd__o31ai_1 into sky130_fd_sc_hd__o31ai_1.ext:
+Extracting sky130_fd_sc_hd__a22o_1 into sky130_fd_sc_hd__a22o_1.ext:
+Extracting sky130_fd_sc_hd__o221ai_2 into sky130_fd_sc_hd__o221ai_2.ext:
+Extracting sky130_fd_sc_hd__clkinv_2 into sky130_fd_sc_hd__clkinv_2.ext:
+Extracting sky130_fd_sc_hd__fa_2 into sky130_fd_sc_hd__fa_2.ext:
+Extracting sky130_fd_sc_hd__inv_2 into sky130_fd_sc_hd__inv_2.ext:
+Extracting sky130_fd_sc_hd__o22a_1 into sky130_fd_sc_hd__o22a_1.ext:
+Extracting sky130_fd_sc_hd__o221ai_1 into sky130_fd_sc_hd__o221ai_1.ext:
+Extracting sky130_fd_sc_hd__nor2_4 into sky130_fd_sc_hd__nor2_4.ext:
+Extracting sky130_fd_sc_hd__a211o_1 into sky130_fd_sc_hd__a211o_1.ext:
+Extracting sky130_fd_sc_hd__o22ai_1 into sky130_fd_sc_hd__o22ai_1.ext:
+Extracting sky130_fd_sc_hd__fa_1 into sky130_fd_sc_hd__fa_1.ext:
+Extracting sky130_fd_sc_hd__o21bai_1 into sky130_fd_sc_hd__o21bai_1.ext:
+Extracting sky130_fd_sc_hd__xnor2_1 into sky130_fd_sc_hd__xnor2_1.ext:
+Extracting sky130_fd_sc_hd__and2_0 into sky130_fd_sc_hd__and2_0.ext:
+Extracting sky130_fd_sc_hd__or3b_4 into sky130_fd_sc_hd__or3b_4.ext:
+Extracting sky130_fd_sc_hd__nor3_2 into sky130_fd_sc_hd__nor3_2.ext:
+Extracting sky130_fd_sc_hd__nor2b_2 into sky130_fd_sc_hd__nor2b_2.ext:
+Extracting sky130_fd_sc_hd__a222oi_1 into sky130_fd_sc_hd__a222oi_1.ext:
+Extracting sky130_fd_sc_hd__clkinv_8 into sky130_fd_sc_hd__clkinv_8.ext:
+Extracting sky130_fd_sc_hd__clkinv_4 into sky130_fd_sc_hd__clkinv_4.ext:
+Extracting sky130_fd_sc_hd__a211oi_1 into sky130_fd_sc_hd__a211oi_1.ext:
+Extracting sky130_fd_sc_hd__xor2_1 into sky130_fd_sc_hd__xor2_1.ext:
+Extracting sky130_fd_sc_hd__clkdlybuf4s15_1 into sky130_fd_sc_hd__clkdlybuf4s15_1.ext:
+Extracting sky130_fd_sc_hd__clkinvlp_4 into sky130_fd_sc_hd__clkinvlp_4.ext:
+Extracting sky130_fd_sc_hd__and3_4 into sky130_fd_sc_hd__and3_4.ext:
+Extracting sky130_fd_sc_hd__and4_1 into sky130_fd_sc_hd__and4_1.ext:
+Extracting sky130_fd_sc_hd__a41oi_1 into sky130_fd_sc_hd__a41oi_1.ext:
+Extracting sky130_fd_sc_hd__and4b_1 into sky130_fd_sc_hd__and4b_1.ext:
+Extracting sky130_fd_sc_hd__a21boi_2 into sky130_fd_sc_hd__a21boi_2.ext:
+Extracting sky130_fd_sc_hd__a21boi_0 into sky130_fd_sc_hd__a21boi_0.ext:
+Extracting sky130_fd_sc_hd__o311a_1 into sky130_fd_sc_hd__o311a_1.ext:
+Extracting sky130_fd_sc_hd__a311o_1 into sky130_fd_sc_hd__a311o_1.ext:
+Extracting sky130_fd_sc_hd__o41ai_1 into sky130_fd_sc_hd__o41ai_1.ext:
+Extracting sky130_fd_sc_hd__a311oi_1 into sky130_fd_sc_hd__a311oi_1.ext:
+Extracting sky130_fd_sc_hd__clkdlybuf4s18_2 into sky130_fd_sc_hd__clkdlybuf4s18_2.ext:
+Extracting sky130_fd_sc_hd__o21bai_2 into sky130_fd_sc_hd__o21bai_2.ext:
+Extracting sky130_fd_sc_hd__or2_2 into sky130_fd_sc_hd__or2_2.ext:
+Extracting sky130_fd_sc_hd__bufinv_16 into sky130_fd_sc_hd__bufinv_16.ext:
+Extracting sky130_fd_sc_hd__or2_0 into sky130_fd_sc_hd__or2_0.ext:
+Extracting sky130_fd_sc_hd__and4_2 into sky130_fd_sc_hd__and4_2.ext:
+Extracting sky130_fd_sc_hd__inv_6 into sky130_fd_sc_hd__inv_6.ext:
+Extracting sky130_fd_sc_hd__a221o_1 into sky130_fd_sc_hd__a221o_1.ext:
+Extracting sky130_fd_sc_hd__clkdlybuf4s25_1 into sky130_fd_sc_hd__clkdlybuf4s25_1.ext:
+Extracting sky130_fd_sc_hd__dfxtp_4 into sky130_fd_sc_hd__dfxtp_4.ext:
+Extracting sky130_fd_sc_hd__clkinv_16 into sky130_fd_sc_hd__clkinv_16.ext:
+Extracting sky130_fd_sc_hd__or4_1 into sky130_fd_sc_hd__or4_1.ext:
+Extracting sky130_fd_sc_hd__nor3_4 into sky130_fd_sc_hd__nor3_4.ext:
+Extracting sky130_fd_sc_hd__and3_2 into sky130_fd_sc_hd__and3_2.ext:
+Extracting sky130_fd_sc_hd__a21boi_4 into sky130_fd_sc_hd__a21boi_4.ext:
+Extracting sky130_fd_sc_hd__and2_2 into sky130_fd_sc_hd__and2_2.ext:
+Extracting sky130_fd_sc_hd__a31o_1 into sky130_fd_sc_hd__a31o_1.ext:
+Extracting sky130_fd_sc_hd__or4_2 into sky130_fd_sc_hd__or4_2.ext:
+Extracting sky130_fd_sc_hd__clkdlybuf4s15_2 into sky130_fd_sc_hd__clkdlybuf4s15_2.ext:
+Extracting sky130_fd_sc_hd__inv_16 into sky130_fd_sc_hd__inv_16.ext:
+Extracting sky130_fd_sc_hd__a21o_4 into sky130_fd_sc_hd__a21o_4.ext:
+Extracting sky130_fd_sc_hd__or4_4 into sky130_fd_sc_hd__or4_4.ext:
+Extracting sky130_fd_sc_hd__o211a_1 into sky130_fd_sc_hd__o211a_1.ext:
+Extracting sky130_fd_sc_hd__o311ai_0 into sky130_fd_sc_hd__o311ai_0.ext:
+Extracting sky130_fd_sc_hd__dlymetal6s4s_1 into sky130_fd_sc_hd__dlymetal6s4s_1.ext:
+Extracting sky130_fd_sc_hd__o31a_1 into sky130_fd_sc_hd__o31a_1.ext:
+Extracting sky130_fd_sc_hd__a21boi_1 into sky130_fd_sc_hd__a21boi_1.ext:
+Extracting sky130_fd_sc_hd__o221a_1 into sky130_fd_sc_hd__o221a_1.ext:
+Extracting sky130_fd_sc_hd__inv_8 into sky130_fd_sc_hd__inv_8.ext:
+Extracting sky130_fd_sc_hd__o22ai_2 into sky130_fd_sc_hd__o22ai_2.ext:
+Extracting sky130_fd_sc_hd__a2111oi_1 into sky130_fd_sc_hd__a2111oi_1.ext:
+Extracting sky130_fd_sc_hd__dlymetal6s2s_1 into sky130_fd_sc_hd__dlymetal6s2s_1.ext:
+Extracting sky130_fd_sc_hd__o21ba_1 into sky130_fd_sc_hd__o21ba_1.ext:
+Extracting sky130_fd_sc_hd__a41o_1 into sky130_fd_sc_hd__a41o_1.ext:
+Extracting sky130_fd_sc_hd__and4_4 into sky130_fd_sc_hd__and4_4.ext:
+Extracting sky130_fd_sc_hd__o2111ai_1 into sky130_fd_sc_hd__o2111ai_1.ext:
+Extracting sky130_fd_sc_hd__o311ai_1 into sky130_fd_sc_hd__o311ai_1.ext:
+Extracting picorv32_with_sram into picorv32_with_sram.ext:
+Total of 5 warnings.
+Warning:  Ports "clk" and "CLK" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "GND_uq0" and "gnd_uq0" are electrically shorted.
+Warning:  Ports "din" and "DIN" are electrically shorted.
+Warning:  Ports "en" and "EN" are electrically shorted.
+Warning:  Ports "br" and "BR" are electrically shorted.
+Warning:  Ports "bl" and "BL" are electrically shorted.
+Warning:  Ports "VDD_uq0" and "vdd_uq0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "GND_uq1" and "gnd_uq1" are electrically shorted.
+Warning:  Ports "GND_uq1" and "gnd" are electrically shorted.
+Warning:  Ports "GND_uq1" and "GND" are electrically shorted.
+Warning:  Ports "VDD_uq0" and "vdd_uq0" are electrically shorted.
+Warning:  Ports "dout" and "DOUT" are electrically shorted.
+Warning:  Ports "br" and "BR" are electrically shorted.
+Warning:  Ports "bl" and "BL" are electrically shorted.
+Warning:  Ports "en" and "EN" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "GND_uq0" and "gnd_uq0" are electrically shorted.
+Warning:  Ports "GND_uq0" and "gnd" are electrically shorted.
+Warning:  Ports "GND_uq0" and "GND" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+Warning:  Ports "br1" and "BR1" are electrically shorted.
+Warning:  Ports "bl1" and "BL1" are electrically shorted.
+Warning:  Ports "wl1" and "WL1" are electrically shorted.
+Warning:  Ports "wl0" and "WL0" are electrically shorted.
+Warning:  Ports "br0" and "BR0" are electrically shorted.
+Warning:  Ports "bl0" and "BL0" are electrically shorted.
+Warning:  Ports "vdd" and "VDD" are electrically shorted.
+Warning:  Ports "gnd" and "GND" are electrically shorted.
+exttospice finished.
