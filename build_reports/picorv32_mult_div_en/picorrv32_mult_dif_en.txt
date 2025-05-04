@@ -1,0 +1,283 @@
+python picorv32.py 
+| INFO     | ../picorv32.v inferred as rtl/verilog
+| WARNING  | rtl2gds | -----                | - | Could not find remote server configuration: defaulting to https://server.siliconcompiler.com
+Status    Node                                            Time   Warnings   Errors   Log                                                       
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32/rtl2gds/import.verilog/0               0.8s        117        0   build/picorv32/rtl2gds/import.verilog/0/import.verilog.log
+RUNNING   picorv32/rtl2gds/syn/0                         30.7s                                                                                 
+PENDING   picorv32/rtl2gds/floorplan.init/0                                                                                                    
+PENDING   picorv32/rtl2gds/floorplan.macro_placement/0                                                                                         
+PENDING   picorv32/rtl2gds/floorplan.tapcell/0                                                                                                 
+PENDING   picorv32/rtl2gds/floorplan.power_grid/0                                                                                              
+PENDING   picorv32/rtl2gds/floorplan.pin_placement/0                                                                                           
+PENDING   picorv32/rtl2gds/place.global/0                                                                                                      
+PENDING   picorv32/rtl2gds/place.repair_design/0                                                                                               
+PENDING   picorv32/rtl2gds/place.detailed/0                                                                                                    
+PENDING   picorv32/rtl2gds/cts.clock_tree_synthesis/0                                                                                          
+PENDING   picorv32/rtl2gds/cts.repair_timing/0                                                                                                 
+PENDING   picorv32/rtl2gds/cts.fillcell/0                                                                                                      
+PENDING   picorv32/rtl2gds/route.global/0                                                                                                      
+PENDING   picorv32/rtl2gds/route.antenna_repair/0                                                                                              
+PENDING   picorv32/rtl2gds/route.detailed/0                                                                                                    
+PENDING   picorv32/rtl2gds/write.gds/0                                                                                                         
+PENDING   picorv32/rtl2gds/write.views/0                                                                                                       
+                                                                                                                                                                                                                     
+Progress (picorv32/rtl2gds):  8/25 ━━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  32%
+                                                                                                                                                                                                                     
+ | INFO     | rtl2gds | -----                | - | Collecting input sources                                                                                                                                          
+ | INFO     | rtl2gds | -----                | - | Copying /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/picorv32.v to '/home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/… 
+ | INFO     | rtl2gds | remote               | - | Terms of Service info for this server:                                                                                                                            
+ | INFO     | rtl2gds | remote               | - | -------------------------------------------------------------------------------------                                                                             
+ | INFO     | rtl2gds | remote               | - |   DISCLAIMER:                                                                                                                                                     
+ | INFO     | rtl2gds | remote               | - |   - The open SiliconCompiler remote server is a free service. Please don't abuse it.                                                                              
+ | INFO     | rtl2gds | remote               | - |   - Submitted designs must be open source. SiliconCompiler is not responsible for any                                                                             
+ | INFO     | rtl2gds | remote               | - |     proprietary IP that may be uploaded.                                                                                                                          
+ | INFO     | rtl2gds | remote               | - |   - Only send one run at a time (or you may be temporarily blocked).                                                                                              
+ | INFO     | rtl2gds | remote               | - |   - Do not send large designs (machines have limited resources).                                                                                                  
+ | INFO     | rtl2gds | remote               | - |   - Nontrivial designs may take some time to run. (machines have limited resources).                                                                              
+ | INFO     | rtl2gds | remote               | - |   - For full TOS, see https://www.siliconcompiler.com/terms                                                                                                       
+ | INFO     | rtl2gds | remote               | - | -------------------------------------------------------------------------------------                                                                             
+ | INFO     | rtl2gds | remote               | - | Your job will be uploaded to a public server in 5 seconds.                                                                                                        
+ | INFO     | rtl2gds | remote               | - | Job started. Progress will be checked and reported every 30 seconds.                                                                                              
+ | INFO     | rtl2gds | remote               | - | Your job's reference ID is: f3ae7d72a61f424d9a72c69760fbb5dc                                                                                                      
+ | INFO     | rtl2gds | remote               | 0 | Job is still running. Status:                                                                                                                                     
+ | INFO     | rtl2gds | remote               | 0 |   Skipped (7): dfm.metal_fill0, import.bluespec0, import.c0, import.chisel0, ...                                                                                  
+ | INFO     | rtl2gds | remote               | 0 |   Success (1): import.verilog0                                                                                                                                    
+ | INFO     | rtl2gds | remote               | 0 |   Running (1):                                                                                                                                                    
+ | INFO     | rtl2gds | remote               | 0 |     syn0 (00:00:02)                                                                                                                                               
+ | INFO     | rtl2gds | remote               | 0 |   Pending (16): cts.clock_tree_synthesis0, cts.fillcell0, cts.repair_timing0, ...                                                                                 
+ | INFO     | rtl2gds | remote               | 0 |   Fetching completed results:                                      Status    Node                                             Time   Warnings   Errors   
+──────────────────────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32/rtl2gds/import.verilog/0                0.8s        117        0   
+SUCCESS   picorv32/rtl2gds/syn/0                          17.9s          2        0   
+SUCCESS   picorv32/rtl2gds/floorplan.init/0               17.4s          6        0   
+SUCCESS   picorv32/rtl2gds/floorplan.tapcell/0             5.7s          1        0   
+SUCCESS   picorv32/rtl2gds/floorplan.power_grid/0          6.4s          1        0   
+SUCCESS   picorv32/rtl2gds/floorplan.pin_placement/0      14.2s          3        0   
+SUCCESS   picorv32/rtl2gds/place.global/0                102.8s          1        0   
+SUCCESS   picorv32/rtl2gds/place.repair_design/0          37.5s          1        0   
+SUCCESS   picorv32/rtl2gds/place.detailed/0               36.2s          1        0   
+SUCCESS   picorv32/rtl2gds/cts.clock_tree_synthesis/0     61.7s          2        0   
+SUCCESS   picorv32/rtl2gds/cts.repair_timing/0           102.3s          2        0   
+SUCCESS   picorv32/rtl2gds/cts.fillcell/0                 32.0s          1        0   
+SUCCESS   picorv32/rtl2gds/route.global/0                 44.9s          1        0   
+SUCCESS   picorv32/rtl2gds/route.antenna_repair/0        108.5s          1        0   
+SUCCESS   picorv32/rtl2gds/route.detailed/0             2724.1s       1142        0   
+SUCCESS   picorv32/rtl2gds/write.gds/0                    10.6s          0        0   
+SUCCESS   picorv32/rtl2gds/write.views/0                 136.1s          1        0   
+                                                                                                                      
+Results 3448.73s                                                                                                      
+     25 passed                                                                                                        
+     0 failed                                                                                                         
+                                                                                                                      
+----------------------------------------------------------------------------------------------------------------
+SUMMARY:
+
+design : picorv32
+params : None
+jobdir : /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/rtl2gds
+foundry : skywater
+process : skywater130
+targetlibs : sky130hd 
+
+                      import.verilog0         syn0        floorplan.init0   floorplan.t...0   floorplan.p...0  \
+errors                       0                 0                 0                 0                 0          
+warnings                    117                2                 6                 1                 1          
+drvs                        ---               ---                0                 0                 0          
+drcs                        ---               ---               ---               ---               ---         
+unconstrained               ---               ---               585               585               585         
+cellarea       um^2         ---            107603.200        105729.000        110173.000        110173.000     
+totalarea      um^2         ---               ---            271087.000        271087.000        271087.000     
+macroarea      um^2         ---               ---              0.000             0.000             0.000        
+padcellarea    um^2         ---               ---              0.000             0.000             0.000        
+stdcellarea    um^2         ---               ---            105729.000        110173.000        110173.000     
+utilization       %         ---               ---              39.498            41.158            41.158       
+logicdepth                  ---               ---                6                 6                 6          
+peakpower        mw         ---               ---              4.746              ---               ---         
+leakagepower     mw         ---               ---              0.000              ---               ---         
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                   ---               ---               ---               ---               ---         
+setuppaths                  ---               ---               ---               ---               ---         
+holdslack        ns         ---               ---               ---               ---               ---         
+holdwns          ns         ---               ---               ---               ---               ---         
+holdtns          ns         ---               ---               ---               ---               ---         
+holdskew         ns         ---               ---               ---               ---               ---         
+setupslack       ns         ---               ---             -29.390             ---               ---         
+setupwns         ns         ---               ---             -29.390             ---               ---         
+setuptns         ns         ---               ---            -2388.170            ---               ---         
+setupskew        ns         ---               ---               ---               ---               ---         
+fmax             Hz         ---               ---               ---               ---               ---         
+macros                      ---               ---                0                 0                 0          
+cells                       ---               8836              8341             11893             11893        
+registers                   ---               2091              2091              2091              2091        
+buffers                     ---               ---                80                80                80         
+inverters                   ---               ---               430               430               430         
+pins                        ---               409               409               409               411         
+nets                        ---               9294              8801              8801              8801        
+vias                        ---               ---               ---               ---               ---         
+wirelength       um         ---               ---               ---               ---               ---         
+memory            B       200.391M          143.680M          258.637M          244.191M          257.949M      
+exetime           s        00.510            15.550            16.320            04.490            05.160       
+tasktime          s        00.751            17.872            17.365            05.717            06.401       
+totaltime         s        00.751            18.624            35.989            42.126            48.527       
+
+                      floorplan.p...0    place.global0    place.repai...0   place.detailed0   cts.clock_t...0  \
+errors                       0                 0                 0                 0                 0          
+warnings                     3                 1                 1                 1                 2          
+drvs                         0                 0                 31                29                29         
+drcs                        ---               ---               ---               ---               ---         
+unconstrained               585               585               585               585               585         
+cellarea       um^2      110173.000        119938.000        123656.000        123656.000        126957.000     
+totalarea      um^2      271087.000        271087.000        271087.000        271087.000        271087.000     
+macroarea      um^2        0.000             0.000             0.000             0.000             0.000        
+padcellarea    um^2        0.000             0.000             0.000             0.000             0.000        
+stdcellarea    um^2      110173.000        119938.000        123656.000        123656.000        126957.000     
+utilization       %        41.158            44.806            46.195            46.195            47.428       
+logicdepth                   5                 32                35                17                35         
+peakpower        mw         ---              5.048             5.116             5.107             6.930        
+leakagepower     mw         ---              0.000             0.000             0.000             0.000        
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                   ---               ---                0                 0                 0          
+setuppaths                  ---               ---                36                36                38         
+holdslack        ns         ---               ---               ---               ---              0.275        
+holdwns          ns         ---               ---               ---               ---              0.000        
+holdtns          ns         ---               ---               ---               ---              0.000        
+holdskew         ns         ---               ---               ---               ---              0.037        
+setupslack       ns       -59.973            -9.009            -8.859            -7.248            -7.426       
+setupwns         ns       -59.973            -9.009            -8.859            -7.248            -7.426       
+setuptns         ns      -18333.200         -118.127          -111.471          -99.214           -104.577      
+setupskew        ns         ---               ---               ---               ---              0.037        
+fmax             Hz         ---             29.404M           29.534M           31.009M           30.840M       
+macros                       0                 0                 0                 0                 0          
+cells                      11893             12678             12793             12793             12971        
+registers                   2091              2091              2091              2091              2091        
+buffers                      80               865               876               876               1010        
+inverters                   430               430               430               430               474         
+pins                        411               411               411               411               411         
+nets                        8801              9586              9701              9701              9803        
+vias                        ---               ---               ---               ---               ---         
+wirelength       um         ---               ---               ---               ---               ---         
+memory            B       356.770M           1.370G            1.361G           457.129M           1.564G       
+exetime           s        12.859          01:41.269           35.649            34.340            59.770       
+tasktime          s        14.164          01:42.763           37.451            36.164          01:01.723      
+totaltime         s      01:02.692         02:45.455         03:22.906         03:59.071         05:00.795      
+
+                      cts.repair_...0    cts.fillcell0     route.global0    route.anten...0   route.detailed0  \
+errors                       0                 0                 0                 0                 0          
+warnings                     2                 1                 1                 1                1142        
+drvs                        1003              1003              1681              1716              549         
+drcs                        ---               ---               ---               ---                0          
+unconstrained               585               585               585               585               585         
+cellarea       um^2      123189.000        123189.000        123189.000        123237.000        123237.000     
+totalarea      um^2      271087.000        271087.000        271087.000        271087.000        271087.000     
+macroarea      um^2        0.000             0.000             0.000             0.000             0.000        
+padcellarea    um^2        0.000             0.000             0.000             0.000             0.000        
+stdcellarea    um^2      123189.000        123189.000        123189.000        123237.000        123237.000     
+utilization       %        46.021            46.021            46.021            46.039            46.039       
+logicdepth                   17                17                18                18                17         
+peakpower        mw        6.902             6.902             7.392             7.396             6.282        
+leakagepower     mw        0.000             0.000             0.000             0.000             0.000        
+irdrop           mv         ---               ---               ---               ---               ---         
+holdpaths                    0                 0                 0                 0                 0          
+setuppaths                  332               332               1277              1277               11         
+holdslack        ns        0.284             0.284             0.307             0.307             0.266        
+holdwns          ns        0.000             0.000             0.000             0.000             0.000        
+holdtns          ns        0.000             0.000             0.000             0.000             0.000        
+holdskew         ns        0.036              ---              0.073             0.074             0.019        
+setupslack       ns        -7.321            -7.321           -13.153           -13.153            -6.664       
+setupwns         ns        -7.321            -7.321           -13.153           -13.153            -6.664       
+setuptns         ns       -403.302          -403.303         -4771.830         -4818.090          -36.097       
+setupskew        ns        0.036              ---              0.073             0.074             0.019        
+fmax             Hz       30.940M           30.940M           26.210M           26.210M           31.582M       
+macros                       0                 0                 0                 0                 0          
+cells                      13060             13060             13060             13079             13079        
+registers                   2091              2091              2091              2091              2091        
+buffers                     1099              1099              1099              1099              1099        
+inverters                   474               474               474               474               474         
+pins                        411               411               411               411               411         
+nets                        9892              9892              9892              9892              9892        
+vias                        ---               ---              83517              798              78810        
+wirelength       um         ---               ---            574825.000           ---            397730.000     
+memory            B        1.526G           442.758M          530.559M          570.027M           1.201G       
+exetime           s      01:40.329           29.750            43.530          01:46.939         45:22.190      
+tasktime          s      01:42.318           32.005            44.947          01:48.500         45:24.076      
+totaltime         s      06:43.113         07:15.118         08:00.066         09:48.566         55:12.643      
+
+                         write.gds0       write.views0   
+errors                       0                 0         
+warnings                     0                 1         
+drvs                        ---               792        
+drcs                        ---               ---        
+unconstrained               ---               585        
+cellarea       um^2         ---            123237.000    
+totalarea      um^2      271086.836        271087.000    
+macroarea      um^2         ---              0.000       
+padcellarea    um^2         ---              0.000       
+stdcellarea    um^2         ---            123237.000    
+utilization       %         ---              46.039      
+logicdepth                  ---                17        
+peakpower        mw         ---              6.638       
+leakagepower     mw         ---              0.000       
+irdrop           mv         ---              0.132       
+holdpaths                   ---                0         
+setuppaths                  ---                26        
+holdslack        ns         ---              0.277       
+holdwns          ns         ---              0.000       
+holdtns          ns         ---              0.000       
+holdskew         ns         ---              0.060       
+setupslack       ns         ---              -6.995      
+setupwns         ns         ---              -6.995      
+setuptns         ns         ---             -58.927      
+setupskew        ns         ---              0.060       
+fmax             Hz         ---             31.255M      
+macros                      ---                0         
+cells                       ---              13079       
+registers                   ---               2091       
+buffers                     ---               1099       
+inverters                   ---               474        
+pins                        ---               411        
+nets                        ---               9892       
+vias                        ---               ---        
+wirelength       um         ---               ---        
+memory            B       669.996M          750.535M     
+exetime           s        08.429          02:13.409     
+tasktime          s        10.608          02:16.091     
+totaltime         s      55:23.251         57:28.734     
+----------------------------------------------------------------------------------------------------------------
+| INFO     | rtl2gds | -----                | - | Dashboard at "sc-dashboard -cfg /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/rtl2gds/picorv32.pkg.json"
+| INFO     | rtl2gds | -----                | - | Generated summary image at /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/rtl2gds/picorv32.png
+| INFO     | /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/rtl2gds/write.gds/0/outputs/picorv32.gds inferred as layout/gds
+| INFO     | /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/rtl2gds/write.views/0/outputs/picorv32.vg inferred as netlist/verilog
+| WARNING  | signoff | --       | - | Could not find remote server configuration: defaulting to https://server.siliconcompiler.com
+Status    Node                           Time   Warnings   Errors   
+────────────────────────────────────────────────────────────────────
+SUCCESS   picorv32/signoff/import/0      0.5s                       
+SUCCESS   picorv32/signoff/drc/0        46.4s          1        0   
+SUCCESS   picorv32/signoff/extspice/0   51.4s          1        0   
+SUCCESS   picorv32/signoff/lvs/0         4.3s         70        0   
+SUCCESS   picorv32/signoff/signoff/0     0.6s                       
+                                                                                                                      
+Results 56.91s                                                                                                        
+     5 passed                                                                                                         
+     0 failed                                                                                                         
+                                                                                                                      
+----------------------------------------------------------------------------------------------------------------
+SUMMARY:
+
+design : picorv32
+params : None
+jobdir : /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/signoff
+foundry : skywater
+process : skywater130
+targetlibs : sky130hd 
+
+                import0       drc0     extspice0      lvs0      signoff0
+errors            ---          0           0           0          ---   
+warnings          ---          1           1           70         ---   
+drcs              ---          0          ---          0          ---   
+memory     B    192.395M    235.969M    617.281M    378.961M    192.703M
+exetime    s     00.010      45.079      50.320      03.200      00.010 
+tasktime   s     00.537      46.357      51.403      04.334      00.629 
+totaltime  s     00.537      46.895      51.941      56.276      56.905 
+----------------------------------------------------------------------------------------------------------------
+| INFO     | signoff | --       | - | Dashboard at "sc-dashboard -cfg /home/crosswind46/college_work/graduate/ece507_vlsi/proj/fpu2/python/build/picorv32/signoff/picorv32.pkg.json"
