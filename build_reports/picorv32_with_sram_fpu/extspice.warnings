@@ -1,0 +1,4 @@
+  69: CIF file read warning: CIF style sky130(vendor): units rescaled by factor of 5 / 1
+1420: sky130_fd_bd_sram__openram_dp_cell_replica: 3 warnings
+1441: sky130_fd_bd_sram__openram_dp_cell: 2 warnings
+1594: Total of 5 warnings.
