@@ -10,17 +10,18 @@ Bla Bla Bla !! Done !
 >## Reference links
 >- _Silicon Compiler_
 >   - [Installation](https://docs.siliconcompiler.com/en/latest/user_guide/installation.html#installation)
->   - [Quick Start Guide HeartBeat Example](https://docs.siliconcompiler.com/en/latest/user_guide/quickstart.html#quickstart-guide)
->   - [Quick Start](https://docs.siliconcompiler.com/en/latest/user_guide/quickstart.html#quickstart-guide)
->   - [Upgrade CMD] (pip install --upgrade siliconcompiler)
->   - [Demo Proj Run CMD ] (sc -target asic_demo -remote)
+>   - Quick Start
+>       - [HeartBeat Example](https://docs.siliconcompiler.com/en/latest/user_guide/quickstart.html#quickstart-guide)
+>       - [Building SOC](https://docs.siliconcompiler.com/en/stable/user_guide/tutorials/picorv32_ram.html)
+>   - Upgrade CMD :pip install --upgrade siliconcompiler
+>   - Demo Proj Run CMD : sc -target asic_demo -remote
 >- _Project_ 
 >   - [Requirement](https://docs.google.com/document/d/1w_6TcTO9ZfsKjH5dKjGZwSfvMj4INFzu/edit?tab=t.0#heading=h.gjdgxs)
 >   - [Repo Path ](https://github.com/osowatzke/picorv32)
->- _HDL_
+>- _HDL SOURCE_
 >   - [PICORV32 Processor SRC](https://github.com/YosysHQ/picorv32)
 >   - [cnn-hw-accelerator](https://github.com/osowatzke/cnn-hw-accelerator/tree/main)
->   - [FPU Source](https://github.com/osowatzke/picorv32/tree/main/fpu)
+>   - [FPU](https://github.com/osowatzke/picorv32/tree/main/fpu)
 >- _SRAM MACRO_
 >   - [sky130_sram_2kbyte_1rw1r_32x512_8](https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8)
 
@@ -47,16 +48,16 @@ Bla Bla Bla !! Done !
 >    -  [picorv32 build logs](N/A)
 >-  _picorv32_with_SRAM_
 >    -  [picorv32 with SRAM build artifact](https://drive.google.com/drive/folders/1HZIRYepXikbSZyNfd87qoUdz732yYRxX?usp=sharing)
->    -  [picorv32 wit SRAM build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_sram) : DRV fails, thus signoff fails
+>    -  [picorv32 wit SRAM build logs](https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_sram) : DRV fails, thus signoff fails
 >-  _picorv32_with_native_multipication_n_division_Enabled_
 >    -  [picorv32 with native multipication and division enabled](https://drive.google.com/drive/u/1/folders/1VlnNr_21aUsA_DjHPXHZn9BB6XyD7hkd)
->    -  [picorv32 with native mult n div build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_mult_div_en)
+>    -  [picorv32 with native mult n div build logs](https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_mult_div_en)
 >-  _picorv32_with_fpu_
 >    -  [picorv32 with FPU build artifact](https://drive.google.com/drive/u/1/folders/1kTCtYxuz99U9cSjo17kvR0XbPk3eu2aA)
 >    -  [picorv32 with FPU build logs](https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv_with_fpu)
 >-  _picorv32_with_SRAM_fpu_
 >    -  [picorv32 with SRAM and FPU build artifact](https://drive.google.com/drive/u/1/folders/1UcBPUZK2ttfehgvwb2NUJgJjfC84vi1s)
->    -  [picorv32 with SRAM and FPU build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_with_sram_fpu)
+>    -  [picorv32 with SRAM and FPU build logs](https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_with_sram_fpu)
 
 ---
 
