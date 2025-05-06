@@ -38,3 +38,6 @@
 .*.swp
 __pycache__
 /build
+sram/__pycache__/
+all_builds/
+python/build/

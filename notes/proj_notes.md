@@ -78,8 +78,8 @@ Bla Bla Bla !! Done !
         - Use parameter to enable/disable the modules, like SRAM, FPU, etc.
     - Python : Parse argument from given command line and run build accordingly.
     - [!WARNING] SRAM Signoff failure
-      - SRAM macro is depricated, see build_report/
-      - Tried both macros
-        - https://github.com/VLSIDA/sky130_sram_macros
-        - https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8
+        - SRAM macro is depricated, see build_report/
+        - Tried both macros
+            - https://github.com/VLSIDA/sky130_sram_macros
+            - https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8
 ---
