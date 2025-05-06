@@ -3,16 +3,16 @@
 ## Project Description : 
 Bla Bla Bla !! Done !
  
-## Tools
+##[!NOTE] Tools
    - Compiler         : Silicon Compiler, Ver 0.32.3
    - Simulator        : GTK WaveVersion 
 
 ## Compilation Command :
-- Simulation :
+- [!TIP] Simulation :
     - Add : make test_fpu OP=add
     - Subtraction : make test_fpu OP=sub
      
-- Build :
+- [!TIP] Build :
     - CPU Only (picorv32) : python python/picorv32.py
     - CPU and Memory (picorv32 and SRAM) : python picorv32_with_sram.py
     - CPU, Memory and FPU (picorv32, SRAM, and FPU) : python picorv32_with_sram_n_fpu.py. [Make sure parameter ENABLE_FPU and ENABLE_PCPI is set to 1'b'1' in picorv32_with_sram_n_fpu.v
@@ -21,24 +21,29 @@ Bla Bla Bla !! Done !
 
 ## Build Result :
 -  _picorv32_
-    -  [picorv32_ build_artifacts]()
-    -  [picorv32_build_logs]()
+    -  [picorv32 build artifacts](N/A)
+    -  [picorv32 build logs](N/A)
 
 -  _picorv32_with_SRAM_
     -  [picorv32 with SRAM build artifact](https://drive.google.com/drive/folders/1HZIRYepXikbSZyNfd87qoUdz732yYRxX?usp=sharing)
-    -  [picorv32 wit SRAM build_logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_sram) : DRV fails, thus signoff fails
+    -  [picorv32 wit SRAM build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_sram) : DRV fails, thus signoff fails
+
+-  _picorv32_with_native_multipication_n_division_Enabled_
+    -  [picorv32 with native multipication and division enabled](https://drive.google.com/drive/u/1/folders/1VlnNr_21aUsA_DjHPXHZn9BB6XyD7hkd)
+    -  [picorv32 with native mult n div build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_mult_div_en)
+
 
 -  _picorv32_with_fpu_
-    -  [picorv32 with SRAM and_FPU_build artifact]()
-    -  [picorv32 with SRAM and FPU build_logs] () 
+    -  [picorv32 with FPU build artifact](https://drive.google.com/drive/u/1/folders/1kTCtYxuz99U9cSjo17kvR0XbPk3eu2aA)
+    -  [picorv32 with FPU build logs](https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv_with_fpu)
 
 -  _picorv32_with_SRAM_fpu_
-    -  [picorv32 with SRAM and_FPU_build artifact]()
-    -  [picorv32 with SRAM and FPU build_logs] () 
+    -  [picorv32 with SRAM and FPU build artifact](https://drive.google.com/drive/u/1/folders/1UcBPUZK2ttfehgvwb2NUJgJjfC84vi1s)
+    -  [picorv32 with SRAM and FPU build logs] (https://github.com/osowatzke/picorv32/tree/main/build_reports/picorv32_with_sram_fpu)
 
 ---
 
-## Reference links
+##[!NOTE] Reference links
 - _Silicon Compiler_
    - [Installation](https://docs.siliconcompiler.com/en/latest/user_guide/installation.html#installation)
    - [Quick Start Guide HeartBeat Example](https://docs.siliconcompiler.com/en/latest/user_guide/quickstart.html#quickstart-guide)
@@ -69,6 +74,12 @@ Bla Bla Bla !! Done !
 | `picorv32_top.v`      | Top level of picorv32 that instantiates CPU, FPU and SRAM, to do !                          |
 
 ## To Do
-    - Use one design_topvv file for build and same for python. Parse argument from given command line.
-    - Investigate signoff failure. SRAM macro is depricated, see build_report/
+    - Use one design_topv.v file for build and same for python.
+        - Use parameter to enable/disable the modules, like SRAM, FPU, etc.
+    - Python : Parse argument from given command line and run build accordingly.
+    - [!WARNING] SRAM Signoff failure
+      - SRAM macro is depricated, see build_report/
+      - Tried both macros
+        - https://github.com/VLSIDA/sky130_sram_macros
+        - https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8
 ---
