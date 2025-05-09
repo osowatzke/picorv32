@@ -43,10 +43,6 @@ module picorv32_with_fpu (
 
     // (Signals have the same name as the picorv32 module: use '.*' to autofill)
     // Enable FPU
-    picorv32 #(
-        .ENABLE_FPU(1),
-        .ENABLE_PCPI(1))
-    rv32_soc (.*);
-
+    picorv32 #(.ENABLE_FPU(1)) rv32_soc (.*);
    
 endmodule

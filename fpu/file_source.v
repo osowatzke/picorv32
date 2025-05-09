@@ -41,7 +41,7 @@ module file_source (
             if (file != 0 && !$feof(file)) begin
                 if (validIn) begin
                     stat = $fscanf(file, "%h\n", fileData);
-                    dataOut  <= fileData; // Must assign with block assignment
+                    dataOut  <= fileData; // Must assign with blocking assignment
                     validOut <= 1;
                     if ($feof(file)) begin
                         $fclose(file);

@@ -43,10 +43,20 @@ module picorv32_with_sram_n_fpu (
 
     // (Signals have the same name as the picorv32 module: use '.*' to autofill)
     // Enable FPU
-    picorv32 #(
-        .ENABLE_FPU(1),
-        .ENABLE_PCPI(1))
-    rv32_soc (.*);
+    picorv32 #(.ENABLE_PCPI(1)) rv32_soc (.*);
+
+    fpu fpu_i(
+        .clkIn       (clk       ),
+        .rstLowIn    (resetn    ),
+        .pcpiValidIn (pcpi_valid),
+        .pcpiInstIn  (pcpi_insn ),
+        .pcpiRs1In   (pcpi_rs1  ),
+        .pcpiRs2In   (pcpi_rs2  ),
+        .pcpiWrOut   (pcpi_wr   ),
+        .pcpiRdOut   (pcpi_rd   ),
+        .pcpiWaitOut (pcpi_wait ),
+        .pcpiReadyOut(pcpi_ready)
+    );
 
     // SRAM with always-active chip select and write control bits.
     sky130_sram_2kbyte_1rw1r_32x512_8 sram (
