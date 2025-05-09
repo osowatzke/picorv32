@@ -30,31 +30,10 @@ module testbench;
 			$dumpfile("testbench.vcd");
 			$dumpvars(0, testbench);
 		end
-        /*fileA = $fopen(DATA_A_FILE, "r");
-        if (fileA == 0) begin
-            $display("Error: Could not open \"%s\"", DATA_A_FILE);
-            $finish;
-        end 
-        fileB = $fopen(DATA_B_FILE, "r");
-        if (fileB == 0) begin
-            $display("Error: Could not open \"%s\"", DATA_B_FILE);
-            $fclose(fileA);
-            $finish;
-        end 
-        fileY = $fopen(DATA_Y_FILE, "r");
-        if (fileY == 0) begin
-            $display("Error: Could not open \"%s\"", DATA_Y_FILE);
-            $fclose(fileA);
-            $fclose(fileB);
-            $finish;
-        end*/
 		repeat (100) @(posedge clk);
 		resetn <= 1;
         repeat (10000) @(posedge clk);
         $display("Error: Timeout Reached");
-        /*$fclose(fileA);
-        $fclose(fileB);
-        $fclose(fileY);*/
         $finish;
 	end
 
@@ -70,16 +49,15 @@ module testbench;
     
     reg err;
     wire check;
-    // wire [31:0] dataA, dataB, dataY;
     
 	always @(posedge clk) begin
         if (resetn == 0) begin
             err         <= 0;
         end else if (mem_valid && mem_ready && mem_wstrb) begin
             if (dataY === mem_wdata) begin
-                $display("Time %t :: Expected (0x%08x) = Measured (0x%08x)", $time, dataY, mem_wdata);
+                $display("PASS  @ Time %10t :: Expected (0x%08x) == Measured (0x%08x)", $time, dataY, mem_wdata);
             end else begin
-                $display("ERROR Time %t :: Expected (0x%08x) != Measured (0x%08x)", $time, dataY, mem_wdata);
+                $display("ERROR @ Time %10t :: Expected (0x%08x) != Measured (0x%08x)", $time, dataY, mem_wdata);
                 err     <= 1;
             end
             if (doneA | doneB | doneY) begin
@@ -90,21 +68,6 @@ module testbench;
                 end
                 $finish;
             end
-            /*if ($feof(fileA)) begin
-                if (err) begin
-                    $display("Errors Found :(");
-                end else begin
-                    $display("No Errors Found :)");
-                end
-                $fclose(fileA);
-                $fclose(fileB);
-                $fclose(fileY);
-                $finish;
-            end else begin
-                $fscanf(fileA, "%h\n", dataA);
-                $fscanf(fileB, "%h\n", dataB);
-                $fscanf(fileY, "%h\n", expected);
-            end*/
 		end
 	end
 
@@ -119,7 +82,7 @@ module testbench;
         end
     end
     
-    assign check = memWrEn;  // & !memWrEn;
+    assign check = memWrEn;
     
     file_source #(
         .DATA_WIDTH(32),
@@ -160,7 +123,6 @@ module testbench;
     assign memUpdate = validA && validB && validY;
     
 	picorv32 #(
-        .ENABLE_PCPI(1),
         .ENABLE_FPU (1)
 	) uut (
 		.clk         (clk        ),
@@ -208,8 +170,8 @@ module testbench;
 				if (mem_wstrb[2]) memory[mem_addr >> 2][23:16] <= mem_wdata[23:16];
 				if (mem_wstrb[3]) memory[mem_addr >> 2][31:24] <= mem_wdata[31:24];
 			end
-			/* add memory-mapped IO here */
 		end
+        // Update data in memory after each write
         if (memUpdate) begin
             memory[128] <= dataA;
             memory[129] <= dataB;
