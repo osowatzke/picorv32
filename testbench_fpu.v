@@ -12,19 +12,19 @@ module testbench;
 	reg clk = 1;
 	reg resetn = 0;
 	wire trap;
-    
+
     parameter OP = "mult";
-    
+
     localparam DATA_A_FILE = {"./fpu/test/", OP, "/dataA.txt"};
     localparam DATA_B_FILE = {"./fpu/test/", OP, "/dataB.txt"};
     localparam DATA_Y_FILE = {"./fpu/test/", OP, "/dataY.txt"};
-    
+
 	always #5 clk = ~clk;
 
     wire validA, validB, validY;
     wire doneA, doneB, doneY;
     wire [31:0] dataA, dataB, dataY;
-    
+
 	initial begin
 		if ($test$plusargs("vcd")) begin
 			$dumpfile("testbench.vcd");
@@ -45,11 +45,21 @@ module testbench;
 	wire [3:0] mem_wstrb;
 	reg  [31:0] mem_rdata;
 
+    // Pico Co-Processor Interface (PCPI)
+    wire        pcpi_valid;
+    wire [31:0] pcpi_insn;
+    wire [31:0] pcpi_rs1;
+    wire [31:0] pcpi_rs2;
+    wire        pcpi_wr;
+    wire [31:0] pcpi_rd;
+    wire        pcpi_wait;
+    wire        pcpi_ready;
+
     wire memUpdate;
-    
+
     reg err;
     wire check;
-    
+
 	always @(posedge clk) begin
         if (resetn == 0) begin
             err         <= 0;
@@ -73,7 +83,7 @@ module testbench;
 
     wire memWrEn;
     assign memWrEn = mem_valid && mem_ready && mem_wstrb;
-    
+
     reg memWrEnR;
     always @(posedge clk) begin
         memWrEnR <= 0;
@@ -81,9 +91,9 @@ module testbench;
             memWrEnR <= memWrEn;
         end
     end
-    
+
     assign check = memWrEn;
-    
+
     file_source #(
         .DATA_WIDTH(32),
         .FILE_NAME(DATA_A_FILE)
@@ -95,7 +105,7 @@ module testbench;
         .doneOut (doneA),
         .dataOut (dataA)
     );
-    
+
     file_source #(
         .DATA_WIDTH(32),
         .FILE_NAME(DATA_B_FILE)
@@ -107,7 +117,7 @@ module testbench;
         .doneOut (doneB),
         .dataOut (dataB)
     );
-    
+
     file_source #(
         .DATA_WIDTH(32),
         .FILE_NAME(DATA_Y_FILE)
@@ -119,23 +129,44 @@ module testbench;
         .doneOut (doneY),
         .dataOut (dataY)
     );
-    
+
     assign memUpdate = validA && validB && validY;
-    
+
 	picorv32 #(
-        .ENABLE_FPU (1)
+        .ENABLE_PCPI(1)
 	) uut (
-		.clk         (clk        ),
-		.resetn      (resetn     ),
-		.trap        (trap       ),
-		.mem_valid   (mem_valid  ),
-		.mem_instr   (mem_instr  ),
-		.mem_ready   (mem_ready  ),
-		.mem_addr    (mem_addr   ),
-		.mem_wdata   (mem_wdata  ),
-		.mem_wstrb   (mem_wstrb  ),
-		.mem_rdata   (mem_rdata  )
+		.clk         (clk       ),
+		.resetn      (resetn    ),
+		.trap        (trap      ),
+		.mem_valid   (mem_valid ),
+		.mem_instr   (mem_instr ),
+		.mem_ready   (mem_ready ),
+		.mem_addr    (mem_addr  ),
+		.mem_wdata   (mem_wdata ),
+		.mem_wstrb   (mem_wstrb ),
+		.mem_rdata   (mem_rdata ),
+        .pcpi_valid  (pcpi_valid),
+        .pcpi_insn   (pcpi_insn ),
+        .pcpi_rs1    (pcpi_rs1  ),
+        .pcpi_rs2    (pcpi_rs2  ),
+        .pcpi_wr     (pcpi_wr   ),
+        .pcpi_rd     (pcpi_rd   ),
+        .pcpi_wait   (pcpi_wait ),
+        .pcpi_ready  (pcpi_ready)
 	);
+
+    fpu fpu_i(
+        .clkIn       (clk       ),
+        .rstLowIn    (resetn    ),
+        .pcpiValidIn (pcpi_valid),
+        .pcpiInstIn  (pcpi_insn ),
+        .pcpiRs1In   (pcpi_rs1  ),
+        .pcpiRs2In   (pcpi_rs2  ),
+        .pcpiWrOut   (pcpi_wr   ),
+        .pcpiRdOut   (pcpi_rd   ),
+        .pcpiWaitOut (pcpi_wait ),
+        .pcpiReadyOut(pcpi_ready)
+    );
 
 	reg [31:0] memory [0:255];
 
