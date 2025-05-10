@@ -7,17 +7,16 @@ import argparse
 def main(signoff_only):
 
     # Step 1: RTL2GDS
-    chip = Chip('picorv32')
+    chip = Chip('picorv32_with_fpu')
     chip.set('option', 'flow', 'asicflow')
     chip.set('option', 'jobname', 'rtl2gds')
 
     if not signoff_only:
         chip.input("picorv32_with_fpu.v")
         chip.input('picorv32.v')
+        chip.input('fpu/fpu.v')
         chip.input('fpu/floating_point_add.v')
         chip.input('fpu/floating_point_multiply.v')
-        chip.input('fpu/fmuls.v')
-        chip.input('fpu/fpu.v')
 
         chip.clock('clk', period=25)
         chip.set('option', 'remote', True)
@@ -33,7 +32,7 @@ def main(signoff_only):
     vg_path = chip.find_result('vg', step='write.views')
 
     # Step 2: Signoff Run
-    chip = Chip('picorv32')
+    chip = Chip('picorv32_with_fpu')
 
     chip.input(gds_path)
     chip.input(vg_path)
