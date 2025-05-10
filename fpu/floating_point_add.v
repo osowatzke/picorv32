@@ -228,9 +228,9 @@ module floating_point_add (
         
         // Create 2's complement numbers
         if (aSignR) begin
-            aOperand2R <= -$signed({2'b0, aOperandR});
+            aOperand2R <= -$signed({1'b0, aOperandR});
         end else begin
-            aOperand2R <= $signed({2'b0, aOperandR});
+            aOperand2R <= $signed({1'b0, aOperandR});
         end
         
         if (bSignR) begin
