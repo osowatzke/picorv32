@@ -278,8 +278,11 @@ module floating_point_multiply (
         // Can explore other adder combinations if needed to reduce critical path.
         // For example:
         //
-        // prodA3R         <= prodC2R + {prodD2R, {PROD2_IN_WIDTH{1'b0}}};
-        // prodB3R         <= prodA2R + {prodB2R, {PROD1_IN_WIDTH{1'b0}}};
+        // prodA3R         <= prodA2R + {prodB2R, {PROD1_IN_WIDTH{1'b0}}};
+        // prodB3R         <= prodC2R + {prodD2R, {PROD2_IN_WIDTH{1'b0}}};
+        //
+        // prod4R          <= prodA3R + {prodB3R, {PROD1_IN_WIDTH{1'b0}}};
+        //
 
         /* Pipeline #4 */
         prodSign4R      <= prodSign3R;
