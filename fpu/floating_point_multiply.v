@@ -271,12 +271,15 @@ module floating_point_multiply (
             prodExp3R   <= prodExp2R;
         end
 
-        // Start summing partial products
+        // Sum partial products. This logic instantiates a 4-input 36 bit adder
+        // Where 3 inputs taper down in bitwidth as the operation progresses
+        prod3R          <= {prodD2R, {FRAC_WIDTH{1'b0}}} + {prodC2R, {PROD1_IN_WIDTH{1'b0}}} + {prodB2R, {PROD1_IN_WIDTH{1'b0}}} + prodA2R;
+
+        // Can explore other adder combinations if needed to reduce critical path.
+        // For example:
+        //
         // prodA3R         <= prodC2R + {prodD2R, {PROD2_IN_WIDTH{1'b0}}};
         // prodB3R         <= prodA2R + {prodB2R, {PROD1_IN_WIDTH{1'b0}}};
-
-        // Sum partial products
-        prod3R          <= {prodD2R, {FRAC_WIDTH{1'b0}}} + {prodC2R, {PROD1_IN_WIDTH{1'b0}}} + {prodB2R, {PROD1_IN_WIDTH{1'b0}}} + prodA2R;
 
         /* Pipeline #4 */
         prodSign4R      <= prodSign3R;
