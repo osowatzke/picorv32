@@ -31,18 +31,19 @@ module floating_point_multiply (
     localparam BIAS             = 2**(EXP_WIDTH - 1) - 1;
 
     // Determine sizes of partial products
-    localparam PRODA_IN_WIDTH   = FRAC_WIDTH/2;
-    localparam PRODB_IN_WIDTH   = FRAC_WIDTH - PRODA_IN_WIDTH;
+    localparam PROD1_IN_WIDTH   = FRAC_WIDTH/2;
+    localparam PROD2_IN_WIDTH   = FRAC_WIDTH - PROD1_IN_WIDTH;
 
     // Define ranges for partial Product
-    localparam PRODA_IN_LO      = 0;
-    localparam PRODA_IN_HI      = PRODA_IN_WIDTH - 1;
-    localparam PRODB_IN_LO      = PRODA_IN_HI + 1;
-    localparam PRODB_IN_HI      = PRODB_IN_LO + PRODB_IN_WIDTH - 1;
+    localparam PROD1_IN_LO      = 0;
+    localparam PROD1_IN_HI      = PROD1_IN_WIDTH - 1;
+    localparam PROD2_IN_LO      = PROD1_IN_HI + 1;
+    localparam PROD2_IN_HI      = PROD2_IN_LO + PROD2_IN_WIDTH - 1;
 
     // Determine size of partial product outputs
-    localparam PRODA_OUT_SIZE   = FRAC_WIDTH + PRODA_IN_WIDTH;
-    localparam PRODB_OUT_SIZE   = FRAC_WIDTH + PRODB_IN_WIDTH;
+    localparam PROD11_OUT_SIZE  = 2*PROD1_IN_WIDTH;
+    localparam PROD12_OUT_SIZE  = PROD1_IN_WIDTH + PROD2_IN_WIDTH;
+    localparam PROD22_OUT_SIZE  = 2*PROD2_IN_WIDTH;
 
     // Determine size of Product
     localparam PROD_WIDTH       = 2*FRAC_WIDTH;
@@ -79,8 +80,10 @@ module floating_point_multiply (
     reg prodNaN2R;
     reg signed [EXP_WIDTH+1:0] prodExp2R;
 
-    reg [PRODA_OUT_SIZE-1:0] prodA2R;
-    reg [PRODB_OUT_SIZE-1:0] prodB2R;
+    reg [PROD11_OUT_SIZE-1:0] prodA2R;
+    reg [PROD12_OUT_SIZE-1:0] prodB2R;
+    reg [PROD12_OUT_SIZE-1:0] prodC2R;
+    reg [PROD22_OUT_SIZE-1:0] prodD2R;
 
     // Pipeline #3
     reg prodSign3R;
@@ -251,8 +254,10 @@ module floating_point_multiply (
         prodExp2R       <= prodExpR - (BIAS - 1);
 
         // Compute partial products
-        prodA2R         <= aOperandR * bOperandR[PRODA_IN_HI:PRODA_IN_LO];
-        prodB2R         <= aOperandR * bOperandR[PRODB_IN_HI:PRODB_IN_LO];
+        prodA2R         <= aOperandR[PROD1_IN_HI:PROD1_IN_LO] * bOperandR[PROD1_IN_HI:PROD1_IN_LO];
+        prodB2R         <= aOperandR[PROD1_IN_HI:PROD1_IN_LO] * bOperandR[PROD2_IN_HI:PROD2_IN_LO];
+        prodC2R         <= aOperandR[PROD2_IN_HI:PROD2_IN_LO] * bOperandR[PROD1_IN_HI:PROD1_IN_LO];
+        prodD2R         <= aOperandR[PROD2_IN_HI:PROD2_IN_LO] * bOperandR[PROD2_IN_HI:PROD2_IN_LO];
 
         /* Pipeline #3 */
         prodSign3R      <= prodSign2R;
@@ -266,7 +271,12 @@ module floating_point_multiply (
             prodExp3R   <= prodExp2R;
         end
 
-        prod3R          <= prodA2R + {prodB2R, {PRODA_IN_WIDTH{1'b0}}};
+        // Start summing partial products
+        // prodA3R         <= prodC2R + {prodD2R, {PROD2_IN_WIDTH{1'b0}}};
+        // prodB3R         <= prodA2R + {prodB2R, {PROD1_IN_WIDTH{1'b0}}};
+
+        // Sum partial products
+        prod3R          <= {prodD2R, {FRAC_WIDTH{1'b0}}} + {prodC2R, {PROD1_IN_WIDTH{1'b0}}} + {prodB2R, {PROD1_IN_WIDTH{1'b0}}} + prodA2R;
 
         /* Pipeline #4 */
         prodSign4R      <= prodSign3R;

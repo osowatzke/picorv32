@@ -91,11 +91,13 @@ module floating_point_add (
     reg signed [PAD_WIDTH:0] sumOperandMsbVar;
     reg signed [PAD_WIDTH-1:0] sumOperandLsbVar;
     reg signed [2*PAD_WIDTH:0] sumOperand5R;
+    reg [PAD_WIDTH:0] sumLsbNeg5R;
     
     // Pipeline #6
     reg sumInf6R, sumSign6R, sumNaN6R;
     reg [EXP_WIDTH-1:0] maxExp6R;
     reg [2*PAD_WIDTH-1:0] sumOperand6R;
+    reg [PAD_WIDTH-1:0] sumMsbNegVar;
     
     // Pipeline #7
     reg sumInf7R, sumSign7R, sumNaN7R, sumZero7R;
@@ -280,6 +282,9 @@ module floating_point_add (
         sumOperandLsbVar = minOperand4R[PAD_WIDTH-1:0];
         sumOperand5R <= {sumOperandMsbVar, sumOperandLsbVar};
         
+        // Negate LSB to help with next pipeline cycle
+        sumLsbNeg5R  <= {1'b0, ~$unsigned(sumOperandLsbVar)} + 1;
+        
         /* Pipeline 6 */
         sumInf6R     <= sumInf5R;
         sumNaN6R     <= sumNaN5R;
@@ -290,7 +295,8 @@ module floating_point_add (
         sumOperand6R <= $unsigned(sumOperand5R[2*PAD_WIDTH-1:0]);
         if (sumOperand5R[2*PAD_WIDTH] == 1) begin
             sumSign6R    <= 1;
-            sumOperand6R <= $unsigned(-sumOperand5R[2*PAD_WIDTH-1:0]);
+            sumMsbNegVar  = ~$unsigned(sumOperand5R[2*PAD_WIDTH-1:PAD_WIDTH]) + sumLsbNeg5R[PAD_WIDTH];
+            sumOperand6R <= {sumMsbNegVar, sumLsbNeg5R[PAD_WIDTH-1:0]};
         end
         
         // Override sign for Inf
