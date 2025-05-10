@@ -42,9 +42,7 @@ module picorv32_with_sram (
         mem_ready <= mem_valid;
 
     // (Signals have the same name as the picorv32 module: use '.*' to autofill)
-    picorv32 rv32_soc (
-      .*
-    );
+    picorv32 rv32_soc (.*);
 
     // SRAM with always-active chip select and write control bits.
     sky130_sram_2kbyte_1rw1r_32x512_8 sram (
