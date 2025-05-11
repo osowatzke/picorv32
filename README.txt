@@ -81,4 +81,8 @@ Our Silicon dashboard does not correctly render the design preview. However, it 
 accessible from the file explorer. It is placed in the rtl2gds subfolder of each run. The
 design summary for a build without an FPU should be placed at
 ./build/picorv32_with_sram/rtl2gds/picorv32_with_sram.png
-    
+
+The build subdirectory is also included as a zipped file with the submission. Each of the
+build directories (i.e. picorv32_with_sram and picorv32_with_sram_n_fpu) should contain
+each run-time outputs that are not automatically saved at runtime. These include a copy of
+the terminal outputs ('build_log.txt') and a screenshot showing passing results ('rtl2gds.png').
