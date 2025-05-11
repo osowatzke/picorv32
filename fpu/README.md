@@ -1,31 +1,127 @@
-Silicon Compiler Installation (Can skip External Tools)
+# FPU Behavioral Simulation and PicoRV32 Build Instructions with SiliconCompiler
 
-https://docs.siliconcompiler.com/en/stable/user_guide/installation.html#installation
+## Behavioral Simulation Instructions
 
-Silicon Compiler SRAM Tutorial (Run with remote set to True)
+To run a behavioral simulation of the **FPU**, execute the following command:
 
-https://docs.siliconcompiler.com/en/stable/user_guide/tutorials/picorv32_ram.html
+```bash
+make test_fpu OP=<operation>
+```
 
-RISCV Instruction Format (Refer to Figure 5)
+Where `<operation>` is either `'add'`, `'sub'`, or `'mult'`. For example:
 
-https://pcotret.gitlab.io/riscv-custom/sw_toolchain.html#existing-opcodes
+```bash
+make test_fpu OP=add
+```
 
-List of Existing Opcodes in riscv-opcodes repo:
+This will run a behavioral simulation of the floating-point adder. If `<operation>` is unspecified, it defaults to `'mult'`.
 
-https://github.com/riscv/riscv-opcodes/blob/7c3db437d8d3b6961f8eb2931792eaea1c469ff3/opcodes
+### Generating Waveform Data
 
-Floating Point Instruction Format:
+To generate waveform data during simulation, run:
 
-https://msyksphinz-self.github.io/riscv-isadoc/html/rvfd.html
+```bash
+make test_fpu_vcd OP=<operation>
+```
 
-Adder and Multiplier Implementations (Source in src/main/resources/vsrc and Testbenches in src/test/resources/vsrc):
+The waveform data can then be viewed using:
 
-https://github.com/osowatzke/cnn-hw-accelerator/tree/main
+```bash
+gtkwave testbench.vcd
+```
 
-RISV Floating Point Documentation (Starting on Page 111 \[130 when searching\]):
+### Random Test Data Generation
 
-https://drive.google.com/file/d/1uviu1nH-tScFfgrovvFCrj7Omv8tFtkp/view
+By default, the simulation executes 100 floating-point operations with random values through the **PicoRV32**. These values are uniformly distributed, increasing the chance of encountering NaNs and subnormal operations.
 
-PCPI Interface:
+To update the simulation data from the `fpu/test` folder, run:
 
-https://kuleuven-diepenbeek.github.io/hwswcodesign-course/200_coprocessor/202_pcpi/
+```bash
+python create_random_test_data.py <operation> -n <number_of_samples> -s <seed>
+```
+
+Both `<seed>` and `<number_of_samples>` are optional and default to `0` and `100`, respectively. Examples:
+
+```bash
+python create_random_test_data.py add
+```
+
+This generates 100 random adder inputs/outputs with a seed of `0`.
+
+```bash
+python create_random_test_data.py sub -n 200 -s 1
+```
+
+This creates 200 random subtraction input/outputs with a seed of `1`.
+
+> **Note:** The Verilog testbench includes a timeout mechanism that may trigger errors if your input is too large.
+
+---
+
+## Build Instructions
+
+Ensure **SiliconCompiler** is installed. If not, refer to the [installation guide](https://docs.siliconcompiler.com/en/stable/user_guide/installation.html#installation).
+
+### Setting Up the Environment
+
+Activate your Python virtual environment:
+
+```bash
+source ~/venv/bin/activate
+```
+
+### Building PicoRV32
+
+- **Without FPU:**
+
+  ```bash
+  python picorv32_with_sram.py
+  ```
+
+- **With FPU:**
+
+  ```bash
+  python picorv32_with_sram_n_fpu.py
+  ```
+
+The results are stored in the `build/` folder:
+
+- For builds without FPU → `build/picorv32_with_sram`
+- For builds with FPU → `build/picorv32_with_sram_n_fpu`
+
+### Viewing the SiliconCompiler Dashboard
+
+To view the **SiliconCompiler Dashboard**:
+
+```bash
+sc-dashboard -cfg <json_file>
+```
+
+Navigate to the `rtl2gds` subdirectory of the respective build folder to find the JSON configuration. Example:
+
+```bash
+cd ./build/picorv32_with_sram/rtl2gds
+sc-dashboard -cfg picorv32_with_sram.pkg.json
+```
+
+If running on a headless terminal, copy the provided URL into a browser.
+
+> **Note:** The dashboard may not render the design preview correctly, but the design summary image is available as:
+> `./build/picorv32_with_sram/rtl2gds/picorv32_with_sram.png`
+
+---
+
+## Build Artifacts
+
+The build directory also includes:
+
+- `build_log.txt`: Terminal output logs.
+- `rtl2gds.png`: Screenshot showing passing results.
+
+### Timing Analysis
+
+The top **N setup paths** (longest setup time violations) are stored in:
+
+```
+./rtl2gds/write.views/0/reports/timing/setup.topN.rpt
+```

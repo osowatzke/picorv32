@@ -1,20 +1,32 @@
-# Project Information
-
 ## Project Description : 
-Bla Bla Bla !! Done !
+
+This project demonstrates the comprehensive workflow of designing, synthesizing, and integrating a basic System-on-Chip (SoC) using the PicoRV32 RISC-V CPU core with a floating-point unit (FPU), utilizing the open-source Skywater130 process node and SiliconCompiler framework. 
 
 > [!NOTE]
 >##  Tools
 >   - _Compiler_         : Silicon Compiler, Ver 0.32.3
 >   - _Simulator_        : GTK WaveVersion 
+
+
 >## Reference links
 >- _Silicon Compiler_
 >   - [Installation](https://docs.siliconcompiler.com/en/latest/user_guide/installation.html#installation)
->   - Quick Start
+>   - _Quick Start_
 >       - [HeartBeat Example](https://docs.siliconcompiler.com/en/latest/user_guide/quickstart.html#quickstart-guide)
->       - [Building SOC](https://docs.siliconcompiler.com/en/stable/user_guide/tutorials/picorv32_ram.html)
->   - Upgrade CMD :pip install --upgrade siliconcompiler
->   - Demo Proj Run CMD : sc -target asic_demo -remote
+>       - [Building SOC with SRAM](https://docs.siliconcompiler.com/en/stable/user_guide/tutorials/picorv32_ram.html)
+>   - _Upgrade CMD_ 
+>       -   pip install --upgrade siliconcompiler
+>   - _Demo Proj Run CMD_
+>       - sc -target asic_demo -remote
+>- _RISCV_
+>   -   [Insctruction Format](https://pcotret.gitlab.io/riscv-custom/sw_toolchain.html#existing-opcodes)
+>   -   [List of Existing Opcodes in riscv-opcodes repo](https://github.com/riscv/riscv-opcodes/blob/7c3db437d8d3b6961f8eb2931792eaea1c469ff3/opcodes)
+> - _Floating Point_
+>   -   [Floating Point Instruction Format](https://msyksphinz-self.github.io/riscv-isadoc/html/rvfd.html)
+>   -   [RISV Floating Point Documentation, Starting on Page 111 and 130 when searching](https://drive.google.com/file/d/1uviu1nH-tScFfgrovvFCrj7Omv8tFtkp/view)
+>- _PCPI_
+>   - [Intro](https://kuleuven-diepenbeek.github.io/hwswcodesign-course/200_coprocessor/202_pcpi/)
+>   - [HW/SW codesign,Github.io, 2025](https://kuleuven-diepenbeek.github.io/hwswcodesign-course/200_coprocessor/202_pcpi/)
 >- _Project_ 
 >   - [Requirement](https://docs.google.com/document/d/1w_6TcTO9ZfsKjH5dKjGZwSfvMj4INFzu/edit?tab=t.0#heading=h.gjdgxs)
 >   - [Repo Path ](https://github.com/osowatzke/picorv32)
@@ -22,22 +34,26 @@ Bla Bla Bla !! Done !
 >   - [PICORV32 Processor SRC](https://github.com/YosysHQ/picorv32)
 >   - [cnn-hw-accelerator](https://github.com/osowatzke/cnn-hw-accelerator/tree/main)
 >   - [FPU](https://github.com/osowatzke/picorv32/tree/main/fpu)
->- _SRAM MACRO_
->   - [sky130_sram_2kbyte_1rw1r_32x512_8](https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8)
+>- _SRAM From VLSIDA_
+>   -    [“OpenSRAM: An Open-Source Static Random Access Memory (SRAM) Compiler”, GitHub Repository](https://github.com/VLSIDA/OpenRAM)
+>   - [SRAM Macr0 : sky130_sram_2kbyte_1rw1r_32x512_8, GitHub Repository](https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8)
 
 ---
 
+
+
+
 >[!TIP]
 >## Compilation Command :
->- Simulation :
+>- _Simulation_ :
 >    - Add : make test_fpu OP=add
 >    - Subtraction : make test_fpu OP=sub
->- Build :
+>- _Build_ :
 >    - CPU Only (picorv32) : python python/picorv32.py
 >    - CPU and Memory (picorv32 and SRAM) : python picorv32_with_sram.py
 >    - CPU, Memory and FPU (picorv32, SRAM, and FPU) : python picorv32_with_sram_n_fpu.py. [Make sure parameter ENABLE_FPU and ENABLE_PCPI is set to 1'b'1' in picorv32_with_sram_n_fpu.v]
 
-
+> - [For detailed instruction -> readme.txt](https://github.com/osowatzke/picorv32/blob/main/README.txt)
 ---
 
 
@@ -62,23 +78,15 @@ Bla Bla Bla !! Done !
 ---
 
 
-## Project Structure
+## Project Structure / File add on to the fork
 
-| Folder/File           | Description                                                                                 |
-|-----------------------|---------------------------------------------------------------------------------------------|
-| `fpu\`                | FPU Source                                                                                  |
-| `picorv32_with_sram.v`| Top level of picorv32 that instantiates sram                                                |
-| `picorv32_top.v`      | Top level of picorv32 that instantiates CPU, FPU and SRAM, to do !                          |
-
-> [!WARNING] 
-> ## To Do
->    - Use one design_topv.v file for build and same for python.
->        - Use parameter to enable/disable the modules, like SRAM, FPU, etc.
->    - Python : Parse argument from given command line and run build accordingly.
->        - SRAM Signoff failure
->        - SRAM macro is depricated, see build_report/
->        - Tried both macros
->            - https://github.com/VLSIDA/sky130_sram_macros
->            - https://github.com/VLSIDA/sky130_sram_macros/tree/main/sky130_sram_2kbyte_1rw1r_32x512_8
->       - Pre and post layout simulation
----
+|Design Phase| Folder/File             | Description                                                                                  |
+|-------|-------------------------|----------------------------------------------------------------------------------------------   |
+| I     | `picorv32_with_sram.v`  | Top level of picorv32 that instantiates SRAM back box                                        |
+| I     | `picorv32_with_sram.py` | Build script that configures sources all HDL path and SRAM Macro. Design contrains such as like die size and clock period are placed here         |
+| II    | `picorv32_with_sram_n_fpu.v`  | Top level of picorv32 that instantiates SRAM black box and FPU                    top                                                |
+| II    | `picorv32_with_sram_n_fpu.py` | Python Build script, similar as picorv32_with_sram.py                                                            |
+| II    | `fpu\*.v`               | Custom FPU Source                                                                           |
+| II    | `fpu\*\.txt\`           | Test Files for Mult, Add and Subtract                                                       |
+| II    | `fpu\create_random.py`  | Test data creator                                                                          |
+| II    | `testbench_fpu.v`       | Testbench                                                                                   | 
