@@ -58,6 +58,9 @@ This project demonstrates the comprehensive workflow of designing, synthesizing,
 
 
 > [!IMPORTANT]
+>   ## Simulation Result Waveform:
+>   -  [_ADD_](https://raw.githubusercontent.com/osowatzke/picorv32/refs/heads/main/fpu/test/sim_results_wave_form/add_execution_time_19_clk_cycls.webp)
+>   -  [_MULT_](https://github.com/osowatzke/picorv32/blob/main/fpu/test/sim_results_wave_form/mult_execution_time_16_clk_cycls.webp)
 >   ## Build Result :
 >-  _picorv32_
 >    -  [picorv32 build artifacts](N/A)
