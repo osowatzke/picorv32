@@ -62,7 +62,7 @@ test_synth: testbench_synth.vvp firmware/firmware.hex
 test_verilator: testbench_verilator firmware/firmware.hex
 	./testbench_verilator
 
-testbench.vvp: testbench.v picorv32.v fpu/floating_point_multiply.v fpu/fmuls.v
+testbench.vvp: testbench.v picorv32.v
 	$(IVERILOG) -o $@ $(subst C,-DCOMPRESSED_ISA,$(COMPRESSED_ISA)) $^
 	chmod -x $@
 
